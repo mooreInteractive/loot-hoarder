@@ -1,3 +1,10 @@
+#Loot-Hoarder (Project Name)
+
+Generating random weapons to be managed as a user raids dungeons. Health refills over time, if the game is loaded or not. Player data is saved via browser's local storage.
+
+
+Based on the Phaser + ES6 + Webpack repo. README below:
+
 # Phaser + ES6 + Webpack.
 
 #### A bootstrap project for create games with Phaser + ES6 + Webpack.
