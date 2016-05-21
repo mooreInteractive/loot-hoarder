@@ -367,10 +367,11 @@ export default class extends Phaser.State {
                 utils.placeItemInSlot(this.game.player, item, item.inventorySlot);
             }
         }
-        console.log('--after stopDrag player.inv, backpack, equipped:', this.game.player.inventory, this.game.player.backpack, this.game.player.equipped);
+        //console.log('--after stopDrag player.inv, backpack, equipped:', this.game.player.inventory, this.game.player.backpack, this.game.player.equipped);
     }
 
     hoverInvItem(sprite, mouse, item){
+        console.log('--hover inventory item:', sprite, mouse, item);
         this.hoverItemBG.position.x = mouse.x;
         this.hoverItemBG.position.y = mouse.y - 75;
         this.inventoryItem.position.x = mouse.x + 5;
