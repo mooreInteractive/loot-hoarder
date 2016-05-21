@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import * as utils from '../utils';
+import {playerLevels} from '../data/levels';
 
 export default class extends Phaser.State {
     init () {
@@ -59,7 +60,8 @@ export default class extends Phaser.State {
     updateCharacterText(){
 
         this.playerInfo.text = `Level: ${this.game.player.level} \n`;
-        this.playerInfo.text += `Health: ${this.game.player.battleStats.health} \n\n`;
+        this.playerInfo.text += `Health: ${this.game.player.battleStats.currentHealth}/${this.game.player.battleStats.health} \n`;
+        this.playerInfo.text += `Exp: ${this.game.player.exp}, Next Level: ${playerLevels[this.game.player.level].maxExp - this.game.player.exp} \n\n`;
         this.playerInfo.text += `Main Attributes: \n`;
         this.playerInfo.text += `Strength: ${this.game.player.battleStats.strength} \n`;
         this.playerInfo.text += `Dexterity: ${this.game.player.battleStats.dexterity} \n`;
@@ -371,7 +373,6 @@ export default class extends Phaser.State {
     }
 
     hoverInvItem(sprite, mouse, item){
-        console.log('--hover inventory item:', sprite, mouse, item);
         this.hoverItemBG.position.x = mouse.x;
         this.hoverItemBG.position.y = mouse.y - 75;
         this.inventoryItem.position.x = mouse.x + 5;
@@ -402,7 +403,7 @@ export default class extends Phaser.State {
         let time = Math.floor(this.time.totalElapsedSeconds());
         if(this.game.lastGameTime != time){
             this.game.lastGameTime = time;
-            if(this.game.player.battleStats.health < this.game.player.baseStats.health){
+            if(this.game.player.battleStats.currentHealth < this.game.player.battleStats.health){
                 this.game.player.heal();
             }
         }

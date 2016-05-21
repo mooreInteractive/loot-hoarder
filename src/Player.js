@@ -34,6 +34,7 @@ class Player {
                 max: 1
             },
             health: 10,
+            currentHealth: 10,
             armor: 0
         };
 
@@ -97,9 +98,9 @@ class Player {
     }
 
     heal(){
-        this.battleStats.health += this.battleStats.wisdom * 1;
-        if(this.battleStats.health > this.baseStats.health){
-            this.battleStats.health = this.baseStats.health;
+        this.battleStats.currentHealth += this.battleStats.wisdom * 1;
+        if(this.battleStats.currentHealth > this.battleStats.health){
+            this.battleStats.currentHealth = this.battleStats.health;
         }
     }
 
@@ -163,6 +164,7 @@ class Player {
         if(localStorage){
             let playerData = JSON.stringify({
                 level:this.level,
+                exp: this.exp,
                 inventory: this.inventory,
                 backpack: backpackImage,
                 equipped: this.equipped,
@@ -195,6 +197,7 @@ class Player {
                 max: 1
             },
             health: 10,
+            currentHealth: 10, //TODO - check elapsed time
             armor: 0
         };
 

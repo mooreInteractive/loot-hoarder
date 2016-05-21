@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import * as Forge from '../weapons/Forge';
+import {playerLevels} from '../data/levels';
 import { placeItemInSlot } from '../utils';
 
 export default class extends Phaser.State {
@@ -11,6 +12,11 @@ export default class extends Phaser.State {
     }
 
     create () {
+        //clear data button
+        this.clearDataBtn = new Phaser.Button(this.game, this.game.world.width - 50, 0, 'redButton', this.clearPlayerData, this);
+        this.clearDataBtn.scale.x = 0.2;
+        this.game.add.existing(this.clearDataBtn);
+
         //Inv Button
         this.inventoryBtn = new Phaser.Button(this.game, 150, 50, 'blueButton', this.openInventory, this);
         this.inventoryBtn.anchor.setTo(0.5);
@@ -46,7 +52,7 @@ export default class extends Phaser.State {
         this.healthText.fill = '#000000';
         this.healthText.anchor.setTo(0.5);
 
-        this.dungeonText = this.add.text(250, 95, `Dungeon 1, Enemies Left: ${this.game.dungeons[0].enemiesLeft}`);
+        this.dungeonText = this.add.text(250, 95, `Dungeon ${this.game.player.latestUnlockedDungeon}, Enemies Left: ${this.game.dungeons[this.game.player.latestUnlockedDungeon].enemiesLeft}`);
         this.dungeonText.font = 'Nunito';
         this.dungeonText.fontSize = 22;
         this.dungeonText.fill = '#000000';
@@ -64,6 +70,14 @@ export default class extends Phaser.State {
 
     }
 
+    clearPlayerData(){
+        if(localStorage){
+            localStorage.removeItem('loot-hoarder-dungeons');
+            localStorage.removeItem('loot-hoarder-player');
+            window.location = '/';
+        }
+    }
+
     openInventory(){
         this.state.start('Inventory');
     }
@@ -77,31 +91,36 @@ export default class extends Phaser.State {
 
     raidDungeon(dungeon){
         let player = this.game.player;
-        if(player.battleStats.health > 1){
+        if(player.battleStats.currentHealth > 1){
             let loot = [];
             for(let i = 0; i < dungeon.enemies.length; i++){
                 let enemy = dungeon.enemies[i];
+                dungeon.enemies[i].originalHp = dungeon.enemies[i].hp;
                 while(enemy.hp > 0){
-                    let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max+1);
+                    let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
                     enemy.hp -= strike;
-                    player.battleStats.health -= enemy.dps;
-                    if(player.battleStats.health < 1){ break; }
+                    player.battleStats.currentHealth -= enemy.dps;
+                    if(player.battleStats.currentHealth < 1){ break; }
                 }
-                if(player.battleStats.health < 1){ break; }
-                if(enemy.hp < 1){
+                if(player.battleStats.currentHealth < 1){ break; }
+                if(enemy.hp < 1){//killed an enemey
+                    //get loot
                     let lootChance = Forge.rand(enemy.dps,4);
-                    if( lootChance == 3){
+                    if( lootChance == 3 ){
                         loot.push(Forge.build(enemy.dps,4));
                     }
+                    //get exp
+                    player.exp += enemy.dps + enemy.originalHp;
+                    //remove enemy from dungeon
                     dungeon.enemies.splice(i, 1);
                     i -= 1;
                     dungeon.enemiesLeft -= 1;
                 }
             }
-            if(player.battleStats.health < 1){
-                this.errorText.text = 'You made it as far as your could.';
+            if(player.battleStats.currentHealth < 1){
+                this.errorText.text = 'You\'re tired. ';
                 if(loot.length > 0){
-                    this.errorText.text += 'You got some loot though! ' + loot.length;
+                    this.errorText.text += 'loot: ' + loot.length;
                 }
                 this.errorText.visible = true;
             }
@@ -109,12 +128,21 @@ export default class extends Phaser.State {
             this.dungeonText.text = `Dungeon ${this.game.player.latestUnlockedDungeon}, Enemies Left: ${this.game.dungeons[this.game.player.latestUnlockedDungeon].enemiesLeft}`;
 
             //Dungeon Done
-            if(this.game.dungeons[0].enemiesLeft < 1){
+            if(this.game.dungeons[this.game.player.latestUnlockedDungeon].enemiesLeft < 1){
                 this.game.player.latestUnlockedDungeon += 1;
                 if(this.game.player.latestUnlockedDungeon > 2){
                     this.game.player.latestUnlockedDungeon = 2;
                 }
+                this.dungeonText.text = `Dungeon ${this.game.player.latestUnlockedDungeon}, Enemies Left: ${this.game.dungeons[this.game.player.latestUnlockedDungeon].enemiesLeft}`;
             }
+            //level up?
+            if(player.exp > playerLevels[player.level].maxExp){
+                player.level += 1;
+                this.errorText.text += 'Level Up!';
+                this.errorText.visible = true;
+            }
+
+
             this.saveDungeonData();
             this.game.player.savePlayerData();
 
@@ -171,7 +199,12 @@ export default class extends Phaser.State {
             addBtnText.fill = '#111111';
             addBtnText.anchor.setTo(0.5);
 
-            let sellBtn = new Phaser.Button(this.game, this.game.world.centerX - 200, this.game.world.centerY + 125*(index+1), 'yellowButton', () => { console.log('Sell Item!'); }, this);
+            let sellBtn = new Phaser.Button(this.game, this.game.world.centerX - 200, this.game.world.centerY + 125*(index+1), 'yellowButton', () => {
+                console.log('Sell Item!');
+                this.game.player.gold += item.value;
+                loot.splice(loot.indexOf(item), 1);
+                this.updateLootTextAndButtons(loot);
+            }, this);
             sellBtn.scale.x = 0.2;
             sellBtn.anchor.setTo(0.5);
             this.game.add.existing(sellBtn);
@@ -182,6 +215,7 @@ export default class extends Phaser.State {
             sellBtnText.fontSize = 24;
             sellBtnText.fill = '#111111';
             sellBtnText.anchor.setTo(0.5);
+            sellBtnText.visible = true;
         });
 
         // keep button click: //this.tryToPlaceItemInInventory(loot[i]);
@@ -212,14 +246,14 @@ export default class extends Phaser.State {
     }
 
     update(){
-        this.healthText.text = `Health: ${this.game.player.battleStats.health}/${this.game.player.baseStats.health}`;
+        this.healthText.text = `Health: ${this.game.player.battleStats.currentHealth}/${this.game.player.battleStats.health}`;
     }
 
     render (){
         let time = Math.floor(this.time.totalElapsedSeconds());
         if(this.game.lastGameTime != time){
             this.game.lastGameTime = time;
-            if(this.game.player.battleStats.health < this.game.player.baseStats.health){
+            if(this.game.player.battleStats.currentHealth < this.game.player.battleStats.health){
                 this.game.player.heal();
 
             }

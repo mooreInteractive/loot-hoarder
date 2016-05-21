@@ -26,6 +26,6 @@
     "webpack": "^1.12.13"
   },
   "dependencies": {
-    "phaser": "^2.4.6"
+    "phaser": "^2.4.7"
   }
 }

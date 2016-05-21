@@ -31,7 +31,8 @@ export function build(levelMin, levelMax) {
             [0,0,0,0]],
         'shapeWidth': 2,
         'shapeHeight': 3,
-        'inventorySlot': {x:0, y:0}
+        'inventorySlot': {x:0, y:0},
+        'value': 0
     };
 
     switch(this.rand(0,2)){
@@ -63,6 +64,7 @@ export function build(levelMin, levelMax) {
 
     //weapon level
     weapon.level = this.rand(levelMin, levelMax);
+    weapon.value = 20*weapon.level;
     //add level modifier to name
     switch(weapon.level){
     case 1: weapon.name = 'Broken '+weapon.name;
@@ -101,10 +103,14 @@ export function build(levelMin, levelMax) {
         break;
     }
 
+    weapon.value += weapon.dmg.max - weapon.dmg.min;
+    weapon.value += weapon.durability - 10;
+
     switch(this.rand(0,6)){
     case 0:
         weapon.magic.effect = this.getMagicEffect(weapon.level);
         weapon.name += ' of '+weapon.magic.effect.attribute;
+        weapon.value += 100*weapon.level;
         break;
     default:
         break;
@@ -120,7 +126,7 @@ export function rand(min, max) {
 export function getMagicEffect(lvl) {
     var effect = {};
 
-    switch(this.rand(0,3)){
+    switch(this.rand(0,4)){
     case 0: effect.attribute = 'strength';
         break;
     case 1: effect.attribute = 'dexterity';
