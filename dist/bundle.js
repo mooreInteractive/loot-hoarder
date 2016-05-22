@@ -9021,11 +9021,11 @@
 
 	var _MainMenu2 = _interopRequireDefault(_MainMenu);
 
-	var _Inventory = __webpack_require__(/*! ./states/Inventory */ 313);
+	var _Inventory = __webpack_require__(/*! ./states/Inventory */ 314);
 
 	var _Inventory2 = _interopRequireDefault(_Inventory);
 
-	var _Player = __webpack_require__(/*! ./Player */ 314);
+	var _Player = __webpack_require__(/*! ./Player */ 315);
 
 	var _Player2 = _interopRequireDefault(_Player);
 
@@ -9078,21 +9078,21 @@
 	                enemiesLeft: 6,
 	                miniBoss: 2,
 	                boss: 5,
-	                enemies: [{ hp: 5, dps: 1 }, { hp: 5, dps: 1 }, { hp: 12, dps: 2 }, { hp: 6, dps: 2 }, { hp: 6, dps: 2 }, { hp: 20, dps: 3 }]
+	                enemies: [{ hp: 15, dps: 3 }, { hp: 15, dps: 3 }, { hp: 36, dps: 6 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 60, dps: 9 }]
 	            }, {
 	                level: 2,
 	                enemiesAmount: 8,
 	                enemiesLeft: 8,
 	                miniBoss: 3,
 	                boss: 7,
-	                enemies: [{ hp: 5, dps: 1 }, { hp: 6, dps: 2 }, { hp: 6, dps: 2 }, { hp: 16, dps: 2 }, { hp: 6, dps: 2 }, { hp: 6, dps: 2 }, { hp: 5, dps: 4 }, { hp: 35, dps: 4 }]
+	                enemies: [{ hp: 15, dps: 3 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 48, dps: 6 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 15, dps: 12 }, { hp: 105, dps: 12 }]
 	            }, {
 	                level: 3,
-	                enemiesAmount: 6,
-	                enemiesLeft: 6,
-	                miniBoss: 2,
-	                boss: 5,
-	                enemies: [{ hp: 6, dps: 2 }, { hp: 6, dps: 3 }, { hp: 10, dps: 4 }, { hp: 10, dps: 4 }, { hp: 25, dps: 6 }, { hp: 6, dps: 4 }, { hp: 12, dps: 2 }, { hp: 12, dps: 2 }, { hp: 15, dps: 5 }, { hp: 55, dps: 10 }]
+	                enemiesAmount: 10,
+	                enemiesLeft: 10,
+	                miniBoss: 4,
+	                boss: 9,
+	                enemies: [{ hp: 18, dps: 6 }, { hp: 18, dps: 9 }, { hp: 30, dps: 12 }, { hp: 30, dps: 12 }, { hp: 75, dps: 18 }, { hp: 18, dps: 12 }, { hp: 36, dps: 6 }, { hp: 36, dps: 6 }, { hp: 45, dps: 15 }, { hp: 165, dps: 30 }]
 	            }];
 
 	            if (localStorage) {
@@ -107972,11 +107972,11 @@
 
 	var _phaser2 = _interopRequireDefault(_phaser);
 
-	var _Forge = __webpack_require__(/*! ../weapons/Forge */ 312);
+	var _Forge = __webpack_require__(/*! ../items/Forge */ 316);
 
 	var Forge = _interopRequireWildcard(_Forge);
 
-	var _levels = __webpack_require__(/*! ../data/levels */ 315);
+	var _levels = __webpack_require__(/*! ../data/levels */ 313);
 
 	var _utils = __webpack_require__(/*! ../utils */ 309);
 
@@ -108093,6 +108093,7 @@
 	        value: function raidDungeon(dungeon) {
 	            var player = this.game.player;
 	            if (player.battleStats.currentHealth > 1) {
+	                player.battling = true;
 	                var loot = [];
 	                for (var i = 0; i < dungeon.enemies.length; i++) {
 	                    var enemy = dungeon.enemies[i];
@@ -108100,7 +108101,8 @@
 	                    while (enemy.hp > 0) {
 	                        var strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
 	                        enemy.hp -= strike;
-	                        player.battleStats.currentHealth -= enemy.dps;
+	                        var enStrike = enemy.dps - player.battleStats.armor > -1 ? enemy.dps - player.battleStats.armor : 0;
+	                        player.battleStats.currentHealth -= enStrike;
 	                        if (player.battleStats.currentHealth < 1) {
 	                            break;
 	                        }
@@ -108113,10 +108115,10 @@
 	                        //get loot
 	                        var lootChance = Forge.rand(enemy.dps, 4);
 	                        if (lootChance == 3) {
-	                            loot.push(Forge.build(enemy.dps, 4));
+	                            loot.push(Forge.getRandomItem(enemy.dps, 4));
 	                        }
 	                        //get exp
-	                        player.exp += enemy.dps + enemy.originalHp;
+	                        player.exp += (enemy.dps + enemy.originalHp) / 3;
 	                        //remove enemy from dungeon
 	                        dungeon.enemies.splice(i, 1);
 	                        i -= 1;
@@ -108148,6 +108150,7 @@
 	                    this.errorText.visible = true;
 	                }
 
+	                player.battling = false;
 	                this.saveDungeonData();
 	                this.game.player.savePlayerData();
 
@@ -108180,13 +108183,30 @@
 	            this.lootSellBtns = [];
 
 	            loot.forEach(function (item, index) {
-	                console.log('--loot text', item);
-	                _this2.lootText.text += '[' + item.level + '] ' + item.name + ' \n';
-	                _this2.lootText.text += 'Dmg: ' + item.dmg.min + ' - ' + item.dmg.max + ' \n';
-	                if (item.magic.effect.attribute != null) {
-	                    _this2.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
+
+	                if (item.ac != null) {
+	                    //Armor
+	                    _this2.lootText.text += '[' + item.level + '] ' + item.name + ' \n';
+	                    _this2.lootText.text += 'AC: ' + item.ac + ', Type: ' + item.type + ' \n';
+	                    if (item.magic.effect.attribute != null) {
+	                        _this2.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
+	                    }
+	                    _this2.lootText.text += '\n';
+	                } else if (item.dmg != null) {
+	                    //Weapon
+	                    _this2.lootText.text += '[' + item.level + '] ' + item.name + ' \n';
+	                    _this2.lootText.text += 'Dmg: ' + item.dmg.min + ' - ' + item.dmg.max + ' \n';
+	                    if (item.magic.effect.attribute != null) {
+	                        _this2.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
+	                    }
+	                    _this2.lootText.text += '\n';
+	                } else {
+	                    _this2.lootText.text += item.name + ' \n';
+	                    if (item.magic.effect.attribute != null) {
+	                        _this2.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
+	                    }
+	                    _this2.lootText.text += '\n';
 	                }
-	                _this2.lootText.text += '\n';
 
 	                //add a couple buttons for this item
 	                var addBtn = new _phaser2.default.Button(_this2.game, _this2.game.world.centerX - 250, _this2.game.world.centerY + 125 * (index + 1), 'blueButton', function () {
@@ -108226,8 +108246,6 @@
 	                sellBtnText.anchor.setTo(0.5);
 	                sellBtnText.visible = true;
 	            });
-
-	            // keep button click: //this.tryToPlaceItemInInventory(loot[i]);
 	        }
 	    }, {
 	        key: 'tryToPlaceItemInInventory',
@@ -108285,172 +108303,44 @@
 	exports.default = _class;
 
 /***/ },
-/* 312 */
-/*!******************************!*\
-  !*** ./src/weapons/Forge.js ***!
-  \******************************/
+/* 312 */,
+/* 313 */
+/*!****************************!*\
+  !*** ./src/data/levels.js ***!
+  \****************************/
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.build = build;
-	exports.rand = rand;
-	exports.getMagicEffect = getMagicEffect;
-	//Forge.js
+	//data/levels.js
 
-	function build(levelMin, levelMax) {
-	    var weapon = {
-	        'name': 'null',
-	        'type': 'null',
-	        'inventoryType': 'hand',
-	        'level': 0,
-	        'range': 0,
-	        'durability': 0,
-	        'weight': 0,
-	        'dmg': {
-	            'min': 0,
-	            'max': 0
-	        },
-	        'magic': {
-	            'effect': {
-	                'attribute': null,
-	                'value': -1
-	            },
-	            'damage': {
-	                'type': null,
-	                'value': 0,
-	                'uses': -1
-	            }
-	        },
-	        'shape': [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0]],
-	        'shapeWidth': 2,
-	        'shapeHeight': 3,
-	        'inventorySlot': { x: 0, y: 0 },
-	        'value': 0
-	    };
-
-	    switch (this.rand(0, 2)) {
-	        case 0:
-	            weapon.type = 'melee';
-	            break;
-	        case 1:
-	            weapon.type = 'ranged';
-	            break;
-	    }
-
-	    if (weapon.type == 'melee') {
-	        switch (this.rand(0, 3)) {
-	            case 0:
-	                weapon.name = 'Spear';
-	                break;
-	            case 1:
-	                weapon.name = 'Sword';
-	                break;
-	            case 2:
-	                weapon.name = 'Axe';
-	                break;
-	        }
-	        weapon.shape = [[1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]];
-	        weapon.shapeWidth = 1;
-	        weapon.shapeHeight = 3;
-	    } else {
-	        weapon.name = 'Bow';
-	    }
-
-	    //weapon level
-	    weapon.level = this.rand(levelMin, levelMax);
-	    weapon.value = 20 * weapon.level;
-	    //add level modifier to name
-	    switch (weapon.level) {
-	        case 1:
-	            weapon.name = 'Broken ' + weapon.name;
-	            weapon.range = 2;
-	            weapon.weight = 4;
-	            weapon.durability = this.rand(8, 12);
-	            weapon.dmg.min = this.rand(1, 2);
-	            weapon.dmg.max = this.rand(5, 6);
-	            break;
-	        case 2:
-	            weapon.name = 'Worn ' + weapon.name;
-	            weapon.range = 3;
-	            weapon.weight = 5;
-	            weapon.durability = this.rand(10, 15);
-	            weapon.dmg.min = this.rand(2, 3);
-	            weapon.dmg.max = this.rand(7, 8);
-	            break;
-	        case 3:
-	            weapon.range = 4;
-	            weapon.weight = 7;
-	            weapon.durability = this.rand(12, 16);
-	            weapon.dmg.min = this.rand(3, 4);
-	            weapon.dmg.max = this.rand(9, 10);
-	            break;
-	        case 4:
-	            weapon.name = 'Sharp ' + weapon.name;
-	            weapon.range = 4;
-	            weapon.weight = 6;
-	            weapon.durability = this.rand(15, 18);
-	            weapon.dmg.min = this.rand(5, 6);
-	            weapon.dmg.max = this.rand(10, 12);
-	            break;
-	        case 5:
-	            weapon.name = 'Superior ' + weapon.name;
-	            weapon.range = 5;
-	            weapon.weight = 6;
-	            weapon.durability = this.rand(18, 22);
-	            weapon.dmg.min = this.rand(8, 10);
-	            weapon.dmg.max = this.rand(15, 18);
-	            break;
-	    }
-
-	    weapon.value += weapon.dmg.max - weapon.dmg.min;
-	    weapon.value += weapon.durability - 10;
-
-	    switch (this.rand(0, 6)) {
-	        case 0:
-	            weapon.magic.effect = this.getMagicEffect(weapon.level);
-	            weapon.name += ' of ' + weapon.magic.effect.attribute;
-	            weapon.value += 100 * weapon.level;
-	            break;
-	        default:
-	            break;
-	    }
-	    //return the weapon
-	    return weapon;
-	}
-
-	function rand(min, max) {
-	    return Math.floor(Math.random() * (max - min)) + min;
-	}
-
-	function getMagicEffect(lvl) {
-	    var effect = {};
-
-	    switch (this.rand(0, 4)) {
-	        case 0:
-	            effect.attribute = 'strength';
-	            break;
-	        case 1:
-	            effect.attribute = 'dexterity';
-	            break;
-	        case 2:
-	            effect.attribute = 'wisdom';
-	            break;
-	        case 3:
-	            effect.attribute = 'vitality';
-	            break;
-	    }
-
-	    effect.value = lvl;
-
-	    return effect;
-	}
+	var playerLevels = exports.playerLevels = [{
+	    level: 1,
+	    minExp: 0,
+	    maxExp: 50
+	}, {
+	    level: 2,
+	    minExp: 51,
+	    maxExp: 150
+	}, {
+	    level: 3,
+	    minExp: 151,
+	    maxExp: 300
+	}, {
+	    level: 4,
+	    minExp: 301,
+	    maxExp: 600
+	}, {
+	    level: 5,
+	    minExp: 601,
+	    maxExp: 1200
+	}];
 
 /***/ },
-/* 313 */
+/* 314 */
 /*!*********************************!*\
   !*** ./src/states/Inventory.js ***!
   \*********************************/
@@ -108472,7 +108362,7 @@
 
 	var utils = _interopRequireWildcard(_utils);
 
-	var _levels = __webpack_require__(/*! ../data/levels */ 315);
+	var _levels = __webpack_require__(/*! ../data/levels */ 313);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -108565,7 +108455,8 @@
 
 	            this.playerInfo2.text = 'Dmg: ' + this.game.player.battleStats.dmg.min + ' - ' + this.game.player.battleStats.dmg.max + ' \n';
 	            this.playerInfo2.text += 'Armor: ' + this.game.player.battleStats.armor + ' \n\n';
-	            this.playerInfo2.text += 'Gold: ' + this.game.player.gold;
+	            this.playerInfo2.text += 'Gold: ' + this.game.player.gold + ' /n';
+	            this.playerInfo2.text += 'Carried Weight: ' + this.game.player.battleStats.totalWeight;
 	        }
 	    }, {
 	        key: 'backToMainButton',
@@ -108661,7 +108552,7 @@
 	            if (mouse.x >= this.equippedSlots.position.x && mouse.x <= this.equippedSlots.position.x + this.equippedSlots.width && mouse.y >= this.equippedSlots.position.y && mouse.y <= this.equippedSlots.position.y + this.equippedSlots.height) {
 	                for (var i = 1; i < slots.length; i++) {
 	                    if (mouse.x >= slots[i].position.x + this.equippedSlots.position.x && mouse.x <= slots[i].position.x + this.equippedSlots.position.x + slots[i].width && mouse.y >= slots[i].position.y + this.equippedSlots.position.y && mouse.y <= slots[i].position.y + this.equippedSlots.position.y + slots[i].height) {
-	                        if (item.inventoryType == 'hand' && ['leftHand', 'rightHand'].indexOf(slots[i].type) > -1) {
+	                        if (item.inventoryType == 'hand' && ['leftHand', 'rightHand'].indexOf(slots[i].type) > -1 || item.inventoryType == 'head' && slots[i].type == 'head' || item.inventoryType == 'body' && slots[i].type == 'body' || item.inventoryType == 'feet' && slots[i].type == 'feet' || item.inventoryType == 'accessory' && slots[i].type == 'accessory') {
 	                            hitSlot = slots[i];
 	                        }
 	                    }
@@ -108882,7 +108773,13 @@
 	            this.inventoryItem.position.y = mouse.y - 75 + 5;
 
 	            this.inventoryItem.text = '[' + item.level + '] ' + item.name + ' \n';
-	            this.inventoryItem.text += 'Dmg: ' + item.dmg.min + ' - ' + item.dmg.max + ' \n';
+	            if (item.ac != null) {
+	                //armor
+	                this.inventoryItem.text += 'AC: ' + item.ac + ' \n';
+	            } else if (item.dmg != null) {
+	                //weapon
+	                this.inventoryItem.text += 'Dmg: ' + item.dmg.min + ' - ' + item.dmg.max + ' \n';
+	            }
 	            this.inventoryItem.text += 'Durability: ' + item.durability + ' \n';
 	            this.inventoryItem.text += 'Weight: ' + item.weight + ' \n';
 	            this.inventoryItem.text += '\n';
@@ -108921,7 +108818,7 @@
 	exports.default = _class;
 
 /***/ },
-/* 314 */
+/* 315 */
 /*!***********************!*\
   !*** ./src/Player.js ***!
   \***********************/
@@ -108957,6 +108854,7 @@
 	        value: function createNewPlayer() {
 	            this.level = 0;
 	            this.exp = 0;
+	            this.battleing = false;
 	            this.latestUnlockedDungeon = 0;
 	            this.inventory = [];
 	            this.gold = 0;
@@ -108978,7 +108876,8 @@
 	                },
 	                health: 10,
 	                currentHealth: 10,
-	                armor: 0
+	                armor: 0,
+	                totalWeight: 0
 	            };
 
 	            this.backpack = [[{ invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }], [{ invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }], [{ invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }], [{ invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }, { invItem: -1 }]];
@@ -109034,7 +108933,9 @@
 	    }, {
 	        key: 'heal',
 	        value: function heal() {
-	            this.battleStats.currentHealth += this.battleStats.wisdom * 1;
+	            if (!this.battling) {
+	                this.battleStats.currentHealth += this.battleStats.wisdom * 1;
+	            }
 	            if (this.battleStats.currentHealth > this.battleStats.health) {
 	                this.battleStats.currentHealth = this.battleStats.health;
 	            }
@@ -109069,26 +108970,23 @@
 	            };
 
 	            var health = this.battleStats.vitality * 10;
-
 	            var armor = 0;
+	            var weight = 0;
 
 	            Object.keys(this.equipped).forEach(function (type) {
 	                var equipment = _this.equipped[type];
 	                if (equipment != null) {
-	                    switch (type) {
-	                        case 'leftHand':
-	                        case 'rightHand':
-	                            if (equipment.type == 'melee' || equipment.type == 'ranged') {
-	                                dmg.min += equipment.dmg.min;
-	                                dmg.max += equipment.dmg.max;
-	                            } else {
-	                                armor += equipment.ac;
-	                            }
-	                            break;
+	                    if (equipment.type == 'melee' || equipment.type == 'ranged') {
+	                        dmg.min += equipment.dmg.min;
+	                        dmg.max += equipment.dmg.max;
+	                    } else if (['head', 'body', 'feet', 'hand'].indexOf(equipment.type) > -1) {
+	                        armor += equipment.ac;
 	                    }
+	                    weight += equipment.weight;
 	                }
 	            });
 
+	            this.battleStats.totalWeight = weight;
 	            this.battleStats.health = health;
 	            this.battleStats.dmg = dmg;
 	            this.battleStats.armor = armor;
@@ -109128,6 +109026,7 @@
 	            console.log('loading player data:', playerData);
 	            this.level = playerData.level;
 	            this.exp = playerData.exp;
+	            this.battling = false;
 	            this.inventory = playerData.inventory;
 	            this.equipped = playerData.equipped;
 	            this.gold = playerData.gold;
@@ -109144,7 +109043,8 @@
 	                },
 	                health: 10,
 	                currentHealth: 10, //TODO - check elapsed time
-	                armor: 0
+	                armor: 0,
+	                totalWeight: 0
 	            };
 
 	            this.backpack = [[], [], [], []];
@@ -109164,40 +109064,470 @@
 	exports.default = Player;
 
 /***/ },
-/* 315 */
+/* 316 */
 /*!****************************!*\
-  !*** ./src/data/levels.js ***!
+  !*** ./src/items/Forge.js ***!
   \****************************/
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	//data/levels.js
+	exports.getRandomItem = getRandomItem;
+	exports.rand = rand;
 
-	var playerLevels = exports.playerLevels = [{
-	    level: 1,
-	    minExp: 0,
-	    maxExp: 50
-	}, {
-	    level: 2,
-	    minExp: 51,
-	    maxExp: 150
-	}, {
-	    level: 3,
-	    minExp: 151,
-	    maxExp: 300
-	}, {
-	    level: 4,
-	    minExp: 301,
-	    maxExp: 600
-	}, {
-	    level: 5,
-	    minExp: 601,
-	    maxExp: 1200
-	}];
+	var _Weapon = __webpack_require__(/*! ./Weapon */ 317);
+
+	var Weapon = _interopRequireWildcard(_Weapon);
+
+	var _Armor = __webpack_require__(/*! ./Armor */ 318);
+
+	var Armor = _interopRequireWildcard(_Armor);
+
+	var _Accessory = __webpack_require__(/*! ./Accessory */ 319);
+
+	var Accessory = _interopRequireWildcard(_Accessory);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function getRandomItem(levelMin, levelMax) {
+	    var type = rand(0, 100);
+	    if (type < 30) {
+	        return Weapon.build(levelMin, levelMax);
+	    } else if (type < 90) {
+	        return Armor.build(levelMin, levelMax);
+	    } else {
+	        return Accessory.build();
+	    }
+	} //Forge.js
+
+
+	function rand(min, max) {
+	    return Math.floor(Math.random() * (max + 1 - min)) + min;
+	}
+
+/***/ },
+/* 317 */
+/*!*****************************!*\
+  !*** ./src/items/Weapon.js ***!
+  \*****************************/
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.build = build;
+	exports.rand = rand;
+	exports.getMagicEffect = getMagicEffect;
+	//Weapon.js
+
+	function build(levelMin, levelMax) {
+	    var weapon = {
+	        'name': 'null',
+	        'type': 'null',
+	        'inventoryType': 'hand',
+	        'level': 0,
+	        'range': 0,
+	        'durability': 0,
+	        'weight': 0,
+	        'dmg': {
+	            'min': 0,
+	            'max': 0
+	        },
+	        'magic': {
+	            'effect': {
+	                'attribute': null,
+	                'value': -1
+	            },
+	            'damage': {
+	                'type': null,
+	                'value': 0,
+	                'uses': -1
+	            }
+	        },
+	        'shape': [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0]],
+	        'shapeWidth': 2,
+	        'shapeHeight': 3,
+	        'inventorySlot': { x: 0, y: 0 },
+	        'value': 0
+	    };
+
+	    switch (this.rand(0, 2)) {
+	        case 0:
+	            weapon.type = 'melee';
+	            break;
+	        case 1:
+	            weapon.type = 'ranged';
+	            break;
+	    }
+
+	    if (weapon.type == 'melee') {
+	        switch (this.rand(0, 3)) {
+	            case 0:
+	                weapon.name = 'Spear';
+	                break;
+	            case 1:
+	                weapon.name = 'Sword';
+	                break;
+	            case 2:
+	                weapon.name = 'Axe';
+	                break;
+	        }
+	        weapon.shape = [[1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]];
+	        weapon.shapeWidth = 1;
+	        weapon.shapeHeight = 3;
+	    } else {
+	        weapon.name = 'Bow';
+	    }
+
+	    //weapon level
+	    weapon.level = this.rand(levelMin, levelMax);
+	    weapon.value = 20 * weapon.level;
+	    //add level modifier to name
+	    switch (weapon.level) {
+	        case 1:
+	            weapon.name = 'Broken ' + weapon.name;
+	            weapon.range = 2;
+	            weapon.weight = 4;
+	            weapon.durability = this.rand(8, 12);
+	            weapon.dmg.min = this.rand(1, 2);
+	            weapon.dmg.max = this.rand(5, 6);
+	            break;
+	        case 2:
+	            weapon.name = 'Worn ' + weapon.name;
+	            weapon.range = 3;
+	            weapon.weight = 5;
+	            weapon.durability = this.rand(10, 15);
+	            weapon.dmg.min = this.rand(2, 3);
+	            weapon.dmg.max = this.rand(7, 8);
+	            break;
+	        case 3:
+	            weapon.range = 4;
+	            weapon.weight = 7;
+	            weapon.durability = this.rand(12, 16);
+	            weapon.dmg.min = this.rand(3, 4);
+	            weapon.dmg.max = this.rand(9, 10);
+	            break;
+	        case 4:
+	            weapon.name = 'Sharp ' + weapon.name;
+	            weapon.range = 4;
+	            weapon.weight = 6;
+	            weapon.durability = this.rand(15, 18);
+	            weapon.dmg.min = this.rand(5, 6);
+	            weapon.dmg.max = this.rand(10, 12);
+	            break;
+	        case 5:
+	            weapon.name = 'Superior ' + weapon.name;
+	            weapon.range = 5;
+	            weapon.weight = 6;
+	            weapon.durability = this.rand(18, 22);
+	            weapon.dmg.min = this.rand(8, 10);
+	            weapon.dmg.max = this.rand(15, 18);
+	            break;
+	    }
+
+	    weapon.value += weapon.dmg.max - weapon.dmg.min;
+	    weapon.value += weapon.durability - 10;
+
+	    switch (this.rand(0, 6)) {
+	        case 0:
+	            weapon.magic.effect = this.getMagicEffect(weapon.level);
+	            weapon.name += ' of ' + weapon.magic.effect.attribute;
+	            weapon.value += 100 * weapon.level;
+	            break;
+	        default:
+	            break;
+	    }
+	    //return the weapon
+	    return weapon;
+	}
+
+	function rand(min, max) {
+	    return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	function getMagicEffect(lvl) {
+	    var effect = {};
+
+	    switch (this.rand(0, 4)) {
+	        case 0:
+	            effect.attribute = 'strength';
+	            break;
+	        case 1:
+	            effect.attribute = 'dexterity';
+	            break;
+	        case 2:
+	            effect.attribute = 'wisdom';
+	            break;
+	        case 3:
+	            effect.attribute = 'vitality';
+	            break;
+	    }
+
+	    effect.value = lvl;
+
+	    return effect;
+	}
+
+/***/ },
+/* 318 */
+/*!****************************!*\
+  !*** ./src/items/Armor.js ***!
+  \****************************/
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.build = build;
+	exports.rand = rand;
+	exports.getMagicEffect = getMagicEffect;
+	//Armor.js
+
+	function build(levelMin, levelMax) {
+	    var armor = {
+	        'name': 'null',
+	        'type': 'null',
+	        'inventoryType': 'hand',
+	        'level': 0,
+	        'durability': 0,
+	        'weight': 0,
+	        'ac': 0,
+	        'magic': {
+	            'effect': {
+	                'attribute': null,
+	                'value': -1
+	            }
+	        },
+	        'shape': [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0]],
+	        'shapeWidth': 2,
+	        'shapeHeight': 3,
+	        'inventorySlot': { x: 0, y: 0 },
+	        'value': 0
+	    };
+
+	    switch (this.rand(0, 3)) {
+	        case 0:
+	            armor.type = 'head';armor.inventoryType = 'head';
+	            break;
+	        case 1:
+	            armor.type = 'body';armor.inventoryType = 'body';
+	            break;
+	        case 2:
+	            armor.type = 'feet';armor.inventoryType = 'feet';
+	            break;
+	        case 3:
+	            armor.type = 'hand';armor.inventoryType = 'head';
+	            break;
+	    }
+
+	    switch (armor.type) {
+	        case 'head':
+	            armor.name = 'Helm';
+	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+	            armor.shapeWidth = 2;
+	            armor.shapeHeight = 2;
+	            armor.value += 15;
+	            armor.ac = 5;
+	            break;
+	        case 'body':
+	            armor.name = 'Armor';
+	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0]];
+	            armor.shapeWidth = 2;
+	            armor.shapeHeight = 3;
+	            armor.value += 25;
+	            armor.ac = 10;
+	            break;
+	        case 'feet':
+	            armor.name = 'Boots';
+	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+	            armor.shapeWidth = 2;
+	            armor.shapeHeight = 2;
+	            armor.value += 10;
+	            armor.ac = 5;
+	            break;
+	        case 'hand':
+	            armor.name = 'Shield';
+	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+	            armor.shapeWidth = 2;
+	            armor.shapeHeight = 2;
+	            armor.value += 15;
+	            armor.ac = 5;
+	            break;
+	    }
+
+	    //armor level
+	    armor.level = this.rand(levelMin, levelMax);
+	    armor.value += 20 * armor.level;
+	    //add level modifier to name
+	    switch (armor.level) {
+	        case 1:
+	            armor.name = 'Leather ' + armor.name;
+	            armor.weight = 4;
+	            if (armor.type == 'body') {
+	                armor.weight = 7;
+	            }
+	            armor.durability = this.rand(8, 12);
+	            break;
+	        case 2:
+	            armor.name = 'Stone ' + armor.name;
+	            armor.weight = 5;
+	            if (armor.type == 'body') {
+	                armor.weight = 9;
+	            }
+	            armor.durability = this.rand(10, 15);
+	            armor.ac = armor.ac * 1.5;
+	            break;
+	        case 3:
+	            armor.name = 'Iron ' + armor.name;
+	            armor.weight = 7;
+	            if (armor.type == 'body') {
+	                armor.weight = 12;
+	            }
+	            armor.durability = this.rand(12, 16);
+	            armor.ac = armor.ac * 2;
+	            break;
+	        case 4:
+	            armor.name = 'Steel ' + armor.name;
+	            armor.weight = 9;
+	            if (armor.type == 'body') {
+	                armor.weight = 18;
+	            }
+	            armor.durability = this.rand(15, 18);
+	            armor.ac = armor.ac * 2.5;
+	            break;
+	        case 5:
+	            armor.name = 'Mythril ' + armor.name;
+	            armor.weight = 2;
+	            if (armor.type == 'body') {
+	                armor.weight = 4;
+	            }
+	            armor.durability = this.rand(18, 22);
+	            armor.ac = armor.ac * 3;
+	            break;
+	    }
+
+	    armor.value += armor.ac;
+	    armor.value += armor.durability - 10;
+
+	    switch (this.rand(0, 6)) {
+	        case 0:
+	            armor.magic.effect = this.getMagicEffect(armor.level);
+	            armor.name += ' of ' + armor.magic.effect.attribute;
+	            armor.value += 100 * armor.level;
+	            break;
+	        default:
+	            break;
+	    }
+
+	    //return the armor
+	    return armor;
+	}
+
+	function rand(min, max) {
+	    return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	function getMagicEffect(lvl) {
+	    var effect = {};
+
+	    switch (this.rand(0, 4)) {
+	        case 0:
+	            effect.attribute = 'strength';
+	            break;
+	        case 1:
+	            effect.attribute = 'dexterity';
+	            break;
+	        case 2:
+	            effect.attribute = 'wisdom';
+	            break;
+	        case 3:
+	            effect.attribute = 'vitality';
+	            break;
+	    }
+
+	    effect.value = lvl;
+
+	    return effect;
+	}
+
+/***/ },
+/* 319 */
+/*!********************************!*\
+  !*** ./src/items/Accessory.js ***!
+  \********************************/
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.build = build;
+	exports.rand = rand;
+	exports.getMagicEffect = getMagicEffect;
+	//Accessory.js
+
+	function build() {
+	    var accessory = {
+	        'name': 'null',
+	        'type': 'accessory',
+	        'inventoryType': 'accessory',
+	        'weight': 1,
+	        'magic': {
+	            'effect': {
+	                'attribute': null,
+	                'value': -1
+	            }
+	        },
+	        'shape': [[1, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+	        'shapeWidth': 1,
+	        'shapeHeight': 1,
+	        'inventorySlot': { x: 0, y: 0 },
+	        'value': 0
+	    };
+
+	    var strength = this.rand(0, 5);
+	    accessory.magic.effect = this.getMagicEffect(strength);
+	    accessory.name = 'Ring of ' + accessory.magic.effect.attribute;
+	    accessory.value += 175 * strength;
+
+	    //return the accessory
+	    return accessory;
+	}
+
+	function rand(min, max) {
+	    return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	function getMagicEffect(lvl) {
+	    var effect = {};
+
+	    switch (this.rand(0, 4)) {
+	        case 0:
+	            effect.attribute = 'strength';
+	            break;
+	        case 1:
+	            effect.attribute = 'dexterity';
+	            break;
+	        case 2:
+	            effect.attribute = 'wisdom';
+	            break;
+	        case 3:
+	            effect.attribute = 'vitality';
+	            break;
+	    }
+
+	    effect.value = lvl;
+
+	    return effect;
+	}
 
 /***/ }
 /******/ ]);

@@ -14,6 +14,7 @@ class Player {
     createNewPlayer(){
         this.level = 0;
         this.exp = 0;
+        this.battleing = false;
         this.latestUnlockedDungeon = 0;
         this.inventory = [];
         this.gold = 0;
@@ -35,7 +36,8 @@ class Player {
             },
             health: 10,
             currentHealth: 10,
-            armor: 0
+            armor: 0,
+            totalWeight: 0
         };
 
         this.backpack = [
@@ -98,7 +100,9 @@ class Player {
     }
 
     heal(){
-        this.battleStats.currentHealth += this.battleStats.wisdom * 1;
+        if(!this.battling){
+            this.battleStats.currentHealth += this.battleStats.wisdom * 1;
+        }
         if(this.battleStats.currentHealth > this.battleStats.health){
             this.battleStats.currentHealth = this.battleStats.health;
         }
@@ -129,26 +133,23 @@ class Player {
         };
 
         let health = this.battleStats.vitality * 10;
-
         let armor = 0;
+        let weight = 0;
 
         Object.keys(this.equipped).forEach((type) => {
             let equipment = this.equipped[type];
             if(equipment != null){
-                switch(type){
-                case 'leftHand':
-                case 'rightHand':
-                    if(equipment.type == 'melee' || equipment.type == 'ranged'){
-                        dmg.min += equipment.dmg.min;
-                        dmg.max += equipment.dmg.max;
-                    } else {
-                        armor += equipment.ac;
-                    }
-                    break;
+                if(equipment.type == 'melee' || equipment.type == 'ranged'){
+                    dmg.min += equipment.dmg.min;
+                    dmg.max += equipment.dmg.max;
+                } else if((['head','body','feet','hand']).indexOf(equipment.type) > -1){
+                    armor += equipment.ac;
                 }
+                weight += equipment.weight;
             }
         });
 
+        this.battleStats.totalWeight = weight;
         this.battleStats.health = health;
         this.battleStats.dmg = dmg;
         this.battleStats.armor = armor;
@@ -182,6 +183,7 @@ class Player {
         console.log('loading player data:', playerData);
         this.level = playerData.level;
         this.exp = playerData.exp;
+        this.battling = false;
         this.inventory = playerData.inventory;
         this.equipped = playerData.equipped;
         this.gold = playerData.gold;
@@ -198,7 +200,8 @@ class Player {
             },
             health: 10,
             currentHealth: 10, //TODO - check elapsed time
-            armor: 0
+            armor: 0,
+            totalWeight: 0
         };
 
 

@@ -70,7 +70,8 @@ export default class extends Phaser.State {
 
         this.playerInfo2.text = `Dmg: ${this.game.player.battleStats.dmg.min} - ${this.game.player.battleStats.dmg.max} \n`;
         this.playerInfo2.text += `Armor: ${this.game.player.battleStats.armor} \n\n`;
-        this.playerInfo2.text += `Gold: ${this.game.player.gold}`;
+        this.playerInfo2.text += `Gold: ${this.game.player.gold} /n`;
+        this.playerInfo2.text += `Carried Weight: ${this.game.player.battleStats.totalWeight}`;
     }
 
     backToMainButton(){
@@ -164,7 +165,12 @@ export default class extends Phaser.State {
                     mouse.y >= slots[i].position.y + this.equippedSlots.position.y &&
                     mouse.y <= (slots[i].position.y + this.equippedSlots.position.y + slots[i].height)
                 ){
-                    if(item.inventoryType == 'hand' && (['leftHand', 'rightHand']).indexOf(slots[i].type) > -1){
+                    if(  (item.inventoryType == 'hand' && (['leftHand', 'rightHand']).indexOf(slots[i].type) > -1)
+                      || (item.inventoryType == 'head' && slots[i].type == 'head')
+                      || (item.inventoryType == 'body' && slots[i].type == 'body')
+                      || (item.inventoryType == 'feet' && slots[i].type == 'feet')
+                      || (item.inventoryType == 'accessory' && slots[i].type == 'accessory')
+                    ){
                         hitSlot = slots[i];
                     }
                 }
@@ -379,7 +385,11 @@ export default class extends Phaser.State {
         this.inventoryItem.position.y = mouse.y - 75 + 5;
 
         this.inventoryItem.text = `[${item.level}] ${item.name} \n`;
-        this.inventoryItem.text += `Dmg: ${item.dmg.min} - ${item.dmg.max} \n`;
+        if(item.ac != null){//armor
+            this.inventoryItem.text += `AC: ${item.ac} \n`;
+        } else if(item.dmg != null){//weapon
+            this.inventoryItem.text += `Dmg: ${item.dmg.min} - ${item.dmg.max} \n`;
+        }
         this.inventoryItem.text += `Durability: ${item.durability} \n`;
         this.inventoryItem.text += `Weight: ${item.weight} \n`;
         this.inventoryItem.text += `\n`;

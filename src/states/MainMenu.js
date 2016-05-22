@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import * as Forge from '../weapons/Forge';
+import * as Forge from '../items/Forge';
 import {playerLevels} from '../data/levels';
 import { placeItemInSlot } from '../utils';
 
@@ -92,6 +92,7 @@ export default class extends Phaser.State {
     raidDungeon(dungeon){
         let player = this.game.player;
         if(player.battleStats.currentHealth > 1){
+            player.battling = true;
             let loot = [];
             for(let i = 0; i < dungeon.enemies.length; i++){
                 let enemy = dungeon.enemies[i];
@@ -99,7 +100,8 @@ export default class extends Phaser.State {
                 while(enemy.hp > 0){
                     let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
                     enemy.hp -= strike;
-                    player.battleStats.currentHealth -= enemy.dps;
+                    let enStrike = enemy.dps - player.battleStats.armor > -1 ? enemy.dps - player.battleStats.armor : 0;
+                    player.battleStats.currentHealth -= enStrike;
                     if(player.battleStats.currentHealth < 1){ break; }
                 }
                 if(player.battleStats.currentHealth < 1){ break; }
@@ -107,10 +109,10 @@ export default class extends Phaser.State {
                     //get loot
                     let lootChance = Forge.rand(enemy.dps,4);
                     if( lootChance == 3 ){
-                        loot.push(Forge.build(enemy.dps,4));
+                        loot.push(Forge.getRandomItem(enemy.dps,4));
                     }
                     //get exp
-                    player.exp += enemy.dps + enemy.originalHp;
+                    player.exp += (enemy.dps + enemy.originalHp) / 3;
                     //remove enemy from dungeon
                     dungeon.enemies.splice(i, 1);
                     i -= 1;
@@ -142,7 +144,7 @@ export default class extends Phaser.State {
                 this.errorText.visible = true;
             }
 
-
+            player.battling = false;
             this.saveDungeonData();
             this.game.player.savePlayerData();
 
@@ -171,13 +173,29 @@ export default class extends Phaser.State {
         this.lootSellBtns = [];
 
         loot.forEach((item, index) => {
-            console.log('--loot text', item);
-            this.lootText.text += `[${item.level}] ${item.name} \n`;
-            this.lootText.text += `Dmg: ${item.dmg.min} - ${item.dmg.max} \n`;
-            if(item.magic.effect.attribute != null){
-                this.lootText.text += `${item.magic.effect.attribute} +${item.magic.effect.value}\n`;
+
+            if(item.ac != null){//Armor
+                this.lootText.text += `[${item.level}] ${item.name} \n`;
+                this.lootText.text += `AC: ${item.ac}, Type: ${item.type} \n`;
+                if(item.magic.effect.attribute != null){
+                    this.lootText.text += `${item.magic.effect.attribute} +${item.magic.effect.value}\n`;
+                }
+                this.lootText.text += `\n`;
+            } else if(item.dmg != null){//Weapon
+                this.lootText.text += `[${item.level}] ${item.name} \n`;
+                this.lootText.text += `Dmg: ${item.dmg.min} - ${item.dmg.max} \n`;
+                if(item.magic.effect.attribute != null){
+                    this.lootText.text += `${item.magic.effect.attribute} +${item.magic.effect.value}\n`;
+                }
+                this.lootText.text += `\n`;
+            } else {
+                this.lootText.text += `${item.name} \n`;
+                if(item.magic.effect.attribute != null){
+                    this.lootText.text += `${item.magic.effect.attribute} +${item.magic.effect.value}\n`;
+                }
+                this.lootText.text += `\n`;
             }
-            this.lootText.text += `\n`;
+
 
             //add a couple buttons for this item
             let addBtn = new Phaser.Button(this.game, this.game.world.centerX - 250, this.game.world.centerY + 125*(index+1), 'blueButton', () => {
@@ -217,8 +235,6 @@ export default class extends Phaser.State {
             sellBtnText.anchor.setTo(0.5);
             sellBtnText.visible = true;
         });
-
-        // keep button click: //this.tryToPlaceItemInInventory(loot[i]);
     }
 
     tryToPlaceItemInInventory(item){

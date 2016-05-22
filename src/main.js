@@ -46,12 +46,12 @@ class Game extends Phaser.Game {
                 miniBoss: 2,
                 boss: 5,
                 enemies: [
-                    {hp: 5, dps: 1},
-                    {hp: 5, dps: 1},
-                    {hp: 12, dps: 2},
-                    {hp: 6, dps: 2},
-                    {hp: 6, dps: 2},
-                    {hp: 20, dps: 3}
+                    {hp: 15, dps: 3},
+                    {hp: 15, dps: 3},
+                    {hp: 36, dps: 6},
+                    {hp: 18, dps: 6},
+                    {hp: 18, dps: 6},
+                    {hp: 60, dps: 9}
                 ]
             },
             {
@@ -61,33 +61,33 @@ class Game extends Phaser.Game {
                 miniBoss: 3,
                 boss: 7,
                 enemies: [
-                    {hp: 5, dps: 1},
-                    {hp: 6, dps: 2},
-                    {hp: 6, dps: 2},
-                    {hp: 16, dps: 2},
-                    {hp: 6, dps: 2},
-                    {hp: 6, dps: 2},
-                    {hp: 5, dps: 4},
-                    {hp: 35, dps: 4}
+                    {hp: 15, dps: 3},
+                    {hp: 18, dps: 6},
+                    {hp: 18, dps: 6},
+                    {hp: 48, dps: 6},
+                    {hp: 18, dps: 6},
+                    {hp: 18, dps: 6},
+                    {hp: 15, dps: 12},
+                    {hp: 105, dps: 12}
                 ]
             },
             {
                 level: 3,
-                enemiesAmount: 6,
-                enemiesLeft: 6,
-                miniBoss: 2,
-                boss: 5,
+                enemiesAmount: 10,
+                enemiesLeft: 10,
+                miniBoss: 4,
+                boss: 9,
                 enemies: [
-                    {hp: 6, dps: 2},
-                    {hp: 6, dps: 3},
-                    {hp: 10, dps: 4},
-                    {hp: 10, dps: 4},
-                    {hp: 25, dps: 6},
-                    {hp: 6, dps: 4},
-                    {hp: 12, dps: 2},
-                    {hp: 12, dps: 2},
-                    {hp: 15, dps: 5},
-                    {hp: 55, dps: 10}
+                    {hp: 18, dps: 6},
+                    {hp: 18, dps: 9},
+                    {hp: 30, dps: 12},
+                    {hp: 30, dps: 12},
+                    {hp: 75, dps: 18},
+                    {hp: 18, dps: 12},
+                    {hp: 36, dps: 6},
+                    {hp: 36, dps: 6},
+                    {hp: 45, dps: 15},
+                    {hp: 165, dps: 30}
                 ]
             }
         ];

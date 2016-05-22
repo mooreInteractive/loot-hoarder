@@ -1,4 +1,4 @@
-//Forge.js
+//Weapon.js
 
 export function build(levelMin, levelMax) {
     let weapon = {
