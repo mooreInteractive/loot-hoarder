@@ -264,6 +264,7 @@ export default class extends Phaser.State {
                 loot.splice(loot.indexOf(item), 1);
                 this.updateLootTextAndButtons(loot);
             }, this);
+
             sellBtn.scale.x = 0.2;
             sellBtn.anchor.setTo(0.5);
             this.game.add.existing(sellBtn);

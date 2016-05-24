@@ -108276,6 +108276,7 @@
 	                    loot.splice(loot.indexOf(item), 1);
 	                    _this3.updateLootTextAndButtons(loot);
 	                }, _this3);
+
 	                sellBtn.scale.x = 0.2;
 	                sellBtn.anchor.setTo(0.5);
 	                _this3.game.add.existing(sellBtn);
