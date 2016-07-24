@@ -18,14 +18,18 @@ class Game extends Phaser.Game {
         super(width, height, Phaser.AUTO, 'content', null);
 
         let playerData = null;
+        let playerClock = 0;
         if(localStorage){
             playerData = JSON.parse(localStorage.getItem('loot-hoarder-player'));
+            playerClock = JSON.parse(localStorage.getItem('loot-hoarder-clock'));
+        } else {
+            playerClock = Math.floor((new Date).getTime()/1000);
         }
         //Loot Hoarder Variables
         this.player = new Player(playerData);
 
         this.setupDungeons();
-        this.lastGameTime = 0;
+        this.lastGameTime = playerClock;
 
         this.state.add('Boot', BootState, false);
         this.state.add('Splash', SplashState, false);

@@ -14,7 +14,7 @@ class Player {
     createNewPlayer(){
         this.level = 0;
         this.exp = 0;
-        this.battleing = false;
+        this.battling = false;
         this.latestUnlockedDungeon = 0;
         this.inventory = [];
         this.gold = 0;
@@ -171,9 +171,11 @@ class Player {
                 equipped: this.equipped,
                 gold: this.gold,
                 baseStats: this.baseStats,
-                latestUnlockedDungeon: this.latestUnlockedDungeon
+                latestUnlockedDungeon: this.latestUnlockedDungeon,
+                currentHealth: this.battleStats.currentHealth
             });
             localStorage.setItem('loot-hoarder-player', playerData);
+            localStorage.setItem('loot-hoarder-clock', (new Date).getTime());
         } else {
             console.warn('localStorage doesn\'t exist');
         }
@@ -181,6 +183,14 @@ class Player {
 
     loadPlayerData(playerData){
         console.log('loading player data:', playerData);
+        let oldTime = localStorage.getItem('loot-hoarder-clock');
+        let newTime = Math.floor((new Date).getTime()/1000);
+        let baseHealth = playerData.baseStats.health;
+        let timeDiff = newTime - oldTime;
+        let healthOverTime = playerData.currentHealth + timeDiff;
+        let currHp = healthOverTime > baseHealth ? baseHealth : healthOverTime;
+        console.log('--timeDiff, overtime, currHP', oldTime, newTime, timeDiff, healthOverTime, currHp);
+
         this.level = playerData.level;
         this.exp = playerData.exp;
         this.battling = false;
@@ -190,16 +200,16 @@ class Player {
         this.baseStats = playerData.baseStats;
         this.latestUnlockedDungeon = playerData.latestUnlockedDungeon;
         this.battleStats = {
-            strength: 1,
-            vitality: 1,
-            wisdom: 1,
-            dexterity: 1,
+            strength: playerData.baseStats.strength,
+            vitality: playerData.baseStats.vitality,
+            wisdom: playerData.baseStats.wisdom,
+            dexterity: playerData.baseStats.dexterity,
             dmg: {
-                min: 0,
-                max: 1
+                min: playerData.baseStats.strength-1,
+                max: playerData.baseStats.strength
             },
-            health: 10,
-            currentHealth: 10, //TODO - check elapsed time
+            health: baseHealth,
+            currentHealth: currHp,
             armor: 0,
             totalWeight: 0
         };

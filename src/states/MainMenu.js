@@ -82,6 +82,7 @@ export default class extends Phaser.State {
         if(localStorage){
             localStorage.removeItem('loot-hoarder-dungeons');
             localStorage.removeItem('loot-hoarder-player');
+            localStorage.removeItem('loot-hoarder-clock');
             window.location.reload();
         }
     }
@@ -308,9 +309,9 @@ export default class extends Phaser.State {
     }
 
     render (){
-        let time = Math.floor(this.time.totalElapsedSeconds());
-        if(this.game.lastGameTime != time){
-            this.game.lastGameTime = time;
+        let time = Math.floor((new Date).getTime()/1000);
+        if(localStorage.getItem('loot-hoarder-clock') != time){
+            localStorage.setItem('loot-hoarder-clock', time);
             if(this.game.player.battleStats.currentHealth < this.game.player.battleStats.health){
                 this.game.player.heal();
 
