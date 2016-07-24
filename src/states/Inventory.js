@@ -69,8 +69,8 @@ export default class extends Phaser.State {
         this.playerInfo.text += `Wisdom: ${this.game.player.battleStats.wisdom} \n`;
 
         this.playerInfo2.text = `Dmg: ${this.game.player.battleStats.dmg.min} - ${this.game.player.battleStats.dmg.max} \n`;
-        this.playerInfo2.text += `Armor: ${this.game.player.battleStats.armor} \n\n`;
-        this.playerInfo2.text += `Gold: ${this.game.player.gold} /n`;
+        this.playerInfo2.text += `Armor: ${this.game.player.battleStats.armor} \n\n\n`;
+        this.playerInfo2.text += `Gold: ${this.game.player.gold} \n`;
         this.playerInfo2.text += `Carried Weight: ${this.game.player.battleStats.totalWeight}`;
     }
 
