@@ -9118,21 +9118,27 @@
 	                enemiesLeft: 6,
 	                miniBoss: 2,
 	                boss: 5,
-	                enemies: [{ hp: 15, dps: 3 }, { hp: 15, dps: 3 }, { hp: 36, dps: 6 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 60, dps: 9 }]
+	                defeated: false,
+	                enemies: [{ hp: 15, dps: 3 }, { hp: 15, dps: 3 }, { hp: 36, dps: 6 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 60, dps: 9 }],
+	                currentEnemies: [{ hp: 15, dps: 3 }, { hp: 15, dps: 3 }, { hp: 36, dps: 6 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 60, dps: 9 }]
 	            }, {
 	                level: 2,
 	                enemiesAmount: 8,
 	                enemiesLeft: 8,
 	                miniBoss: 3,
 	                boss: 7,
-	                enemies: [{ hp: 15, dps: 3 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 48, dps: 6 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 15, dps: 12 }, { hp: 105, dps: 12 }]
+	                defeated: false,
+	                enemies: [{ hp: 15, dps: 3 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 48, dps: 6 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 15, dps: 12 }, { hp: 105, dps: 12 }],
+	                currentEnemies: [{ hp: 15, dps: 3 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 48, dps: 6 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 15, dps: 12 }, { hp: 105, dps: 12 }]
 	            }, {
 	                level: 3,
 	                enemiesAmount: 10,
 	                enemiesLeft: 10,
 	                miniBoss: 4,
 	                boss: 9,
-	                enemies: [{ hp: 18, dps: 6 }, { hp: 18, dps: 9 }, { hp: 30, dps: 12 }, { hp: 30, dps: 12 }, { hp: 75, dps: 18 }, { hp: 18, dps: 12 }, { hp: 36, dps: 6 }, { hp: 36, dps: 6 }, { hp: 45, dps: 15 }, { hp: 165, dps: 30 }]
+	                defeated: false,
+	                enemies: [{ hp: 18, dps: 6 }, { hp: 18, dps: 9 }, { hp: 30, dps: 12 }, { hp: 30, dps: 12 }, { hp: 75, dps: 18 }, { hp: 18, dps: 12 }, { hp: 36, dps: 6 }, { hp: 36, dps: 6 }, { hp: 45, dps: 15 }, { hp: 165, dps: 30 }],
+	                currentEnemies: [{ hp: 18, dps: 6 }, { hp: 18, dps: 9 }, { hp: 30, dps: 12 }, { hp: 30, dps: 12 }, { hp: 75, dps: 18 }, { hp: 18, dps: 12 }, { hp: 36, dps: 6 }, { hp: 36, dps: 6 }, { hp: 45, dps: 15 }, { hp: 165, dps: 30 }]
 	            }];
 
 	            if (localStorage) {
@@ -111399,6 +111405,8 @@
 	    }, {
 	        key: 'create',
 	        value: function create() {
+	            var _this2 = this;
+
 	            //clear data button
 	            this.clearDataBtn = new _phaser2.default.Button(this.game, this.game.world.width - 50, 0, 'redButton', this.clearPlayerData, this);
 	            this.clearDataBtn.scale.x = 0.2;
@@ -111415,16 +111423,29 @@
 	            this.inventoryText.fill = '#111111';
 	            this.inventoryText.anchor.setTo(0.5);
 
-	            //Raid Button
-	            this.raidBtn = new _phaser2.default.Button(this.game, 150, 110, 'redButton', this.viewMap, this);
-	            this.raidBtn.anchor.setTo(0.5);
-	            this.game.add.existing(this.raidBtn);
+	            //Raid Dungeons
+	            this.raidBtns = [];
+	            this.raidTexts = [];
+	            this.dungeonTexts = [];
+	            this.game.dungeons.forEach(function (dungeon, index) {
+	                var btn = new _phaser2.default.Button(_this2.game, 150, 110 * (index + 1), 'redButton', _this2.viewMap.bind(_this2, dungeon), _this2);
+	                btn.anchor.setTo(0.5);
+	                _this2.game.add.existing(btn);
+	                _this2.raidBtns.push(btn);
 
-	            this.raidText = this.add.text(150, 110, 'Raid / Map');
-	            this.raidText.font = 'Nunito';
-	            this.raidText.fontSize = 28;
-	            this.raidText.fill = '#111111';
-	            this.raidText.anchor.setTo(0.5);
+	                var raidText = _this2.add.text(150, 110 * (index + 1), 'Raid D-' + (index + 1));
+	                raidText.font = 'Nunito';
+	                raidText.fontSize = 28;
+	                raidText.fill = '#111111';
+	                raidText.anchor.setTo(0.5);
+	                _this2.raidTexts.push(raidText);
+
+	                var dungeonText = _this2.add.text(250, 95 * (index + 1), 'Enemies Left: ' + dungeon.enemiesLeft);
+	                dungeonText.font = 'Nunito';
+	                dungeonText.fontSize = 22;
+	                dungeonText.fill = '#000000';
+	                _this2.dungeonTexts.push(dungeonText);
+	            });
 
 	            this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 50, 'You\'re over-encumbered');
 	            this.errorText.font = 'Nunito';
@@ -111438,11 +111459,6 @@
 	            this.healthText.fontSize = 22;
 	            this.healthText.fill = '#000000';
 	            this.healthText.anchor.setTo(0.5);
-
-	            this.dungeonText = this.add.text(250, 95, 'Dungeon ' + this.game.player.latestUnlockedDungeon + ', Enemies Left: ' + this.game.dungeons[this.game.player.latestUnlockedDungeon].enemiesLeft);
-	            this.dungeonText.font = 'Nunito';
-	            this.dungeonText.fontSize = 22;
-	            this.dungeonText.fill = '#000000';
 
 	            this.lootText = this.add.text(this.game.world.centerX - 150, this.game.world.centerY + 100, '');
 	            this.lootText.font = 'Nunito';
@@ -111480,30 +111496,31 @@
 	        }
 	    }, {
 	        key: 'viewMap',
-	        value: function viewMap() {
+	        value: function viewMap(dungeon) {
 	            this.errorText.visible = false;
 
-	            this.raidDungeon(this.game.dungeons[this.game.player.latestUnlockedDungeon]);
+	            this.raidDungeon(dungeon);
 	            //this.game.player.inventory.push(newRandWeapon);
 	        }
 	    }, {
 	        key: 'raidDungeon',
 	        value: function raidDungeon(dungeon) {
-	            var _this2 = this;
+	            var _this3 = this;
 
+	            console.log('--dungeon beign raided:', dungeon);
 	            var player = this.game.player;
 	            if (player.battleStats.currentHealth > 1) {
 	                (function () {
 	                    player.battling = true;
 	                    var loot = [];
-	                    _this2.enSprite.visible = true;
+	                    _this3.enSprite.visible = true;
 
 	                    var checkForEnemies = function checkForEnemies() {
-	                        if (dungeon.enemies.length > 0) {
-	                            var tween = _this2.game.add.tween(_this2.enSprite).to({ x: _this2.game.world.centerX + 120 }, 400, null, true);
+	                        if (dungeon.currentEnemies.length > 0) {
+	                            var tween = _this3.game.add.tween(_this3.enSprite).to({ x: _this3.game.world.centerX + 120 }, 400, null, true);
 	                            tween.onComplete.addOnce(function () {
-	                                battleEnemy(dungeon.enemies[0]);
-	                            }, _this2);
+	                                battleEnemy(dungeon.currentEnemies[0]);
+	                            }, _this3);
 	                        }
 	                    };
 
@@ -111514,6 +111531,7 @@
 	                            enemy.hp -= strike;
 	                            var enStrike = enemy.dps - player.battleStats.armor > -1 ? enemy.dps - player.battleStats.armor : 0;
 	                            player.battleStats.currentHealth -= enStrike;
+	                            console.log('En: -' + strike + 'hp (' + enemy.hp + '), Pl: -' + enStrike + 'hp (' + player.battleStats.currentHealth + ')');
 	                            if (player.battleStats.currentHealth < 1) {
 	                                break;
 	                            }
@@ -111523,65 +111541,68 @@
 	                                //killed an enemey
 	                                //get loot
 	                                var lootChance = Forge.rand(0, 100);
-	                                if (lootChance > 70) {
-	                                    loot.push(Forge.getRandomItem(0, 3));
+	                                if (lootChance > 60) {
+	                                    loot.push(Forge.getRandomItem(1, 3));
 	                                }
 	                                //get exp
 	                                player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
 	                                //remove enemy from dungeon
-	                                _this2.enSprite.visible = false;
-	                                _this2.enSprite.position.x = _this2.game.world.width + 70;
-	                                dungeon.enemies.splice(0, 1);
-	                                dungeon.enemiesLeft -= 1;
+	                                _this3.enSprite.visible = false;
+	                                _this3.enSprite.position.x = _this3.game.world.width + 70;
+	                                dungeon.currentEnemies.splice(0, 1);
+	                                dungeon.enemiesLeft = dungeon.currentEnemies.length;
 	                            }
 
-	                            if (dungeon.enemies.length == 0 || player.battleStats.currentHealth < 1) {
-	                                finishUpRaid();
+	                            if (dungeon.currentEnemies.length == 0 || player.battleStats.currentHealth < 1) {
+	                                finishUpRaid(dungeon);
 	                            } else {
 	                                checkForEnemies();
 	                            }
 	                        }, 1000);
 	                    };
 
-	                    var finishUpRaid = function finishUpRaid() {
+	                    var finishUpRaid = function finishUpRaid(dungeon) {
 
 	                        //Done with enemies for loop
 	                        if (player.battleStats.currentHealth < 1) {
-	                            _this2.errorText.text = 'You\'re tired. ';
+	                            _this3.errorText.text = 'You\'re tired. ';
 	                            if (loot.length > 0) {
-	                                _this2.errorText.text += 'loot: ' + loot.length;
+	                                _this3.errorText.text += 'loot: ' + loot.length;
 	                            }
-	                            _this2.errorText.visible = true;
+	                            _this3.errorText.visible = true;
 
 	                            //remove enemy sprite
-	                            var tween = _this2.game.add.tween(_this2.enSprite).to({ x: _this2.game.world.width + 135 }, 400, null, true);
+	                            var tween = _this3.game.add.tween(_this3.enSprite).to({ x: _this3.game.world.width + 135 }, 400, null, true);
 	                            tween.onComplete.addOnce(function () {
-	                                _this2.enSprite.visible = false;
-	                            }, _this2);
+	                                _this3.enSprite.visible = false;
+	                            }, _this3);
 	                        }
 
-	                        _this2.dungeonText.text = 'Dungeon ' + _this2.game.player.latestUnlockedDungeon + ', Enemies Left: ' + _this2.game.dungeons[_this2.game.player.latestUnlockedDungeon].enemiesLeft;
+	                        _this3.updateDungeonEnemiesLeftText(dungeon);
 
 	                        //Dungeon Done
-	                        if (_this2.game.dungeons[_this2.game.player.latestUnlockedDungeon].enemiesLeft < 1) {
-	                            _this2.game.player.latestUnlockedDungeon += 1;
-	                            if (_this2.game.player.latestUnlockedDungeon > 2) {
-	                                _this2.game.player.latestUnlockedDungeon = 2;
+	                        if (dungeon.enemiesLeft < 1) {
+	                            dungeon.currentEnemies = dungeon.enemies;
+	                            dungeon.beaten = true;
+	                            dungeon.enemiesLeft = dungeon.currentEnemies.length;
+	                            _this3.game.player.latestUnlockedDungeon += 1;
+	                            if (_this3.game.player.latestUnlockedDungeon > 2) {
+	                                _this3.game.player.latestUnlockedDungeon = 2;
 	                            }
-	                            _this2.dungeonText.text = 'Dungeon ' + _this2.game.player.latestUnlockedDungeon + ', Enemies Left: ' + _this2.game.dungeons[_this2.game.player.latestUnlockedDungeon].enemiesLeft;
+	                            _this3.updateDungeonEnemiesLeftText(dungeon);
 	                        }
 	                        //level up?
 	                        if (player.exp > _levels.playerLevels[player.level].maxExp) {
 	                            player.level += 1;
-	                            _this2.errorText.text += 'Level Up!';
-	                            _this2.errorText.visible = true;
+	                            _this3.errorText.text += 'Level Up!';
+	                            _this3.errorText.visible = true;
 	                        }
 
 	                        player.battling = false;
-	                        _this2.saveDungeonData();
-	                        _this2.game.player.savePlayerData();
+	                        _this3.saveDungeonData();
+	                        _this3.game.player.savePlayerData();
 
-	                        _this2.updateLootTextAndButtons(loot);
+	                        _this3.updateLootTextAndButtons(loot);
 
 	                        console.log('--raid gave:', loot);
 	                    };
@@ -111594,6 +111615,11 @@
 	            }
 	        }
 	    }, {
+	        key: 'updateDungeonEnemiesLeftText',
+	        value: function updateDungeonEnemiesLeftText(dungeon) {
+	            this.dungeonTexts[dungeon.level - 1].text = 'Enemies Left: ' + dungeon.enemiesLeft + (dungeon.beaten ? '*' : '');
+	        }
+	    }, {
 	        key: 'cleanUpLootButtons',
 	        value: function cleanUpLootButtons() {
 	            var allBtns = this.lootKeepBtns.concat(this.lootSellBtns);
@@ -111604,7 +111630,7 @@
 	    }, {
 	        key: 'updateLootTextAndButtons',
 	        value: function updateLootTextAndButtons(loot) {
-	            var _this3 = this;
+	            var _this4 = this;
 
 	            this.lootText.text = '';
 
@@ -111617,61 +111643,61 @@
 
 	                if (item.ac != null) {
 	                    //Armor
-	                    _this3.lootText.text += '[' + item.level + '] ' + item.name + ' \n';
-	                    _this3.lootText.text += 'AC: ' + item.ac + ', Type: ' + item.type + ' \n';
+	                    _this4.lootText.text += '[' + item.level + '] ' + item.name + ' \n';
+	                    _this4.lootText.text += 'AC: ' + item.ac + ', Type: ' + item.type + ' \n';
 	                    if (item.magic.effect.attribute != null) {
-	                        _this3.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
+	                        _this4.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
 	                    }
-	                    _this3.lootText.text += '\n';
+	                    _this4.lootText.text += '\n';
 	                } else if (item.dmg != null) {
 	                    //Weapon
-	                    _this3.lootText.text += '[' + item.level + '] ' + item.name + ' \n';
-	                    _this3.lootText.text += 'Dmg: ' + item.dmg.min + ' - ' + item.dmg.max + ' \n';
+	                    _this4.lootText.text += '[' + item.level + '] ' + item.name + ' \n';
+	                    _this4.lootText.text += 'Dmg: ' + item.dmg.min + ' - ' + item.dmg.max + ' \n';
 	                    if (item.magic.effect.attribute != null) {
-	                        _this3.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
+	                        _this4.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
 	                    }
-	                    _this3.lootText.text += '\n';
+	                    _this4.lootText.text += '\n';
 	                } else {
-	                    _this3.lootText.text += item.name + ' \n';
+	                    _this4.lootText.text += item.name + ' \n';
 	                    if (item.magic.effect.attribute != null) {
-	                        _this3.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
+	                        _this4.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
 	                    }
-	                    _this3.lootText.text += '\n';
+	                    _this4.lootText.text += '\n';
 	                }
 
 	                //add a couple buttons for this item
-	                var addBtn = new _phaser2.default.Button(_this3.game, _this3.game.world.centerX - 250, _this3.game.world.centerY + 125 * (index + 1), 'blueButton', function () {
+	                var addBtn = new _phaser2.default.Button(_this4.game, _this4.game.world.centerX - 250, _this4.game.world.centerY + 125 * (index + 1), 'blueButton', function () {
 	                    console.log('--clicked keep, loot, item', loot, item);
-	                    var placed = _this3.tryToPlaceItemInInventory(item);
+	                    var placed = _this4.tryToPlaceItemInInventory(item);
 	                    if (placed) {
 	                        loot.splice(loot.indexOf(item), 1);
-	                        _this3.updateLootTextAndButtons(loot);
+	                        _this4.updateLootTextAndButtons(loot);
 	                    }
-	                }, _this3);
+	                }, _this4);
 	                addBtn.scale.x = 0.2;
 	                addBtn.anchor.setTo(0.5);
-	                _this3.game.add.existing(addBtn);
-	                _this3.lootKeepBtns.push(addBtn);
+	                _this4.game.add.existing(addBtn);
+	                _this4.lootKeepBtns.push(addBtn);
 
-	                var addBtnText = _this3.add.text(_this3.game, _this3.game.world.centerX - 250, _this3.game.world.centerY + 125 * (index + 1), '+');
+	                var addBtnText = _this4.add.text(_this4.game, _this4.game.world.centerX - 250, _this4.game.world.centerY + 125 * (index + 1), '+');
 	                addBtnText.font = 'Nunito';
 	                addBtnText.fontSize = 24;
 	                addBtnText.fill = '#111111';
 	                addBtnText.anchor.setTo(0.5);
 
-	                var sellBtn = new _phaser2.default.Button(_this3.game, _this3.game.world.centerX - 200, _this3.game.world.centerY + 125 * (index + 1), 'yellowButton', function () {
+	                var sellBtn = new _phaser2.default.Button(_this4.game, _this4.game.world.centerX - 200, _this4.game.world.centerY + 125 * (index + 1), 'yellowButton', function () {
 	                    console.log('Sell Item!');
-	                    _this3.game.player.gold += item.value;
+	                    _this4.game.player.gold += item.value;
 	                    loot.splice(loot.indexOf(item), 1);
-	                    _this3.updateLootTextAndButtons(loot);
-	                }, _this3);
+	                    _this4.updateLootTextAndButtons(loot);
+	                }, _this4);
 
 	                sellBtn.scale.x = 0.2;
 	                sellBtn.anchor.setTo(0.5);
-	                _this3.game.add.existing(sellBtn);
-	                _this3.lootSellBtns.push(sellBtn);
+	                _this4.game.add.existing(sellBtn);
+	                _this4.lootSellBtns.push(sellBtn);
 
-	                var sellBtnText = _this3.add.text(_this3.game, _this3.game.world.centerX - 200, _this3.game.world.centerY + 125 * (index + 1), '$');
+	                var sellBtnText = _this4.add.text(_this4.game, _this4.game.world.centerX - 200, _this4.game.world.centerY + 125 * (index + 1), '$');
 	                sellBtnText.font = 'Nunito';
 	                sellBtnText.fontSize = 24;
 	                sellBtnText.fill = '#111111';

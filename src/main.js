@@ -49,7 +49,16 @@ class Game extends Phaser.Game {
                 enemiesLeft: 6,
                 miniBoss: 2,
                 boss: 5,
+                defeated: false,
                 enemies: [
+                    {hp: 15, dps: 3},
+                    {hp: 15, dps: 3},
+                    {hp: 36, dps: 6},
+                    {hp: 18, dps: 6},
+                    {hp: 18, dps: 6},
+                    {hp: 60, dps: 9}
+                ],
+                currentEnemies: [
                     {hp: 15, dps: 3},
                     {hp: 15, dps: 3},
                     {hp: 36, dps: 6},
@@ -64,7 +73,18 @@ class Game extends Phaser.Game {
                 enemiesLeft: 8,
                 miniBoss: 3,
                 boss: 7,
+                defeated: false,
                 enemies: [
+                    {hp: 15, dps: 3},
+                    {hp: 18, dps: 6},
+                    {hp: 18, dps: 6},
+                    {hp: 48, dps: 6},
+                    {hp: 18, dps: 6},
+                    {hp: 18, dps: 6},
+                    {hp: 15, dps: 12},
+                    {hp: 105, dps: 12}
+                ],
+                currentEnemies: [
                     {hp: 15, dps: 3},
                     {hp: 18, dps: 6},
                     {hp: 18, dps: 6},
@@ -81,7 +101,20 @@ class Game extends Phaser.Game {
                 enemiesLeft: 10,
                 miniBoss: 4,
                 boss: 9,
+                defeated: false,
                 enemies: [
+                    {hp: 18, dps: 6},
+                    {hp: 18, dps: 9},
+                    {hp: 30, dps: 12},
+                    {hp: 30, dps: 12},
+                    {hp: 75, dps: 18},
+                    {hp: 18, dps: 12},
+                    {hp: 36, dps: 6},
+                    {hp: 36, dps: 6},
+                    {hp: 45, dps: 15},
+                    {hp: 165, dps: 30}
+                ],
+                currentEnemies: [
                     {hp: 18, dps: 6},
                     {hp: 18, dps: 9},
                     {hp: 30, dps: 12},

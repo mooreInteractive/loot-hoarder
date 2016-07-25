@@ -28,16 +28,31 @@ export default class extends Phaser.State {
         this.inventoryText.fill = '#111111';
         this.inventoryText.anchor.setTo(0.5);
 
-        //Raid Button
-        this.raidBtn = new Phaser.Button(this.game, 150, 110, 'redButton', this.viewMap, this);
-        this.raidBtn.anchor.setTo(0.5);
-        this.game.add.existing(this.raidBtn);
+        //Raid Dungeons
+        this.raidBtns = [];
+        this.raidTexts = [];
+        this.dungeonTexts = [];
+        this.game.dungeons.forEach((dungeon, index)=> {
+            let btn = new Phaser.Button(this.game, 150, 110*(index+1), 'redButton', this.viewMap.bind(this, dungeon), this);
+            btn.anchor.setTo(0.5);
+            this.game.add.existing(btn);
+            this.raidBtns.push(btn);
 
-        this.raidText = this.add.text(150, 110, 'Raid / Map');
-        this.raidText.font = 'Nunito';
-        this.raidText.fontSize = 28;
-        this.raidText.fill = '#111111';
-        this.raidText.anchor.setTo(0.5);
+            let raidText = this.add.text(150, 110*(index+1), `Raid D-${(index+1)}`);
+            raidText.font = 'Nunito';
+            raidText.fontSize = 28;
+            raidText.fill = '#111111';
+            raidText.anchor.setTo(0.5);
+            this.raidTexts.push(raidText);
+
+            let dungeonText = this.add.text(250, 95*(index+1), `Enemies Left: ${dungeon.enemiesLeft}`);
+            dungeonText.font = 'Nunito';
+            dungeonText.fontSize = 22;
+            dungeonText.fill = '#000000';
+            this.dungeonTexts.push(dungeonText);
+        });
+
+
 
         this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 50, 'You\'re over-encumbered');
         this.errorText.font = 'Nunito';
@@ -51,11 +66,6 @@ export default class extends Phaser.State {
         this.healthText.fontSize = 22;
         this.healthText.fill = '#000000';
         this.healthText.anchor.setTo(0.5);
-
-        this.dungeonText = this.add.text(250, 95, `Dungeon ${this.game.player.latestUnlockedDungeon}, Enemies Left: ${this.game.dungeons[this.game.player.latestUnlockedDungeon].enemiesLeft}`);
-        this.dungeonText.font = 'Nunito';
-        this.dungeonText.fontSize = 22;
-        this.dungeonText.fill = '#000000';
 
         this.lootText = this.add.text(this.game.world.centerX - 150, this.game.world.centerY + 100, '');
         this.lootText.font = 'Nunito';
@@ -91,14 +101,15 @@ export default class extends Phaser.State {
         this.state.start('Inventory');
     }
 
-    viewMap(){
+    viewMap(dungeon){
         this.errorText.visible = false;
 
-        this.raidDungeon(this.game.dungeons[this.game.player.latestUnlockedDungeon]);
+        this.raidDungeon(dungeon);
         //this.game.player.inventory.push(newRandWeapon);
     }
 
     raidDungeon(dungeon){
+        console.log('--dungeon beign raided:', dungeon);
         let player = this.game.player;
         if(player.battleStats.currentHealth > 1){
             player.battling = true;
@@ -106,10 +117,10 @@ export default class extends Phaser.State {
             this.enSprite.visible = true;
 
             let checkForEnemies = () => {
-                if(dungeon.enemies.length > 0){
+                if(dungeon.currentEnemies.length > 0){
                     let tween = this.game.add.tween(this.enSprite).to( { x: this.game.world.centerX + 120 }, 400, null, true);
                     tween.onComplete.addOnce(() => {
-                        battleEnemy(dungeon.enemies[0]);
+                        battleEnemy(dungeon.currentEnemies[0]);
                     }, this);
                 }
             };
@@ -122,26 +133,27 @@ export default class extends Phaser.State {
                     enemy.hp -= strike;
                     let enStrike = enemy.dps - player.battleStats.armor > -1 ? enemy.dps - player.battleStats.armor : 0;
                     player.battleStats.currentHealth -= enStrike;
+                    console.log(`En: -${strike}hp (${enemy.hp}), Pl: -${enStrike}hp (${player.battleStats.currentHealth})`);
                     if(player.battleStats.currentHealth < 1){ break; }
                 }
                 setTimeout(() => {
                     if(enemy.hp < 1){//killed an enemey
                         //get loot
                         let lootChance = Forge.rand(0,100);
-                        if( lootChance > 70 ){
-                            loot.push(Forge.getRandomItem(0,3));
+                        if( lootChance > 60 ){
+                            loot.push(Forge.getRandomItem(1,3));
                         }
                         //get exp
                         player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
                         //remove enemy from dungeon
                         this.enSprite.visible = false;
                         this.enSprite.position.x = this.game.world.width + 70;
-                        dungeon.enemies.splice(0, 1);
-                        dungeon.enemiesLeft -= 1;
+                        dungeon.currentEnemies.splice(0, 1);
+                        dungeon.enemiesLeft = dungeon.currentEnemies.length;
                     }
 
-                    if(dungeon.enemies.length == 0 || player.battleStats.currentHealth < 1){
-                        finishUpRaid();
+                    if(dungeon.currentEnemies.length == 0 || player.battleStats.currentHealth < 1){
+                        finishUpRaid(dungeon);
                     } else {
                         checkForEnemies();
                     }
@@ -149,7 +161,7 @@ export default class extends Phaser.State {
 
             };
 
-            let finishUpRaid = () => {
+            let finishUpRaid = (dungeon) => {
 
                 //Done with enemies for loop
                 if(player.battleStats.currentHealth < 1){
@@ -166,15 +178,18 @@ export default class extends Phaser.State {
                     }, this);
                 }
 
-                this.dungeonText.text = `Dungeon ${this.game.player.latestUnlockedDungeon}, Enemies Left: ${this.game.dungeons[this.game.player.latestUnlockedDungeon].enemiesLeft}`;
+                this.updateDungeonEnemiesLeftText(dungeon);
 
                 //Dungeon Done
-                if(this.game.dungeons[this.game.player.latestUnlockedDungeon].enemiesLeft < 1){
+                if(dungeon.enemiesLeft < 1){
+                    dungeon.currentEnemies = dungeon.enemies;
+                    dungeon.beaten = true;
+                    dungeon.enemiesLeft = dungeon.currentEnemies.length;
                     this.game.player.latestUnlockedDungeon += 1;
                     if(this.game.player.latestUnlockedDungeon > 2){
                         this.game.player.latestUnlockedDungeon = 2;
                     }
-                    this.dungeonText.text = `Dungeon ${this.game.player.latestUnlockedDungeon}, Enemies Left: ${this.game.dungeons[this.game.player.latestUnlockedDungeon].enemiesLeft}`;
+                    this.updateDungeonEnemiesLeftText(dungeon);
                 }
                 //level up?
                 if(player.exp > playerLevels[player.level].maxExp){
@@ -197,6 +212,10 @@ export default class extends Phaser.State {
             this.errorText.text = 'You should rest for a while.';
             this.errorText.visible = true;
         }
+    }
+
+    updateDungeonEnemiesLeftText(dungeon){
+        this.dungeonTexts[(dungeon.level-1)].text = `Enemies Left: ${dungeon.enemiesLeft}${dungeon.beaten ? '*' :''}`;
     }
 
     cleanUpLootButtons(){
