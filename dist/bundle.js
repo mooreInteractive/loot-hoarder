@@ -112570,8 +112570,14 @@
 
 	            if (item.name == "pocket knife") {
 	                console.log("--drawing pcoket knife...");
-	                var shank = this.game.add.sprite(gridPos.x + 65 * invSlot.x + (65 * item.shapeWidth - 54 * item.shapeWidth) / 2, gridPos.y + 65 * invSlot.y + (65 * item.shapeHeight - 54 * item.shapeHeight) / 2, 'shank0');
+	                var shank = this.game.add.sprite(gridPos.x + 65 * invSlot.x + (65 * item.shapeWidth - 31) / 2, gridPos.y + 65 * invSlot.y + (65 * item.shapeHeight - 28) / 2, 'shank0');
+
+	                shank.inputEnabled = true;
+	                shank.input.enableDrag();
+	                shank.originalPosition = shank.position.clone();
+
 	                this.inventoryItemsGroup.add(shank);
+	                drawnObject.itemSprite = shank;
 	            }
 	        }
 	    }, {
@@ -112616,8 +112622,14 @@
 
 	            if (item.name == "pocket knife") {
 	                console.log("--drawing pcoket knife...");
-	                var shank = this.game.add.sprite(this.equippedSlots.position.x + slotSprite.position.x + (slotSprite.width - 27 * item.shapeWidth) / 2, this.equippedSlots.position.y + slotSprite.position.y + (slotSprite.height - 27 * item.shapeHeight) / 2, 'shank0');
+	                var shank = this.game.add.sprite(this.equippedSlots.position.x + slotSprite.position.x + (slotSprite.width - 31) / 2, this.equippedSlots.position.y + slotSprite.position.y + (slotSprite.height - 28) / 2, 'shank0');
+
+	                shank.inputEnabled = true;
+	                shank.input.enableDrag();
+	                shank.originalPosition = shank.position.clone();
+
 	                this.equippedItemsGroup.add(shank);
+	                drawnObject.itemSprite = shank;
 	            }
 	        }
 	    }, {
