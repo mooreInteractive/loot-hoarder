@@ -13,6 +13,14 @@ export default class extends Phaser.State {
         //Inv Button
         this.inventoryBtn = new Phaser.Button(this.game, 150, 50, 'blueButton', this.backToMain, this);
         this.inventoryBtn.anchor.setTo(0.5);
+
+        //weapons??
+        this.weaponGfx = [];
+
+        // let shank0 = this.game.add.sprite(this.game.world.width - 70, this.game.world.centerY - 90, 'shank0');
+        // shank0.visible = false;
+        //
+        // this.weaponGfx.push(shank0);
     }
 
     create () {
@@ -250,6 +258,12 @@ export default class extends Phaser.State {
         }, this);
 
         this.inventoryItemsGroup.add(drawnObject);
+        
+        if(item.name == "pocket knife"){
+            console.log("--drawing pcoket knife...");
+            let shank = this.game.add.sprite(gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2), 'shank0');
+            this.inventoryItemsGroup.add(shank);
+        }
     }
 
     addEquippedSprite(item, gridPos, key){
@@ -269,6 +283,8 @@ export default class extends Phaser.State {
         //console.log('--placing piece at x,y:', gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2));
         drawnObject = this.game.add.sprite(this.equippedSlots.position.x + slotSprite.position.x + ((slotSprite.width - 27*item.shapeWidth)/2), this.equippedSlots.position.y + slotSprite.position.y + ((slotSprite.height - 27*item.shapeHeight)/2), bmd);
 
+
+
         drawnObject.inputEnabled = true;
         drawnObject.input.enableDrag();
         drawnObject.originalPosition = drawnObject.position.clone();
@@ -287,6 +303,12 @@ export default class extends Phaser.State {
         }, this);
 
         this.equippedItemsGroup.add(drawnObject);
+
+        if(item.name == "pocket knife"){
+            console.log("--drawing pcoket knife...");
+            let shank = this.game.add.sprite(this.equippedSlots.position.x + slotSprite.position.x + ((slotSprite.width - 27*item.shapeWidth)/2), this.equippedSlots.position.y + slotSprite.position.y + ((slotSprite.height - 27*item.shapeHeight)/2), 'shank0');
+            this.equippedItemsGroup.add(shank);
+        }
     }
 
     drawInventoryItems(){

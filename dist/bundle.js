@@ -111046,6 +111046,9 @@
 	            this.load.image('yellowButton', './assets/images/yellow_button00.png');
 	            this.load.image('redButton', './assets/images/red_button00.png');
 
+	            //weapons
+	            this.load.image('shank0', './assets/images/shank.png');
+
 	            this.game.load.spritesheet('mob1', './assets/images/Mob1.png', 32, 32);
 	            this.game.load.spritesheet('walkingMan', './assets/images/child_walk_tanned.png', 64, 64);
 	        }
@@ -112319,6 +112322,14 @@
 	            //Inv Button
 	            this.inventoryBtn = new _phaser2.default.Button(this.game, 150, 50, 'blueButton', this.backToMain, this);
 	            this.inventoryBtn.anchor.setTo(0.5);
+
+	            //weapons??
+	            this.weaponGfx = [];
+
+	            // let shank0 = this.game.add.sprite(this.game.world.width - 70, this.game.world.centerY - 90, 'shank0');
+	            // shank0.visible = false;
+	            //
+	            // this.weaponGfx.push(shank0);
 	        }
 	    }, {
 	        key: 'create',
@@ -112556,6 +112567,12 @@
 	            }, this);
 
 	            this.inventoryItemsGroup.add(drawnObject);
+
+	            if (item.name == "pocket knife") {
+	                console.log("--drawing pcoket knife...");
+	                var shank = this.game.add.sprite(gridPos.x + 65 * invSlot.x + (65 * item.shapeWidth - 54 * item.shapeWidth) / 2, gridPos.y + 65 * invSlot.y + (65 * item.shapeHeight - 54 * item.shapeHeight) / 2, 'shank0');
+	                this.inventoryItemsGroup.add(shank);
+	            }
 	        }
 	    }, {
 	        key: 'addEquippedSprite',
@@ -112596,6 +112613,12 @@
 	            }, this);
 
 	            this.equippedItemsGroup.add(drawnObject);
+
+	            if (item.name == "pocket knife") {
+	                console.log("--drawing pcoket knife...");
+	                var shank = this.game.add.sprite(this.equippedSlots.position.x + slotSprite.position.x + (slotSprite.width - 27 * item.shapeWidth) / 2, this.equippedSlots.position.y + slotSprite.position.y + (slotSprite.height - 27 * item.shapeHeight) / 2, 'shank0');
+	                this.equippedItemsGroup.add(shank);
+	            }
 	        }
 	    }, {
 	        key: 'drawInventoryItems',
