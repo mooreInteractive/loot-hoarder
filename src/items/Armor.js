@@ -76,6 +76,7 @@ export function build(levelMin, levelMax) {
         break;
     case 'hand':
         armor.name = 'Shield';
+        armor.sprite = 'shield3';
         armor.shape = [
             [1,1,0,0],
             [1,1,0,0],

@@ -30,7 +30,9 @@ export default class extends Phaser.State {
         this.load.image('redButton', './assets/images/red_button00.png');
 
         //weapons
-        this.load.image('shank0', './assets/images/shank.png');
+        this.load.image('shank0', './assets/images/items/shank.png');
+        this.load.image('spear0', './assets/images/items/spear.png');
+        this.load.image('shield3', './assets/images/items/shield.png');
 
         this.game.load.spritesheet('mob1', './assets/images/Mob1.png', 32, 32);
         this.game.load.spritesheet('walkingMan', './assets/images/child_walk_tanned.png', 64, 64);

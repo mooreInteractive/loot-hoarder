@@ -140,7 +140,7 @@ export default class extends Phaser.State {
                     if(enemy.hp < 1){//killed an enemey
                         //get loot
                         let lootChance = Forge.rand(0,100);
-                        if( lootChance > 60 ){
+                        if( lootChance > 50){
                             loot.push(Forge.getRandomItem(1,3));
                         }
                         //get exp

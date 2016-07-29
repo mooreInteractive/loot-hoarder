@@ -32,7 +32,8 @@ export function build(levelMin, levelMax) {
         'shapeWidth': 2,
         'shapeHeight': 3,
         'inventorySlot': {x:0, y:0},
-        'value': 0
+        'value': 0,
+        'sprite': ''
     };
 
     switch(this.rand(0,2)){
@@ -45,6 +46,7 @@ export function build(levelMin, levelMax) {
     if(weapon.type == 'melee'){
         switch(this.rand(0,3)){
         case 0: weapon.name = 'Spear';
+            weapon.sprite = 'spear0';
             break;
         case 1: weapon.name = 'Sword';
             break;
