@@ -238,8 +238,11 @@ export default class extends Phaser.State {
         bmd.ctx.fillStyle = '#ababab';
         bmd.ctx.fill();
         //console.log('--placing piece at x,y:', gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2));
-        drawnObject = this.game.add.sprite(gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2), bmd);
-
+        if(item.sprite){
+            drawnObject = this.game.add.sprite(gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - (item.shapeWidth*54))/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - (item.shapeHeight*54))/2), item.sprite);
+        } else {
+            drawnObject = this.game.add.sprite(gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2), bmd);
+        }
         drawnObject.inputEnabled = true;
         drawnObject.input.enableDrag();
         drawnObject.originalPosition = drawnObject.position.clone();
@@ -259,17 +262,16 @@ export default class extends Phaser.State {
 
         this.inventoryItemsGroup.add(drawnObject);
 
-        if(item.sprite){
-            console.log("--drawing weapon...");
-            let shank = this.game.add.sprite(gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - 31)/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - 28)/2), item.sprite);
-
-            shank.inputEnabled = true;
-            shank.input.enableDrag();
-            shank.originalPosition = shank.position.clone();
-
-            this.inventoryItemsGroup.add(shank);
-            drawnObject.itemSprite = shank;
-        }
+        // if(item.sprite){
+        //     let shank = this.game.add.sprite(gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - (item.shapeWidth*54))/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - (item.shapeHeight*54))/2), item.sprite);
+        //
+        //     shank.inputEnabled = true;
+        //     shank.input.enableDrag();
+        //     shank.originalPosition = shank.position.clone();
+        //
+        //     this.inventoryItemsGroup.add(shank);
+        //     drawnObject.itemSprite = shank;
+        // }
     }
 
     addEquippedSprite(item, gridPos, key){
@@ -287,8 +289,13 @@ export default class extends Phaser.State {
         bmd.ctx.fillStyle = '#ababab';
         bmd.ctx.fill();
         //console.log('--placing piece at x,y:', gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2));
-        drawnObject = this.game.add.sprite(this.equippedSlots.position.x + slotSprite.position.x + ((slotSprite.width - 27*item.shapeWidth)/2), this.equippedSlots.position.y + slotSprite.position.y + ((slotSprite.height - 27*item.shapeHeight)/2), bmd);
-
+        if(item.sprite){
+            drawnObject = this.game.add.sprite(this.equippedSlots.position.x + slotSprite.position.x + ((slotSprite.width - item.shapeWidth*27)/2), this.equippedSlots.position.y + slotSprite.position.y + ((slotSprite.height - (item.shapeHeight*27))/2), item.sprite);
+            drawnObject.scale.x = 0.5;
+            drawnObject.scale.y = 0.5;
+        } else {
+            drawnObject = this.game.add.sprite(this.equippedSlots.position.x + slotSprite.position.x + ((slotSprite.width - 27*item.shapeWidth)/2), this.equippedSlots.position.y + slotSprite.position.y + ((slotSprite.height - 27*item.shapeHeight)/2), bmd);
+        }
 
 
         drawnObject.inputEnabled = true;
@@ -310,17 +317,17 @@ export default class extends Phaser.State {
 
         this.equippedItemsGroup.add(drawnObject);
 
-        if(item.sprite){
-            console.log("--drawing item sprite...");
-            let shank = this.game.add.sprite(this.equippedSlots.position.x + slotSprite.position.x + ((slotSprite.width - 31)/2), this.equippedSlots.position.y + slotSprite.position.y + ((slotSprite.height - 28)/2), item.sprite);
-
-            shank.inputEnabled = true;
-            shank.input.enableDrag();
-            shank.originalPosition = shank.position.clone();
-
-            this.equippedItemsGroup.add(shank);
-            drawnObject.itemSprite = shank;
-        }
+        // if(item.sprite){
+        //     let shank = this.game.add.sprite(this.equippedSlots.position.x + slotSprite.position.x + ((slotSprite.width - item.shapeWidth*27)/2), this.equippedSlots.position.y + slotSprite.position.y + ((slotSprite.height - (item.shapeHeight*27))/2), item.sprite);
+        //     shank.scale.x = 0.5;
+        //     shank.scale.y = 0.5;
+        //     shank.inputEnabled = true;
+        //     shank.input.enableDrag();
+        //     shank.originalPosition = shank.position.clone();
+        //
+        //     this.equippedItemsGroup.add(shank);
+        //     drawnObject.itemSprite = shank;
+        // }
     }
 
     drawInventoryItems(){
