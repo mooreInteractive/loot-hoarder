@@ -103,6 +103,12 @@ class Player {
     heal(){
         if(!this.battling){
             this.battleStats.currentHealth += this.battleStats.wisdom * 1;
+            //healed hooks
+            if(    this.battleStats.currentHealth == this.baseStats.health
+                || this.battleStats.currentHealth%(Math.floor(this.baseStats.health/.25)) == 0//quarter health increments
+            ){
+                this.savePlayerData();
+            }
         }
         if(this.battleStats.currentHealth > this.battleStats.health){
             this.battleStats.currentHealth = this.battleStats.health;
@@ -157,6 +163,8 @@ class Player {
     }
 
     savePlayerData(){
+
+        console.log('***saving player data...');
         let backpackImage = [[],[],[],[]];
         this.backpack.forEach((row, index) => {
             this.backpack[index].forEach((slot, index2) => {

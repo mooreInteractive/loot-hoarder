@@ -9079,10 +9079,19 @@
 	    function Game() {
 	        _classCallCheck(this, Game);
 
-	        var width = document.documentElement.clientWidth > 768 ? 768 : document.documentElement.clientWidth;
-	        var height = document.documentElement.clientHeight > 1024 ? 1024 : document.documentElement.clientHeight;
+	        var width = 768;
+	        var height = 1024;
+
+	        // let scalor = new ScaleManager(this, 100, 100);
+	        // console.log("scalor:", scalor);
 
 	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Game).call(this, width, height, _phaser2.default.AUTO, 'content', null));
+
+	        var field = document.getElementById('content');
+	        //Init Utilities
+	        _this.disableContextMenu(field);
+	        window.addEventListener('resize', _this.OnResizeCalled.bind(_this), false);
+	        //this.OnResizeCalled();
 
 	        var playerData = null;
 	        var playerClock = 0;
@@ -9147,6 +9156,32 @@
 	                    this.dungeons = JSON.parse(dungeonsString);
 	                }
 	            }
+	        }
+	    }, {
+	        key: 'OnResizeCalled',
+	        value: function OnResizeCalled() {
+	            var gameWidth = window.innerWidth;
+	            var gameHeight = window.innerHeight;
+	            var scaleToFitX = gameWidth / 768;
+	            var scaleToFitY = gameHeight / 1024;
+
+	            var currentScreenRatio = gameHeight / gameWidth;
+	            var optimalRatio = Math.min(scaleToFitX, scaleToFitY);
+
+	            this.scale.setUserScale(optimalRatio, optimalRatio, 0, 0);
+	        }
+
+	        //function castleUI (){return true;}
+
+	    }, {
+	        key: 'disableContextMenu',
+	        value: function disableContextMenu(element) {
+	            element.oncontextmenu = function (e) {
+	                if (e) {
+	                    e.stopPropagation();
+	                }
+	                return false;
+	            };
 	        }
 	    }]);
 
@@ -111026,6 +111061,10 @@
 	    }, {
 	        key: 'preload',
 	        value: function preload() {
+	            //set up game scale, and resize function
+	            this.game.scale.scaleMode = _phaser2.default.ScaleManager.USER_SCALE;
+	            this.game.OnResizeCalled();
+
 	            _webfontloader2.default.load({
 	                google: {
 	                    families: ['Nunito']
@@ -111051,6 +111090,7 @@
 	            this.load.image('spear0', './assets/images/items/spear.png');
 	            this.load.image('shield3', './assets/images/items/shield.png');
 	            this.load.image('sword2', './assets/images/items/sword.png');
+	            this.load.image('axe0', './assets/images/items/axe.png');
 
 	            this.game.load.spritesheet('mob1', './assets/images/Mob1.png', 32, 32);
 	            this.game.load.spritesheet('walkingMan', './assets/images/child_walk_tanned.png', 64, 64);
@@ -111434,19 +111474,19 @@
 	            this.raidTexts = [];
 	            this.dungeonTexts = [];
 	            this.game.dungeons.forEach(function (dungeon, index) {
-	                var btn = new _phaser2.default.Button(_this2.game, 150, 110 * (index + 1), 'redButton', _this2.viewMap.bind(_this2, dungeon), _this2);
+	                var btn = new _phaser2.default.Button(_this2.game, 150, 55 + 55 * (index + 1), 'redButton', _this2.viewMap.bind(_this2, dungeon), _this2);
 	                btn.anchor.setTo(0.5);
 	                _this2.game.add.existing(btn);
 	                _this2.raidBtns.push(btn);
 
-	                var raidText = _this2.add.text(150, 110 * (index + 1), 'Raid D-' + (index + 1));
+	                var raidText = _this2.add.text(150, 55 + 55 * (index + 1), 'Raid D-' + (index + 1));
 	                raidText.font = 'Nunito';
 	                raidText.fontSize = 28;
 	                raidText.fill = '#111111';
 	                raidText.anchor.setTo(0.5);
 	                _this2.raidTexts.push(raidText);
 
-	                var dungeonText = _this2.add.text(250, 95 * (index + 1), 'Enemies Left: ' + dungeon.enemiesLeft);
+	                var dungeonText = _this2.add.text(250, 45 + 55 * (index + 1), 'Enemies Left: ' + dungeon.enemiesLeft);
 	                dungeonText.font = 'Nunito';
 	                dungeonText.fontSize = 22;
 	                dungeonText.fill = '#000000';
@@ -111460,11 +111500,46 @@
 	            this.errorText.anchor.setTo(0.5);
 	            this.errorText.visible = false;
 
-	            this.healthText = this.add.text(this.game.world.centerX, this.game.world.centerY, 'Health:');
+	            /* Player Health Bar Graphic and Text */
+	            var healthBarBackgroundBitMap = this.game.add.bitmapData(106, 26);
+	            var healthBarBitMap = this.game.add.bitmapData(100, 20);
+
+	            healthBarBackgroundBitMap.ctx.beginPath();
+	            healthBarBackgroundBitMap.ctx.rect(0, 0, 106, 26);
+	            healthBarBackgroundBitMap.ctx.fillStyle = '#111111';
+	            healthBarBackgroundBitMap.ctx.fill();
+
+	            healthBarBitMap.ctx.beginPath();
+	            healthBarBitMap.ctx.rect(0, 0, 100, 20);
+	            healthBarBitMap.ctx.fillStyle = '#DE1111';
+	            healthBarBitMap.ctx.fill();
+
+	            this.healthBarBg = this.game.add.sprite(this.game.world.centerX - 55, this.game.world.centerY - 15, healthBarBackgroundBitMap);
+	            this.healthBar = this.game.add.sprite(this.game.world.centerX - 52, this.game.world.centerY - 12, healthBarBitMap);
+
+	            this.healthText = this.add.text(this.game.world.centerX - 50, this.game.world.centerY - 12, 'Hp:');
 	            this.healthText.font = 'Nunito';
-	            this.healthText.fontSize = 22;
-	            this.healthText.fill = '#000000';
-	            this.healthText.anchor.setTo(0.5);
+	            this.healthText.fontSize = 14;
+	            this.healthText.fill = '#FFFFFF';
+
+	            /* Reused Enemy HealthBar Graphic */
+	            var EnHpBarBg = this.game.add.bitmapData(106, 26);
+	            var EnHpBar = this.game.add.bitmapData(100, 20);
+
+	            EnHpBarBg.ctx.beginPath();
+	            EnHpBarBg.ctx.rect(0, 0, 106, 26);
+	            EnHpBarBg.ctx.fillStyle = '#111111';
+	            EnHpBarBg.ctx.fill();
+
+	            EnHpBar.ctx.beginPath();
+	            EnHpBar.ctx.rect(0, 0, 100, 20);
+	            EnHpBar.ctx.fillStyle = '#DE11CD';
+	            EnHpBar.ctx.fill();
+
+	            this.EnhealthBarBg = this.game.add.sprite(this.game.world.centerX + 155, this.game.world.centerY - 15, EnHpBarBg);
+	            this.EnhealthBar = this.game.add.sprite(this.game.world.centerX + 158, this.game.world.centerY - 12, EnHpBar);
+	            this.EnhealthBarBg.visible = false;
+	            this.EnhealthBar.visible = false;
 
 	            this.lootText = this.add.text(this.game.world.centerX - 150, this.game.world.centerY + 100, '');
 	            this.lootText.font = 'Nunito';
@@ -111523,8 +111598,10 @@
 
 	                    var checkForEnemies = function checkForEnemies() {
 	                        if (dungeon.currentEnemies.length > 0) {
-	                            var tween = _this3.game.add.tween(_this3.enSprite).to({ x: _this3.game.world.centerX + 120 }, 400, null, true);
+	                            var tween = _this3.game.add.tween(_this3.enSprite).to({ x: _this3.game.world.centerX + 235 }, 400, null, true);
 	                            tween.onComplete.addOnce(function () {
+	                                _this3.EnhealthBarBg.visible = true;
+	                                _this3.EnhealthBar.visible = true;
 	                                battleEnemy(dungeon.currentEnemies[0]);
 	                            }, _this3);
 	                        }
@@ -111533,15 +111610,20 @@
 	                    var battleEnemy = function battleEnemy(enemy) {
 	                        enemy.originalHp = enemy.hp;
 	                        while (enemy.hp > 0) {
+	                            var enHealthPercent = enemy.hp / enemy.originalHp < 0 ? 0 : enemy.hp / enemy.originalHp;
+	                            _this3.EnhealthBar.scale.x = enHealthPercent;
+
 	                            var strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
 	                            enemy.hp -= strike;
-	                            var enStrike = enemy.dps - player.battleStats.armor > -1 ? enemy.dps - player.battleStats.armor : 0;
+	                            var armorReduction = Math.ceil(enemy.dps * (player.battleStats.armor / 100));
+	                            var enStrike = enemy.dps - armorReduction;
 	                            player.battleStats.currentHealth -= enStrike;
 	                            console.log('En: -' + strike + 'hp (' + enemy.hp + '), Pl: -' + enStrike + 'hp (' + player.battleStats.currentHealth + ')');
 	                            if (player.battleStats.currentHealth < 1) {
 	                                break;
 	                            }
 	                        }
+
 	                        setTimeout(function () {
 	                            if (enemy.hp < 1) {
 	                                //killed an enemey
@@ -111553,15 +111635,19 @@
 	                                //get exp
 	                                player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
 	                                //remove enemy from dungeon
-	                                _this3.enSprite.visible = false;
+	                                //this.enSprite.visible = false;
 	                                _this3.enSprite.position.x = _this3.game.world.width + 70;
 	                                dungeon.currentEnemies.splice(0, 1);
 	                                dungeon.enemiesLeft = dungeon.currentEnemies.length;
 	                            }
 
 	                            if (dungeon.currentEnemies.length == 0 || player.battleStats.currentHealth < 1) {
+	                                _this3.EnhealthBarBg.visible = false;
+	                                _this3.EnhealthBar.visible = false;
 	                                finishUpRaid(dungeon);
 	                            } else {
+	                                _this3.EnhealthBarBg.visible = false;
+	                                _this3.EnhealthBar.visible = false;
 	                                checkForEnemies();
 	                            }
 	                        }, 1000);
@@ -111746,7 +111832,15 @@
 	    }, {
 	        key: 'update',
 	        value: function update() {
-	            this.healthText.text = 'Health: ' + this.game.player.battleStats.currentHealth + '/' + this.game.player.battleStats.health;
+	            var currHealth = this.game.player.battleStats.currentHealth;
+	            var maxHealth = this.game.player.battleStats.health;
+	            var healthPercent = currHealth / maxHealth;
+	            if (healthPercent < 0) {
+	                healthPercent = 0;
+	            }
+
+	            this.healthText.text = 'Hp: ' + currHealth + '/' + maxHealth;
+	            this.healthBar.scale.x = healthPercent;
 	        }
 	    }, {
 	        key: 'render',
@@ -111881,6 +111975,7 @@
 	                break;
 	            case 2:
 	                weapon.name = 'Axe';
+	                weapon.sprite = 'axe0';
 	                break;
 	        }
 	        weapon.shape = [[1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]];
@@ -112909,6 +113004,11 @@
 	        value: function heal() {
 	            if (!this.battling) {
 	                this.battleStats.currentHealth += this.battleStats.wisdom * 1;
+	                //healed hooks
+	                if (this.battleStats.currentHealth == this.baseStats.health || this.battleStats.currentHealth % Math.floor(this.baseStats.health / .25) == 0 //quarter health increments
+	                ) {
+	                        this.savePlayerData();
+	                    }
 	            }
 	            if (this.battleStats.currentHealth > this.battleStats.health) {
 	                this.battleStats.currentHealth = this.battleStats.health;
@@ -112970,6 +113070,7 @@
 	        value: function savePlayerData() {
 	            var _this2 = this;
 
+	            console.log('***saving player data...');
 	            var backpackImage = [[], [], [], []];
 	            this.backpack.forEach(function (row, index) {
 	                _this2.backpack[index].forEach(function (slot, index2) {

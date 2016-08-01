@@ -52,6 +52,7 @@ export function build(levelMin, levelMax) {
             weapon.sprite = 'sword2';
             break;
         case 2: weapon.name = 'Axe';
+            weapon.sprite = 'axe0';
             break;
         }
         weapon.shape = [

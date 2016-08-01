@@ -12,10 +12,19 @@ import Player from './Player';
 class Game extends Phaser.Game {
 
     constructor () {
-        let width = document.documentElement.clientWidth > 768 ? 768 : document.documentElement.clientWidth;
-        let height = document.documentElement.clientHeight > 1024 ? 1024 : document.documentElement.clientHeight;
+        let width = 768;
+        let height = 1024;
 
         super(width, height, Phaser.AUTO, 'content', null);
+
+        // let scalor = new ScaleManager(this, 100, 100);
+        // console.log("scalor:", scalor);
+
+        let field = document.getElementById('content');
+        //Init Utilities
+        this.disableContextMenu(field);
+        window.addEventListener('resize', this.OnResizeCalled.bind(this), false);
+        //this.OnResizeCalled();
 
         let playerData = null;
         let playerClock = 0;
@@ -136,6 +145,26 @@ class Game extends Phaser.Game {
             }
         }
 
+    }
+
+    OnResizeCalled() {
+        let gameWidth = window.innerWidth;
+        let gameHeight = window.innerHeight;
+        let scaleToFitX = gameWidth / 768;
+        let scaleToFitY = gameHeight / 1024;
+
+        let currentScreenRatio = gameHeight / gameWidth;
+        let optimalRatio = Math.min(scaleToFitX, scaleToFitY);
+
+        this.scale.setUserScale(optimalRatio, optimalRatio, 0, 0);
+    }
+
+    //function castleUI (){return true;}
+    disableContextMenu(element) {
+        element.oncontextmenu = function(e) {
+            if (e){e.stopPropagation();}
+            return false;
+        };
     }
 }
 

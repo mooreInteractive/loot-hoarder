@@ -33,19 +33,19 @@ export default class extends Phaser.State {
         this.raidTexts = [];
         this.dungeonTexts = [];
         this.game.dungeons.forEach((dungeon, index)=> {
-            let btn = new Phaser.Button(this.game, 150, 110*(index+1), 'redButton', this.viewMap.bind(this, dungeon), this);
+            let btn = new Phaser.Button(this.game, 150, 55 + 55*(index+1), 'redButton', this.viewMap.bind(this, dungeon), this);
             btn.anchor.setTo(0.5);
             this.game.add.existing(btn);
             this.raidBtns.push(btn);
 
-            let raidText = this.add.text(150, 110*(index+1), `Raid D-${(index+1)}`);
+            let raidText = this.add.text(150, 55 + 55*(index+1), `Raid D-${(index+1)}`);
             raidText.font = 'Nunito';
             raidText.fontSize = 28;
             raidText.fill = '#111111';
             raidText.anchor.setTo(0.5);
             this.raidTexts.push(raidText);
 
-            let dungeonText = this.add.text(250, 95*(index+1), `Enemies Left: ${dungeon.enemiesLeft}`);
+            let dungeonText = this.add.text(250, 45 + 55*(index+1), `Enemies Left: ${dungeon.enemiesLeft}`);
             dungeonText.font = 'Nunito';
             dungeonText.fontSize = 22;
             dungeonText.fill = '#000000';
@@ -61,11 +61,47 @@ export default class extends Phaser.State {
         this.errorText.anchor.setTo(0.5);
         this.errorText.visible = false;
 
-        this.healthText = this.add.text(this.game.world.centerX, this.game.world.centerY, 'Health:');
+        /* Player Health Bar Graphic and Text */
+        let healthBarBackgroundBitMap = this.game.add.bitmapData(106, 26);
+        let healthBarBitMap = this.game.add.bitmapData(100, 20);
+
+        healthBarBackgroundBitMap.ctx.beginPath();
+        healthBarBackgroundBitMap.ctx.rect(0, 0, 106, 26);
+        healthBarBackgroundBitMap.ctx.fillStyle = '#111111';
+        healthBarBackgroundBitMap.ctx.fill();
+
+        healthBarBitMap.ctx.beginPath();
+        healthBarBitMap.ctx.rect(0, 0, 100, 20);
+        healthBarBitMap.ctx.fillStyle = '#DE1111';
+        healthBarBitMap.ctx.fill();
+
+        this.healthBarBg = this.game.add.sprite(this.game.world.centerX-55, this.game.world.centerY-15, healthBarBackgroundBitMap);
+        this.healthBar = this.game.add.sprite(this.game.world.centerX-52, this.game.world.centerY-12, healthBarBitMap);
+
+        this.healthText = this.add.text(this.game.world.centerX - 50, this.game.world.centerY-12, 'Hp:');
         this.healthText.font = 'Nunito';
-        this.healthText.fontSize = 22;
-        this.healthText.fill = '#000000';
-        this.healthText.anchor.setTo(0.5);
+        this.healthText.fontSize = 14;
+        this.healthText.fill = '#FFFFFF';
+
+        /* Reused Enemy HealthBar Graphic */
+        let EnHpBarBg = this.game.add.bitmapData(106, 26);
+        let EnHpBar = this.game.add.bitmapData(100, 20);
+
+        EnHpBarBg.ctx.beginPath();
+        EnHpBarBg.ctx.rect(0, 0, 106, 26);
+        EnHpBarBg.ctx.fillStyle = '#111111';
+        EnHpBarBg.ctx.fill();
+
+        EnHpBar.ctx.beginPath();
+        EnHpBar.ctx.rect(0, 0, 100, 20);
+        EnHpBar.ctx.fillStyle = '#DE11CD';
+        EnHpBar.ctx.fill();
+
+        this.EnhealthBarBg = this.game.add.sprite(this.game.world.centerX+155, this.game.world.centerY-15, EnHpBarBg);
+        this.EnhealthBar = this.game.add.sprite(this.game.world.centerX+158, this.game.world.centerY-12, EnHpBar);
+        this.EnhealthBarBg.visible = false;
+        this.EnhealthBar.visible = false;
+
 
         this.lootText = this.add.text(this.game.world.centerX - 150, this.game.world.centerY + 100, '');
         this.lootText.font = 'Nunito';
@@ -118,8 +154,10 @@ export default class extends Phaser.State {
 
             let checkForEnemies = () => {
                 if(dungeon.currentEnemies.length > 0){
-                    let tween = this.game.add.tween(this.enSprite).to( { x: this.game.world.centerX + 120 }, 400, null, true);
+                    let tween = this.game.add.tween(this.enSprite).to( { x: this.game.world.centerX + 235 }, 400, null, true);
                     tween.onComplete.addOnce(() => {
+                        this.EnhealthBarBg.visible = true;
+                        this.EnhealthBar.visible = true;
                         battleEnemy(dungeon.currentEnemies[0]);
                     }, this);
                 }
@@ -129,13 +167,18 @@ export default class extends Phaser.State {
             let battleEnemy = (enemy) => {
                 enemy.originalHp = enemy.hp;
                 while(enemy.hp > 0){
+                    let enHealthPercent = enemy.hp/enemy.originalHp < 0 ? 0 : enemy.hp/enemy.originalHp;
+                    this.EnhealthBar.scale.x = enHealthPercent;
+
                     let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
                     enemy.hp -= strike;
-                    let enStrike = enemy.dps - player.battleStats.armor > -1 ? enemy.dps - player.battleStats.armor : 0;
+                    let armorReduction = Math.ceil(enemy.dps*(player.battleStats.armor/100));
+                    let enStrike = enemy.dps - armorReduction;
                     player.battleStats.currentHealth -= enStrike;
                     console.log(`En: -${strike}hp (${enemy.hp}), Pl: -${enStrike}hp (${player.battleStats.currentHealth})`);
                     if(player.battleStats.currentHealth < 1){ break; }
                 }
+
                 setTimeout(() => {
                     if(enemy.hp < 1){//killed an enemey
                         //get loot
@@ -146,15 +189,19 @@ export default class extends Phaser.State {
                         //get exp
                         player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
                         //remove enemy from dungeon
-                        this.enSprite.visible = false;
+                        //this.enSprite.visible = false;
                         this.enSprite.position.x = this.game.world.width + 70;
                         dungeon.currentEnemies.splice(0, 1);
                         dungeon.enemiesLeft = dungeon.currentEnemies.length;
                     }
 
                     if(dungeon.currentEnemies.length == 0 || player.battleStats.currentHealth < 1){
+                        this.EnhealthBarBg.visible = false;
+                        this.EnhealthBar.visible = false;
                         finishUpRaid(dungeon);
                     } else {
+                        this.EnhealthBarBg.visible = false;
+                        this.EnhealthBar.visible = false;
                         checkForEnemies();
                     }
                 }, 1000);
@@ -324,7 +371,13 @@ export default class extends Phaser.State {
     }
 
     update(){
-        this.healthText.text = `Health: ${this.game.player.battleStats.currentHealth}/${this.game.player.battleStats.health}`;
+        let currHealth = this.game.player.battleStats.currentHealth;
+        let maxHealth = this.game.player.battleStats.health;
+        let healthPercent = currHealth/maxHealth;
+        if(healthPercent < 0){ healthPercent = 0; }
+
+        this.healthText.text = `Hp: ${currHealth}/${maxHealth}`;
+        this.healthBar.scale.x = healthPercent;
     }
 
     render (){
@@ -333,7 +386,6 @@ export default class extends Phaser.State {
             localStorage.setItem('loot-hoarder-clock', time);
             if(this.game.player.battleStats.currentHealth < this.game.player.battleStats.health){
                 this.game.player.heal();
-
             }
         }
     }
