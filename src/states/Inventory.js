@@ -9,18 +9,9 @@ export default class extends Phaser.State {
     }
 
     preload () {
-
         //Inv Button
         this.inventoryBtn = new Phaser.Button(this.game, 150, 50, 'blueButton', this.backToMain, this);
         this.inventoryBtn.anchor.setTo(0.5);
-
-        //weapons??
-        this.weaponGfx = [];
-
-        // let shank0 = this.game.add.sprite(this.game.world.width - 70, this.game.world.centerY - 90, 'shank0');
-        // shank0.visible = false;
-        //
-        // this.weaponGfx.push(shank0);
     }
 
     create () {

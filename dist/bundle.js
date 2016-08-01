@@ -9057,11 +9057,15 @@
 
 	var _MainMenu2 = _interopRequireDefault(_MainMenu);
 
-	var _Inventory = __webpack_require__(/*! ./states/Inventory */ 317);
+	var _Inventory = __webpack_require__(/*! ./states/Inventory */ 313);
 
 	var _Inventory2 = _interopRequireDefault(_Inventory);
 
-	var _Player = __webpack_require__(/*! ./Player */ 318);
+	var _Raid = __webpack_require__(/*! ./states/Raid */ 315);
+
+	var _Raid2 = _interopRequireDefault(_Raid);
+
+	var _Player = __webpack_require__(/*! ./Player */ 320);
 
 	var _Player2 = _interopRequireDefault(_Player);
 
@@ -9079,13 +9083,16 @@
 	    function Game() {
 	        _classCallCheck(this, Game);
 
-	        var width = 768;
-	        var height = 1024;
+	        var baseWidth = 768;
+	        var baseHeight = 1080;
+
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Game).call(this, baseWidth, baseHeight, _phaser2.default.AUTO, 'content', null));
+
+	        _this.baseWidth = baseWidth;
+	        _this.baseHeight = baseHeight;
 
 	        // let scalor = new ScaleManager(this, 100, 100);
 	        // console.log("scalor:", scalor);
-
-	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Game).call(this, width, height, _phaser2.default.AUTO, 'content', null));
 
 	        var field = document.getElementById('content');
 	        //Init Utilities
@@ -9112,6 +9119,7 @@
 	        _this.state.add('Game', _Game2.default, false);
 	        _this.state.add('MainMenu', _MainMenu2.default, false);
 	        _this.state.add('Inventory', _Inventory2.default, false);
+	        _this.state.add('Raid', _Raid2.default, false);
 
 	        _this.state.start('Boot');
 	        return _this;
@@ -9162,10 +9170,8 @@
 	        value: function OnResizeCalled() {
 	            var gameWidth = window.innerWidth;
 	            var gameHeight = window.innerHeight;
-	            var scaleToFitX = gameWidth / 768;
-	            var scaleToFitY = gameHeight / 1024;
-
-	            var currentScreenRatio = gameHeight / gameWidth;
+	            var scaleToFitX = gameWidth / this.baseWidth;
+	            var scaleToFitY = gameHeight / this.baseHeight;
 	            var optimalRatio = Math.min(scaleToFitX, scaleToFitY);
 
 	            this.scale.setUserScale(optimalRatio, optimalRatio, 0, 0);
@@ -111413,15 +111419,9 @@
 
 	var _phaser2 = _interopRequireDefault(_phaser);
 
-	var _Forge = __webpack_require__(/*! ../items/Forge */ 312);
+	var _LootList = __webpack_require__(/*! ../components/LootList */ 312);
 
-	var Forge = _interopRequireWildcard(_Forge);
-
-	var _levels = __webpack_require__(/*! ../data/levels */ 316);
-
-	var _utils = __webpack_require__(/*! ../utils */ 309);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	var _LootList2 = _interopRequireDefault(_LootList);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -111443,16 +111443,18 @@
 	    _createClass(_class, [{
 	        key: 'init',
 	        value: function init() {
+	            var loot = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+
 	            this.inventoryOpen = false;
 	            this.game.player.savePlayerData();
-	            this.lootKeepBtns = [];
-	            this.lootSellBtns = [];
+	            this.loot = loot;
 	        }
 	    }, {
 	        key: 'create',
 	        value: function create() {
 	            var _this2 = this;
 
+	            this.lootList = new _LootList2.default(this.game, this.loot, this);
 	            //clear data button
 	            this.clearDataBtn = new _phaser2.default.Button(this.game, this.game.world.width - 50, 0, 'redButton', this.clearPlayerData, this);
 	            this.clearDataBtn.scale.x = 0.2;
@@ -111522,43 +111524,13 @@
 	            this.healthText.fontSize = 14;
 	            this.healthText.fill = '#FFFFFF';
 
-	            /* Reused Enemy HealthBar Graphic */
-	            var EnHpBarBg = this.game.add.bitmapData(106, 26);
-	            var EnHpBar = this.game.add.bitmapData(100, 20);
-
-	            EnHpBarBg.ctx.beginPath();
-	            EnHpBarBg.ctx.rect(0, 0, 106, 26);
-	            EnHpBarBg.ctx.fillStyle = '#111111';
-	            EnHpBarBg.ctx.fill();
-
-	            EnHpBar.ctx.beginPath();
-	            EnHpBar.ctx.rect(0, 0, 100, 20);
-	            EnHpBar.ctx.fillStyle = '#DE11CD';
-	            EnHpBar.ctx.fill();
-
-	            this.EnhealthBarBg = this.game.add.sprite(this.game.world.centerX + 155, this.game.world.centerY - 15, EnHpBarBg);
-	            this.EnhealthBar = this.game.add.sprite(this.game.world.centerX + 158, this.game.world.centerY - 12, EnHpBar);
-	            this.EnhealthBarBg.visible = false;
-	            this.EnhealthBar.visible = false;
-
-	            this.lootText = this.add.text(this.game.world.centerX - 150, this.game.world.centerY + 100, '');
-	            this.lootText.font = 'Nunito';
-	            this.lootText.fontSize = 22;
-	            this.lootText.fill = '#000000';
-
 	            //walkign man
 	            this.dude = this.game.add.sprite(this.game.world.centerX - 50, this.game.world.centerY - 120, 'walkingMan');
 	            this.dude.scale.setTo(1.5, 1.5);
 	            this.dude.animations.add('walk', [30, 31, 32, 33, 34, 35, 36, 37, 38], 18);
 	            this.dude.animations.play('walk', 18, true);
 
-	            //enSprite
-	            this.enSprite = this.game.add.sprite(this.game.world.width + 70, this.game.world.centerY - 90, 'mob1');
-	            this.enSprite.scale.x = -2;
-	            this.enSprite.scale.y = 2;
-	            this.enSprite.animations.add('walk', [0, 1, 2, 3, 4, 5, 6, 7], 10);
-	            this.enSprite.animations.play('walk', 10, true);
-	            this.enSprite.visible = false;
+	            this.lootList.updateLootTextAndButtons(this.loot);
 	        }
 	    }, {
 	        key: 'clearPlayerData',
@@ -111579,255 +111551,7 @@
 	        key: 'viewMap',
 	        value: function viewMap(dungeon) {
 	            this.errorText.visible = false;
-
-	            this.raidDungeon(dungeon);
-	            //this.game.player.inventory.push(newRandWeapon);
-	        }
-	    }, {
-	        key: 'raidDungeon',
-	        value: function raidDungeon(dungeon) {
-	            var _this3 = this;
-
-	            console.log('--dungeon beign raided:', dungeon);
-	            var player = this.game.player;
-	            if (player.battleStats.currentHealth > 1) {
-	                (function () {
-	                    player.battling = true;
-	                    var loot = [];
-	                    _this3.enSprite.visible = true;
-
-	                    var checkForEnemies = function checkForEnemies() {
-	                        if (dungeon.currentEnemies.length > 0) {
-	                            var tween = _this3.game.add.tween(_this3.enSprite).to({ x: _this3.game.world.centerX + 235 }, 400, null, true);
-	                            tween.onComplete.addOnce(function () {
-	                                _this3.EnhealthBarBg.visible = true;
-	                                _this3.EnhealthBar.visible = true;
-	                                battleEnemy(dungeon.currentEnemies[0]);
-	                            }, _this3);
-	                        }
-	                    };
-
-	                    var battleEnemy = function battleEnemy(enemy) {
-	                        enemy.originalHp = enemy.hp;
-	                        while (enemy.hp > 0) {
-	                            var enHealthPercent = enemy.hp / enemy.originalHp < 0 ? 0 : enemy.hp / enemy.originalHp;
-	                            _this3.EnhealthBar.scale.x = enHealthPercent;
-
-	                            var strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
-	                            enemy.hp -= strike;
-	                            var armorReduction = Math.ceil(enemy.dps * (player.battleStats.armor / 100));
-	                            var enStrike = enemy.dps - armorReduction;
-	                            player.battleStats.currentHealth -= enStrike;
-	                            console.log('En: -' + strike + 'hp (' + enemy.hp + '), Pl: -' + enStrike + 'hp (' + player.battleStats.currentHealth + ')');
-	                            if (player.battleStats.currentHealth < 1) {
-	                                break;
-	                            }
-	                        }
-
-	                        setTimeout(function () {
-	                            if (enemy.hp < 1) {
-	                                //killed an enemey
-	                                //get loot
-	                                var lootChance = Forge.rand(0, 100);
-	                                if (lootChance > 50) {
-	                                    loot.push(Forge.getRandomItem(1, 3));
-	                                }
-	                                //get exp
-	                                player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
-	                                //remove enemy from dungeon
-	                                //this.enSprite.visible = false;
-	                                _this3.enSprite.position.x = _this3.game.world.width + 70;
-	                                dungeon.currentEnemies.splice(0, 1);
-	                                dungeon.enemiesLeft = dungeon.currentEnemies.length;
-	                            }
-
-	                            if (dungeon.currentEnemies.length == 0 || player.battleStats.currentHealth < 1) {
-	                                _this3.EnhealthBarBg.visible = false;
-	                                _this3.EnhealthBar.visible = false;
-	                                finishUpRaid(dungeon);
-	                            } else {
-	                                _this3.EnhealthBarBg.visible = false;
-	                                _this3.EnhealthBar.visible = false;
-	                                checkForEnemies();
-	                            }
-	                        }, 1000);
-	                    };
-
-	                    var finishUpRaid = function finishUpRaid(dungeon) {
-
-	                        //Done with enemies for loop
-	                        if (player.battleStats.currentHealth < 1) {
-	                            _this3.errorText.text = 'You\'re tired. ';
-	                            if (loot.length > 0) {
-	                                _this3.errorText.text += 'loot: ' + loot.length;
-	                            }
-	                            _this3.errorText.visible = true;
-
-	                            //remove enemy sprite
-	                            var tween = _this3.game.add.tween(_this3.enSprite).to({ x: _this3.game.world.width + 135 }, 400, null, true);
-	                            tween.onComplete.addOnce(function () {
-	                                _this3.enSprite.visible = false;
-	                            }, _this3);
-	                        }
-
-	                        _this3.updateDungeonEnemiesLeftText(dungeon);
-
-	                        //Dungeon Done
-	                        if (dungeon.enemiesLeft < 1) {
-	                            dungeon.currentEnemies = dungeon.enemies;
-	                            dungeon.beaten = true;
-	                            dungeon.enemiesLeft = dungeon.currentEnemies.length;
-	                            _this3.game.player.latestUnlockedDungeon += 1;
-	                            if (_this3.game.player.latestUnlockedDungeon > 2) {
-	                                _this3.game.player.latestUnlockedDungeon = 2;
-	                            }
-	                            _this3.updateDungeonEnemiesLeftText(dungeon);
-	                        }
-	                        //level up?
-	                        if (player.exp > _levels.playerLevels[player.level].maxExp) {
-	                            player.level += 1;
-	                            _this3.errorText.text += 'Level Up!';
-	                            _this3.errorText.visible = true;
-	                        }
-
-	                        player.battling = false;
-	                        _this3.saveDungeonData();
-	                        _this3.game.player.savePlayerData();
-
-	                        _this3.updateLootTextAndButtons(loot);
-
-	                        console.log('--raid gave:', loot);
-	                    };
-
-	                    checkForEnemies();
-	                })();
-	            } else {
-	                this.errorText.text = 'You should rest for a while.';
-	                this.errorText.visible = true;
-	            }
-	        }
-	    }, {
-	        key: 'updateDungeonEnemiesLeftText',
-	        value: function updateDungeonEnemiesLeftText(dungeon) {
-	            this.dungeonTexts[dungeon.level - 1].text = 'Enemies Left: ' + dungeon.enemiesLeft + (dungeon.beaten ? '*' : '');
-	        }
-	    }, {
-	        key: 'cleanUpLootButtons',
-	        value: function cleanUpLootButtons() {
-	            var allBtns = this.lootKeepBtns.concat(this.lootSellBtns);
-	            allBtns.forEach(function (btn) {
-	                btn.kill();
-	            });
-	        }
-	    }, {
-	        key: 'updateLootTextAndButtons',
-	        value: function updateLootTextAndButtons(loot) {
-	            var _this4 = this;
-
-	            this.lootText.text = '';
-
-	            this.cleanUpLootButtons();
-
-	            this.lootKeepBtns = [];
-	            this.lootSellBtns = [];
-
-	            loot.forEach(function (item, index) {
-
-	                if (item.ac != null) {
-	                    //Armor
-	                    _this4.lootText.text += '[' + item.level + '] ' + item.name + ' \n';
-	                    _this4.lootText.text += 'AC: ' + item.ac + ', Type: ' + item.type + ' \n';
-	                    if (item.magic.effect.attribute != null) {
-	                        _this4.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
-	                    }
-	                    _this4.lootText.text += '\n';
-	                } else if (item.dmg != null) {
-	                    //Weapon
-	                    _this4.lootText.text += '[' + item.level + '] ' + item.name + ' \n';
-	                    _this4.lootText.text += 'Dmg: ' + item.dmg.min + ' - ' + item.dmg.max + ' \n';
-	                    if (item.magic.effect.attribute != null) {
-	                        _this4.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
-	                    }
-	                    _this4.lootText.text += '\n';
-	                } else {
-	                    _this4.lootText.text += item.name + ' \n';
-	                    if (item.magic.effect.attribute != null) {
-	                        _this4.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
-	                    }
-	                    _this4.lootText.text += '\n';
-	                }
-
-	                //add a couple buttons for this item
-	                var addBtn = new _phaser2.default.Button(_this4.game, _this4.game.world.centerX - 250, _this4.game.world.centerY + 125 * (index + 1), 'blueButton', function () {
-	                    console.log('--clicked keep, loot, item', loot, item);
-	                    var placed = _this4.tryToPlaceItemInInventory(item);
-	                    if (placed) {
-	                        loot.splice(loot.indexOf(item), 1);
-	                        _this4.updateLootTextAndButtons(loot);
-	                    }
-	                }, _this4);
-	                addBtn.scale.x = 0.2;
-	                addBtn.anchor.setTo(0.5);
-	                _this4.game.add.existing(addBtn);
-	                _this4.lootKeepBtns.push(addBtn);
-
-	                var addBtnText = _this4.add.text(_this4.game, _this4.game.world.centerX - 250, _this4.game.world.centerY + 125 * (index + 1), '+');
-	                addBtnText.font = 'Nunito';
-	                addBtnText.fontSize = 24;
-	                addBtnText.fill = '#111111';
-	                addBtnText.anchor.setTo(0.5);
-
-	                var sellBtn = new _phaser2.default.Button(_this4.game, _this4.game.world.centerX - 200, _this4.game.world.centerY + 125 * (index + 1), 'yellowButton', function () {
-	                    console.log('Sell Item!');
-	                    _this4.game.player.gold += item.value;
-	                    loot.splice(loot.indexOf(item), 1);
-	                    _this4.updateLootTextAndButtons(loot);
-	                }, _this4);
-
-	                sellBtn.scale.x = 0.2;
-	                sellBtn.anchor.setTo(0.5);
-	                _this4.game.add.existing(sellBtn);
-	                _this4.lootSellBtns.push(sellBtn);
-
-	                var sellBtnText = _this4.add.text(_this4.game, _this4.game.world.centerX - 200, _this4.game.world.centerY + 125 * (index + 1), '$');
-	                sellBtnText.font = 'Nunito';
-	                sellBtnText.fontSize = 24;
-	                sellBtnText.fill = '#111111';
-	                sellBtnText.anchor.setTo(0.5);
-	                sellBtnText.visible = true;
-	            });
-	        }
-	    }, {
-	        key: 'tryToPlaceItemInInventory',
-	        value: function tryToPlaceItemInInventory(item) {
-	            var invSlots = this.game.player.backpack;
-	            var itemPlaced = false;
-	            for (var y = 0; y < invSlots.length; y++) {
-	                //(row, y, slotsRow) => {
-	                var row = invSlots[y];
-	                for (var x = 0; x < row.length; x++) {
-	                    //row.forEach((slot, x, slotsCol) => {
-	                    itemPlaced = (0, _utils.placeItemInSlot)(this.game.player, item, { x: x, y: y });
-	                    if (itemPlaced) {
-	                        break;
-	                    }
-	                }
-	                if (itemPlaced) {
-	                    break;
-	                }
-	            }
-	            if (itemPlaced === false) {
-	                this.errorText.visible = true;
-	            }
-	            return itemPlaced;
-	            //console.log('--new item placed:', itemPlaced);
-	        }
-	    }, {
-	        key: 'saveDungeonData',
-	        value: function saveDungeonData() {
-	            if (localStorage) {
-	                localStorage.setItem('loot-hoarder-dungeons', JSON.stringify(this.game.dungeons));
-	            }
+	            this.state.start('Raid', true, false, dungeon);
 	        }
 	    }, {
 	        key: 'update',
@@ -111862,9 +111586,9 @@
 
 /***/ },
 /* 312 */
-/*!****************************!*\
-  !*** ./src/items/Forge.js ***!
-  \****************************/
+/*!************************************!*\
+  !*** ./src/components/LootList.js ***!
+  \************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -111872,503 +111596,153 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.getRandomItem = getRandomItem;
-	exports.rand = rand;
 
-	var _Weapon = __webpack_require__(/*! ./Weapon */ 313);
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var Weapon = _interopRequireWildcard(_Weapon);
+	var _phaser = __webpack_require__(/*! phaser */ 304);
 
-	var _Armor = __webpack_require__(/*! ./Armor */ 314);
+	var _phaser2 = _interopRequireDefault(_phaser);
 
-	var Armor = _interopRequireWildcard(_Armor);
+	var _utils = __webpack_require__(/*! ../utils */ 309);
 
-	var _Accessory = __webpack_require__(/*! ./Accessory */ 315);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Accessory = _interopRequireWildcard(_Accessory);
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	var LootList = function () {
+	    function LootList(game, loot, gameState) {
+	        _classCallCheck(this, LootList);
 
-	function getRandomItem(levelMin, levelMax) {
-	    var type = rand(0, 100);
-	    if (type < 30) {
-	        return Weapon.build(levelMin, levelMax);
-	    } else if (type < 90) {
-	        return Armor.build(levelMin, levelMax);
-	    } else {
-	        return Accessory.build();
+	        this.game = game;
+	        this.loot = loot;
+	        this.gameState = gameState;
+
+	        this.lootKeepBtns = [];
+	        this.lootSellBtns = [];
+
+	        this.lootText = this.gameState.add.text(this.game.world.centerX - 150, this.game.world.centerY + 100, '');
+	        this.lootText.font = 'Nunito';
+	        this.lootText.fontSize = 22;
+	        this.lootText.fill = '#000000';
 	    }
-	} //Forge.js
 
+	    _createClass(LootList, [{
+	        key: 'cleanUpLootButtons',
+	        value: function cleanUpLootButtons() {
+	            var allBtns = this.lootKeepBtns.concat(this.lootSellBtns);
+	            allBtns.forEach(function (btn) {
+	                btn.kill();
+	            });
+	        }
+	    }, {
+	        key: 'tryToPlaceItemInInventory',
+	        value: function tryToPlaceItemInInventory(item) {
+	            var invSlots = this.game.player.backpack;
+	            var itemPlaced = false;
+	            for (var y = 0; y < invSlots.length; y++) {
+	                var row = invSlots[y];
+	                for (var x = 0; x < row.length; x++) {
+	                    itemPlaced = (0, _utils.placeItemInSlot)(this.game.player, item, { x: x, y: y });
+	                    if (itemPlaced) {
+	                        break;
+	                    }
+	                }
+	                if (itemPlaced) {
+	                    break;
+	                }
+	            }
+	            if (itemPlaced === false) {
+	                this.errorText.visible = true;
+	            }
+	            return itemPlaced;
+	        }
+	    }, {
+	        key: 'updateLootTextAndButtons',
+	        value: function updateLootTextAndButtons(loot) {
+	            var _this = this;
 
-	function rand(min, max) {
-	    return Math.floor(Math.random() * (max + 1 - min)) + min;
-	}
+	            this.lootText.text = '';
+
+	            this.cleanUpLootButtons();
+
+	            this.lootKeepBtns = [];
+	            this.lootSellBtns = [];
+
+	            loot.forEach(function (item, index) {
+
+	                if (item.ac != null) {
+	                    //Armor
+	                    _this.lootText.text += '[' + item.level + '] ' + item.name + ' \n';
+	                    _this.lootText.text += 'AC: ' + item.ac + ', Type: ' + item.type + ' \n';
+	                    if (item.magic.effect.attribute != null) {
+	                        _this.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
+	                    }
+	                    _this.lootText.text += '\n';
+	                } else if (item.dmg != null) {
+	                    //Weapon
+	                    _this.lootText.text += '[' + item.level + '] ' + item.name + ' \n';
+	                    _this.lootText.text += 'Dmg: ' + item.dmg.min + ' - ' + item.dmg.max + ' \n';
+	                    if (item.magic.effect.attribute != null) {
+	                        _this.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
+	                    }
+	                    _this.lootText.text += '\n';
+	                } else {
+	                    _this.lootText.text += item.name + ' \n';
+	                    if (item.magic.effect.attribute != null) {
+	                        _this.lootText.text += item.magic.effect.attribute + ' +' + item.magic.effect.value + '\n';
+	                    }
+	                    _this.lootText.text += '\n';
+	                }
+
+	                //add a couple buttons for this item
+	                var addBtn = new _phaser2.default.Button(_this.game, _this.game.world.centerX - 250, _this.game.world.centerY + 125 * (index + 1), 'blueButton', function () {
+	                    console.log('--clicked keep, loot, item', loot, item);
+	                    var placed = _this.tryToPlaceItemInInventory(item);
+	                    if (placed) {
+	                        loot.splice(loot.indexOf(item), 1);
+	                        _this.updateLootTextAndButtons(loot);
+	                    }
+	                }, _this);
+	                addBtn.scale.x = 0.2;
+	                addBtn.anchor.setTo(0.5);
+	                _this.game.add.existing(addBtn);
+	                _this.lootKeepBtns.push(addBtn);
+
+	                var addBtnText = _this.gameState.add.text(_this.game, _this.game.world.centerX - 250, _this.game.world.centerY + 125 * (index + 1), '+');
+	                addBtnText.font = 'Nunito';
+	                addBtnText.fontSize = 24;
+	                addBtnText.fill = '#111111';
+	                addBtnText.anchor.setTo(0.5);
+
+	                var sellBtn = new _phaser2.default.Button(_this.game, _this.game.world.centerX - 200, _this.game.world.centerY + 125 * (index + 1), 'yellowButton', function () {
+	                    console.log('Sell Item!');
+	                    _this.game.player.gold += item.value;
+	                    loot.splice(loot.indexOf(item), 1);
+	                    _this.updateLootTextAndButtons(loot);
+	                }, _this);
+
+	                sellBtn.scale.x = 0.2;
+	                sellBtn.anchor.setTo(0.5);
+	                _this.game.add.existing(sellBtn);
+	                _this.lootSellBtns.push(sellBtn);
+
+	                var sellBtnText = _this.gameState.add.text(_this.game, _this.game.world.centerX - 200, _this.game.world.centerY + 125 * (index + 1), '$');
+	                sellBtnText.font = 'Nunito';
+	                sellBtnText.fontSize = 24;
+	                sellBtnText.fill = '#111111';
+	                sellBtnText.anchor.setTo(0.5);
+	                sellBtnText.visible = true;
+	            });
+	        }
+	    }]);
+
+	    return LootList;
+	}();
+
+	exports.default = LootList;
 
 /***/ },
 /* 313 */
-/*!*****************************!*\
-  !*** ./src/items/Weapon.js ***!
-  \*****************************/
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.build = build;
-	exports.rand = rand;
-	exports.getMagicEffect = getMagicEffect;
-	//Weapon.js
-
-	function build(levelMin, levelMax) {
-	    var weapon = {
-	        'name': 'null',
-	        'type': 'null',
-	        'inventoryType': 'hand',
-	        'level': 0,
-	        'range': 0,
-	        'durability': 0,
-	        'weight': 0,
-	        'dmg': {
-	            'min': 0,
-	            'max': 0
-	        },
-	        'magic': {
-	            'effect': {
-	                'attribute': null,
-	                'value': -1
-	            },
-	            'damage': {
-	                'type': null,
-	                'value': 0,
-	                'uses': -1
-	            }
-	        },
-	        'shape': [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0]],
-	        'shapeWidth': 2,
-	        'shapeHeight': 3,
-	        'inventorySlot': { x: 0, y: 0 },
-	        'value': 0,
-	        'sprite': ''
-	    };
-
-	    switch (this.rand(0, 2)) {
-	        case 0:
-	            weapon.type = 'melee';
-	            break;
-	        case 1:
-	            weapon.type = 'ranged';
-	            break;
-	    }
-
-	    if (weapon.type == 'melee') {
-	        switch (this.rand(0, 3)) {
-	            case 0:
-	                weapon.name = 'Spear';
-	                weapon.sprite = 'spear0';
-	                break;
-	            case 1:
-	                weapon.name = 'Sword';
-	                weapon.sprite = 'sword2';
-	                break;
-	            case 2:
-	                weapon.name = 'Axe';
-	                weapon.sprite = 'axe0';
-	                break;
-	        }
-	        weapon.shape = [[1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]];
-	        weapon.shapeWidth = 1;
-	        weapon.shapeHeight = 3;
-	    } else {
-	        weapon.name = 'Bow';
-	    }
-
-	    //weapon level
-	    weapon.level = this.rand(levelMin, levelMax);
-	    weapon.value = 20 * weapon.level;
-	    //add level modifier to name
-	    switch (weapon.level) {
-	        case 1:
-	            weapon.name = 'Broken ' + weapon.name;
-	            weapon.range = 2;
-	            weapon.weight = 4;
-	            weapon.durability = this.rand(8, 12);
-	            weapon.dmg.min = this.rand(1, 2);
-	            weapon.dmg.max = this.rand(5, 6);
-	            break;
-	        case 2:
-	            weapon.name = 'Worn ' + weapon.name;
-	            weapon.range = 3;
-	            weapon.weight = 5;
-	            weapon.durability = this.rand(10, 15);
-	            weapon.dmg.min = this.rand(2, 3);
-	            weapon.dmg.max = this.rand(7, 8);
-	            break;
-	        case 3:
-	            weapon.range = 4;
-	            weapon.weight = 7;
-	            weapon.durability = this.rand(12, 16);
-	            weapon.dmg.min = this.rand(3, 4);
-	            weapon.dmg.max = this.rand(9, 10);
-	            break;
-	        case 4:
-	            weapon.name = 'Sharp ' + weapon.name;
-	            weapon.range = 4;
-	            weapon.weight = 6;
-	            weapon.durability = this.rand(15, 18);
-	            weapon.dmg.min = this.rand(5, 6);
-	            weapon.dmg.max = this.rand(10, 12);
-	            break;
-	        case 5:
-	            weapon.name = 'Superior ' + weapon.name;
-	            weapon.range = 5;
-	            weapon.weight = 6;
-	            weapon.durability = this.rand(18, 22);
-	            weapon.dmg.min = this.rand(8, 10);
-	            weapon.dmg.max = this.rand(15, 18);
-	            break;
-	    }
-
-	    weapon.value += weapon.dmg.max - weapon.dmg.min;
-	    weapon.value += weapon.durability - 10;
-
-	    switch (this.rand(0, 6)) {
-	        case 0:
-	            weapon.magic.effect = this.getMagicEffect(weapon.level);
-	            weapon.name += ' of ' + weapon.magic.effect.attribute;
-	            weapon.value += 100 * weapon.level;
-	            break;
-	        default:
-	            break;
-	    }
-	    //return the weapon
-	    return weapon;
-	}
-
-	function rand(min, max) {
-	    return Math.floor(Math.random() * (max - min)) + min;
-	}
-
-	function getMagicEffect(lvl) {
-	    var effect = {};
-
-	    switch (this.rand(0, 4)) {
-	        case 0:
-	            effect.attribute = 'strength';
-	            break;
-	        case 1:
-	            effect.attribute = 'dexterity';
-	            break;
-	        case 2:
-	            effect.attribute = 'wisdom';
-	            break;
-	        case 3:
-	            effect.attribute = 'vitality';
-	            break;
-	    }
-
-	    effect.value = lvl;
-
-	    return effect;
-	}
-
-/***/ },
-/* 314 */
-/*!****************************!*\
-  !*** ./src/items/Armor.js ***!
-  \****************************/
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.build = build;
-	exports.rand = rand;
-	exports.getMagicEffect = getMagicEffect;
-	//Armor.js
-
-	function build(levelMin, levelMax) {
-	    var armor = {
-	        'name': 'null',
-	        'type': 'null',
-	        'inventoryType': 'hand',
-	        'level': 0,
-	        'durability': 0,
-	        'weight': 0,
-	        'ac': 0,
-	        'magic': {
-	            'effect': {
-	                'attribute': null,
-	                'value': -1
-	            }
-	        },
-	        'shape': [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0]],
-	        'shapeWidth': 2,
-	        'shapeHeight': 3,
-	        'inventorySlot': { x: 0, y: 0 },
-	        'value': 0
-	    };
-
-	    switch (this.rand(0, 3)) {
-	        case 0:
-	            armor.type = 'head';armor.inventoryType = 'head';
-	            break;
-	        case 1:
-	            armor.type = 'body';armor.inventoryType = 'body';
-	            break;
-	        case 2:
-	            armor.type = 'feet';armor.inventoryType = 'feet';
-	            break;
-	        case 3:
-	            armor.type = 'hand';armor.inventoryType = 'head';
-	            break;
-	    }
-
-	    switch (armor.type) {
-	        case 'head':
-	            armor.name = 'Helm';
-	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-	            armor.shapeWidth = 2;
-	            armor.shapeHeight = 2;
-	            armor.value += 15;
-	            armor.ac = 5;
-	            break;
-	        case 'body':
-	            armor.name = 'Armor';
-	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0]];
-	            armor.shapeWidth = 2;
-	            armor.shapeHeight = 3;
-	            armor.value += 25;
-	            armor.ac = 10;
-	            break;
-	        case 'feet':
-	            armor.name = 'Boots';
-	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-	            armor.shapeWidth = 2;
-	            armor.shapeHeight = 2;
-	            armor.value += 10;
-	            armor.ac = 5;
-	            break;
-	        case 'hand':
-	            armor.name = 'Shield';
-	            armor.sprite = 'shield3';
-	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-	            armor.shapeWidth = 2;
-	            armor.shapeHeight = 2;
-	            armor.value += 15;
-	            armor.ac = 5;
-	            break;
-	    }
-
-	    //armor level
-	    armor.level = this.rand(levelMin, levelMax);
-	    armor.value += 20 * armor.level;
-	    //add level modifier to name
-	    switch (armor.level) {
-	        case 1:
-	            armor.name = 'Leather ' + armor.name;
-	            armor.weight = 4;
-	            if (armor.type == 'body') {
-	                armor.weight = 7;
-	            }
-	            armor.durability = this.rand(8, 12);
-	            break;
-	        case 2:
-	            armor.name = 'Stone ' + armor.name;
-	            armor.weight = 5;
-	            if (armor.type == 'body') {
-	                armor.weight = 9;
-	            }
-	            armor.durability = this.rand(10, 15);
-	            armor.ac = armor.ac * 1.5;
-	            break;
-	        case 3:
-	            armor.name = 'Iron ' + armor.name;
-	            armor.weight = 7;
-	            if (armor.type == 'body') {
-	                armor.weight = 12;
-	            }
-	            armor.durability = this.rand(12, 16);
-	            armor.ac = armor.ac * 2;
-	            break;
-	        case 4:
-	            armor.name = 'Steel ' + armor.name;
-	            armor.weight = 9;
-	            if (armor.type == 'body') {
-	                armor.weight = 18;
-	            }
-	            armor.durability = this.rand(15, 18);
-	            armor.ac = armor.ac * 2.5;
-	            break;
-	        case 5:
-	            armor.name = 'Mythril ' + armor.name;
-	            armor.weight = 2;
-	            if (armor.type == 'body') {
-	                armor.weight = 4;
-	            }
-	            armor.durability = this.rand(18, 22);
-	            armor.ac = armor.ac * 3;
-	            break;
-	    }
-
-	    armor.value += armor.ac;
-	    armor.value += armor.durability - 10;
-
-	    switch (this.rand(0, 6)) {
-	        case 0:
-	            armor.magic.effect = this.getMagicEffect(armor.level);
-	            armor.name += ' of ' + armor.magic.effect.attribute;
-	            armor.value += 100 * armor.level;
-	            break;
-	        default:
-	            break;
-	    }
-
-	    //return the armor
-	    return armor;
-	}
-
-	function rand(min, max) {
-	    return Math.floor(Math.random() * (max - min)) + min;
-	}
-
-	function getMagicEffect(lvl) {
-	    var effect = {};
-
-	    switch (this.rand(0, 4)) {
-	        case 0:
-	            effect.attribute = 'strength';
-	            break;
-	        case 1:
-	            effect.attribute = 'dexterity';
-	            break;
-	        case 2:
-	            effect.attribute = 'wisdom';
-	            break;
-	        case 3:
-	            effect.attribute = 'vitality';
-	            break;
-	    }
-
-	    effect.value = lvl;
-
-	    return effect;
-	}
-
-/***/ },
-/* 315 */
-/*!********************************!*\
-  !*** ./src/items/Accessory.js ***!
-  \********************************/
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.build = build;
-	exports.rand = rand;
-	exports.getMagicEffect = getMagicEffect;
-	//Accessory.js
-
-	function build() {
-	    var accessory = {
-	        'name': 'null',
-	        'type': 'accessory',
-	        'inventoryType': 'accessory',
-	        'weight': 1,
-	        'magic': {
-	            'effect': {
-	                'attribute': null,
-	                'value': -1
-	            }
-	        },
-	        'shape': [[1, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-	        'shapeWidth': 1,
-	        'shapeHeight': 1,
-	        'inventorySlot': { x: 0, y: 0 },
-	        'value': 0
-	    };
-
-	    var strength = this.rand(0, 5);
-	    accessory.magic.effect = this.getMagicEffect(strength);
-	    accessory.name = 'Ring of ' + accessory.magic.effect.attribute;
-	    accessory.value += 175 * strength;
-
-	    //return the accessory
-	    return accessory;
-	}
-
-	function rand(min, max) {
-	    return Math.floor(Math.random() * (max - min)) + min;
-	}
-
-	function getMagicEffect(lvl) {
-	    var effect = {};
-
-	    switch (this.rand(0, 4)) {
-	        case 0:
-	            effect.attribute = 'strength';
-	            break;
-	        case 1:
-	            effect.attribute = 'dexterity';
-	            break;
-	        case 2:
-	            effect.attribute = 'wisdom';
-	            break;
-	        case 3:
-	            effect.attribute = 'vitality';
-	            break;
-	    }
-
-	    effect.value = lvl;
-
-	    return effect;
-	}
-
-/***/ },
-/* 316 */
-/*!****************************!*\
-  !*** ./src/data/levels.js ***!
-  \****************************/
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	//data/levels.js
-
-	var playerLevels = exports.playerLevels = [{
-	    level: 1,
-	    minExp: 0,
-	    maxExp: 50
-	}, {
-	    level: 2,
-	    minExp: 51,
-	    maxExp: 150
-	}, {
-	    level: 3,
-	    minExp: 151,
-	    maxExp: 300
-	}, {
-	    level: 4,
-	    minExp: 301,
-	    maxExp: 600
-	}, {
-	    level: 5,
-	    minExp: 601,
-	    maxExp: 1200
-	}];
-
-/***/ },
-/* 317 */
 /*!*********************************!*\
   !*** ./src/states/Inventory.js ***!
   \*********************************/
@@ -112390,7 +111764,7 @@
 
 	var utils = _interopRequireWildcard(_utils);
 
-	var _levels = __webpack_require__(/*! ../data/levels */ 316);
+	var _levels = __webpack_require__(/*! ../data/levels */ 314);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -112420,18 +111794,9 @@
 	    }, {
 	        key: 'preload',
 	        value: function preload() {
-
 	            //Inv Button
 	            this.inventoryBtn = new _phaser2.default.Button(this.game, 150, 50, 'blueButton', this.backToMain, this);
 	            this.inventoryBtn.anchor.setTo(0.5);
-
-	            //weapons??
-	            this.weaponGfx = [];
-
-	            // let shank0 = this.game.add.sprite(this.game.world.width - 70, this.game.world.centerY - 90, 'shank0');
-	            // shank0.visible = false;
-	            //
-	            // this.weaponGfx.push(shank0);
 	        }
 	    }, {
 	        key: 'create',
@@ -112886,7 +112251,792 @@
 	exports.default = _class;
 
 /***/ },
+/* 314 */
+/*!****************************!*\
+  !*** ./src/data/levels.js ***!
+  \****************************/
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	//data/levels.js
+
+	var playerLevels = exports.playerLevels = [{
+	    level: 1,
+	    minExp: 0,
+	    maxExp: 50
+	}, {
+	    level: 2,
+	    minExp: 51,
+	    maxExp: 150
+	}, {
+	    level: 3,
+	    minExp: 151,
+	    maxExp: 300
+	}, {
+	    level: 4,
+	    minExp: 301,
+	    maxExp: 600
+	}, {
+	    level: 5,
+	    minExp: 601,
+	    maxExp: 1200
+	}];
+
+/***/ },
+/* 315 */
+/*!****************************!*\
+  !*** ./src/states/Raid.js ***!
+  \****************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _phaser = __webpack_require__(/*! phaser */ 304);
+
+	var _phaser2 = _interopRequireDefault(_phaser);
+
+	var _Forge = __webpack_require__(/*! ../items/Forge */ 316);
+
+	var Forge = _interopRequireWildcard(_Forge);
+
+	var _levels = __webpack_require__(/*! ../data/levels */ 314);
+
+	var _LootList = __webpack_require__(/*! ../components/LootList */ 312);
+
+	var _LootList2 = _interopRequireDefault(_LootList);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _class = function (_Phaser$State) {
+	    _inherits(_class, _Phaser$State);
+
+	    function _class() {
+	        _classCallCheck(this, _class);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(_class).apply(this, arguments));
+	    }
+
+	    _createClass(_class, [{
+	        key: 'init',
+	        value: function init(dungeon) {
+	            this.inventoryOpen = false;
+	            this.game.player.savePlayerData();
+	            this.dungeon = dungeon;
+	        }
+	    }, {
+	        key: 'create',
+	        value: function create() {
+	            this.lootList = new _LootList2.default(this.game, [], this);
+
+	            /* Player Health Bar Graphic and Text */
+	            var healthBarBackgroundBitMap = this.game.add.bitmapData(106, 26);
+	            var healthBarBitMap = this.game.add.bitmapData(100, 20);
+
+	            healthBarBackgroundBitMap.ctx.beginPath();
+	            healthBarBackgroundBitMap.ctx.rect(0, 0, 106, 26);
+	            healthBarBackgroundBitMap.ctx.fillStyle = '#111111';
+	            healthBarBackgroundBitMap.ctx.fill();
+
+	            healthBarBitMap.ctx.beginPath();
+	            healthBarBitMap.ctx.rect(0, 0, 100, 20);
+	            healthBarBitMap.ctx.fillStyle = '#DE1111';
+	            healthBarBitMap.ctx.fill();
+
+	            this.healthBarBg = this.game.add.sprite(this.game.world.centerX - 55, this.game.world.centerY - 15, healthBarBackgroundBitMap);
+	            this.healthBar = this.game.add.sprite(this.game.world.centerX - 52, this.game.world.centerY - 12, healthBarBitMap);
+
+	            this.healthText = this.add.text(this.game.world.centerX - 50, this.game.world.centerY - 12, 'Hp:');
+	            this.healthText.font = 'Nunito';
+	            this.healthText.fontSize = 14;
+	            this.healthText.fill = '#FFFFFF';
+
+	            /* Reused Enemy HealthBar Graphic */
+	            var EnHpBarBg = this.game.add.bitmapData(106, 26);
+	            var EnHpBar = this.game.add.bitmapData(100, 20);
+
+	            EnHpBarBg.ctx.beginPath();
+	            EnHpBarBg.ctx.rect(0, 0, 106, 26);
+	            EnHpBarBg.ctx.fillStyle = '#111111';
+	            EnHpBarBg.ctx.fill();
+
+	            EnHpBar.ctx.beginPath();
+	            EnHpBar.ctx.rect(0, 0, 100, 20);
+	            EnHpBar.ctx.fillStyle = '#DE11CD';
+	            EnHpBar.ctx.fill();
+
+	            this.EnhealthBarBg = this.game.add.sprite(this.game.world.centerX + 155, this.game.world.centerY - 15, EnHpBarBg);
+	            this.EnhealthBar = this.game.add.sprite(this.game.world.centerX + 158, this.game.world.centerY - 12, EnHpBar);
+	            this.EnhealthBarBg.visible = false;
+	            this.EnhealthBar.visible = false;
+
+	            this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 50, 'You\'re over-encumbered');
+	            this.errorText.font = 'Nunito';
+	            this.errorText.fontSize = 22;
+	            this.errorText.fill = '#DE1313';
+	            this.errorText.anchor.setTo(0.5);
+	            this.errorText.visible = false;
+
+	            //walkign man
+	            this.dude = this.game.add.sprite(this.game.world.centerX - 50, this.game.world.centerY - 120, 'walkingMan');
+	            this.dude.scale.setTo(1.5, 1.5);
+	            this.dude.animations.add('walk', [30, 31, 32, 33, 34, 35, 36, 37, 38], 18);
+	            this.dude.animations.play('walk', 18, true);
+
+	            //enSprite
+	            this.enSprite = this.game.add.sprite(this.game.world.width + 70, this.game.world.centerY - 90, 'mob1');
+	            this.enSprite.scale.x = -2;
+	            this.enSprite.scale.y = 2;
+	            this.enSprite.animations.add('walk', [0, 1, 2, 3, 4, 5, 6, 7], 10);
+	            this.enSprite.animations.play('walk', 10, true);
+	            this.enSprite.visible = false;
+
+	            this.raidDungeon(this.dungeon);
+	        }
+	    }, {
+	        key: 'raidDungeon',
+	        value: function raidDungeon(dungeon) {
+	            var _this2 = this;
+
+	            console.log('--dungeon beign raided:', dungeon);
+	            var player = this.game.player;
+	            if (player.battleStats.currentHealth > 1) {
+	                (function () {
+	                    player.battling = true;
+	                    var loot = [];
+	                    _this2.enSprite.visible = true;
+
+	                    var checkForEnemies = function checkForEnemies() {
+	                        if (dungeon.currentEnemies.length > 0) {
+	                            var tween = _this2.game.add.tween(_this2.enSprite).to({ x: _this2.game.world.centerX + 235 }, 400, null, true);
+	                            tween.onComplete.addOnce(function () {
+	                                _this2.EnhealthBarBg.visible = true;
+	                                _this2.EnhealthBar.visible = true;
+	                                battleEnemy(dungeon.currentEnemies[0]);
+	                            }, _this2);
+	                        }
+	                    };
+
+	                    var battleEnemy = function battleEnemy(enemy) {
+	                        enemy.originalHp = enemy.hp;
+	                        while (enemy.hp > 0) {
+	                            var enHealthPercent = enemy.hp / enemy.originalHp < 0 ? 0 : enemy.hp / enemy.originalHp;
+	                            _this2.EnhealthBar.scale.x = enHealthPercent;
+
+	                            var strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
+	                            enemy.hp -= strike;
+	                            var armorReduction = Math.ceil(enemy.dps * (player.battleStats.armor / 100));
+	                            var enStrike = enemy.dps - armorReduction;
+	                            player.battleStats.currentHealth -= enStrike;
+	                            console.log('En: -' + strike + 'hp (' + enemy.hp + '), Pl: -' + enStrike + 'hp (' + player.battleStats.currentHealth + ')');
+	                            if (player.battleStats.currentHealth < 1) {
+	                                break;
+	                            }
+	                        }
+
+	                        setTimeout(function () {
+	                            if (enemy.hp < 1) {
+	                                //killed an enemey
+	                                //get loot
+	                                var lootChance = Forge.rand(0, 100);
+	                                if (lootChance > 50) {
+	                                    loot.push(Forge.getRandomItem(1, 3));
+	                                }
+	                                //get exp
+	                                player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
+	                                //remove enemy from dungeon
+	                                //this.enSprite.visible = false;
+	                                _this2.enSprite.position.x = _this2.game.world.width + 70;
+	                                dungeon.currentEnemies.splice(0, 1);
+	                                dungeon.enemiesLeft = dungeon.currentEnemies.length;
+	                            }
+
+	                            if (dungeon.currentEnemies.length == 0 || player.battleStats.currentHealth < 1) {
+	                                _this2.EnhealthBarBg.visible = false;
+	                                _this2.EnhealthBar.visible = false;
+	                                finishUpRaid();
+	                            } else {
+	                                _this2.EnhealthBarBg.visible = false;
+	                                _this2.EnhealthBar.visible = false;
+	                                checkForEnemies();
+	                            }
+	                        }, 1000);
+	                    };
+
+	                    var finishUpRaid = function finishUpRaid() {
+
+	                        //Done with enemies for loop
+	                        if (player.battleStats.currentHealth < 1) {
+	                            _this2.errorText.text = 'You\'re tired. ';
+	                            if (loot.length > 0) {
+	                                _this2.errorText.text += 'loot: ' + loot.length;
+	                            }
+	                            _this2.errorText.visible = true;
+
+	                            //remove enemy sprite
+	                            var tween = _this2.game.add.tween(_this2.enSprite).to({ x: _this2.game.world.width + 135 }, 400, null, true);
+	                            tween.onComplete.addOnce(function () {
+	                                _this2.enSprite.visible = false;
+	                            }, _this2);
+	                        }
+
+	                        //Dungeon Done
+	                        if (dungeon.enemiesLeft < 1) {
+	                            dungeon.currentEnemies = dungeon.enemies;
+	                            dungeon.beaten = true;
+	                            dungeon.enemiesLeft = dungeon.currentEnemies.length;
+	                            _this2.game.player.latestUnlockedDungeon += 1;
+	                            if (_this2.game.player.latestUnlockedDungeon > 2) {
+	                                _this2.game.player.latestUnlockedDungeon = 2;
+	                            }
+	                        }
+
+	                        //level up?
+	                        if (player.exp > _levels.playerLevels[player.level].maxExp) {
+	                            player.level += 1;
+	                            _this2.errorText.text += 'Level Up!';
+	                            _this2.errorText.visible = true;
+	                        }
+
+	                        player.battling = false;
+	                        _this2.saveDungeonData();
+	                        _this2.game.player.savePlayerData();
+
+	                        _this2.lootList.updateLootTextAndButtons(loot);
+
+	                        console.log('--raid gave:', loot);
+
+	                        _this2.game.state.start('MainMenu', true, false, loot);
+	                    };
+
+	                    checkForEnemies();
+	                })();
+	            } else {
+	                this.errorText.text = 'You should rest for a while.';
+	                this.errorText.visible = true;
+	            }
+	        }
+	    }, {
+	        key: 'saveDungeonData',
+	        value: function saveDungeonData() {
+	            if (localStorage) {
+	                localStorage.setItem('loot-hoarder-dungeons', JSON.stringify(this.game.dungeons));
+	            }
+	        }
+	    }, {
+	        key: 'update',
+	        value: function update() {
+	            /* Player Health */
+	            var currHealth = this.game.player.battleStats.currentHealth;
+	            var maxHealth = this.game.player.battleStats.health;
+	            var healthPercent = currHealth / maxHealth;
+	            if (healthPercent < 0) {
+	                healthPercent = 0;
+	            }
+
+	            this.healthText.text = 'Hp: ' + currHealth + '/' + maxHealth;
+	            this.healthBar.scale.x = healthPercent;
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {}
+	    }]);
+
+	    return _class;
+	}(_phaser2.default.State);
+
+	exports.default = _class;
+
+/***/ },
+/* 316 */
+/*!****************************!*\
+  !*** ./src/items/Forge.js ***!
+  \****************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.getRandomItem = getRandomItem;
+	exports.rand = rand;
+
+	var _Weapon = __webpack_require__(/*! ./Weapon */ 317);
+
+	var Weapon = _interopRequireWildcard(_Weapon);
+
+	var _Armor = __webpack_require__(/*! ./Armor */ 318);
+
+	var Armor = _interopRequireWildcard(_Armor);
+
+	var _Accessory = __webpack_require__(/*! ./Accessory */ 319);
+
+	var Accessory = _interopRequireWildcard(_Accessory);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function getRandomItem(levelMin, levelMax) {
+	    var type = rand(0, 100);
+	    if (type < 30) {
+	        return Weapon.build(levelMin, levelMax);
+	    } else if (type < 90) {
+	        return Armor.build(levelMin, levelMax);
+	    } else {
+	        return Accessory.build();
+	    }
+	} //Forge.js
+
+
+	function rand(min, max) {
+	    return Math.floor(Math.random() * (max + 1 - min)) + min;
+	}
+
+/***/ },
+/* 317 */
+/*!*****************************!*\
+  !*** ./src/items/Weapon.js ***!
+  \*****************************/
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.build = build;
+	exports.rand = rand;
+	exports.getMagicEffect = getMagicEffect;
+	//Weapon.js
+
+	function build(levelMin, levelMax) {
+	    var weapon = {
+	        'name': 'null',
+	        'type': 'null',
+	        'inventoryType': 'hand',
+	        'level': 0,
+	        'range': 0,
+	        'durability': 0,
+	        'weight': 0,
+	        'dmg': {
+	            'min': 0,
+	            'max': 0
+	        },
+	        'magic': {
+	            'effect': {
+	                'attribute': null,
+	                'value': -1
+	            },
+	            'damage': {
+	                'type': null,
+	                'value': 0,
+	                'uses': -1
+	            }
+	        },
+	        'shape': [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0]],
+	        'shapeWidth': 2,
+	        'shapeHeight': 3,
+	        'inventorySlot': { x: 0, y: 0 },
+	        'value': 0,
+	        'sprite': ''
+	    };
+
+	    switch (this.rand(0, 2)) {
+	        case 0:
+	            weapon.type = 'melee';
+	            break;
+	        case 1:
+	            weapon.type = 'ranged';
+	            break;
+	    }
+
+	    if (weapon.type == 'melee') {
+	        switch (this.rand(0, 3)) {
+	            case 0:
+	                weapon.name = 'Spear';
+	                weapon.sprite = 'spear0';
+	                break;
+	            case 1:
+	                weapon.name = 'Sword';
+	                weapon.sprite = 'sword2';
+	                break;
+	            case 2:
+	                weapon.name = 'Axe';
+	                weapon.sprite = 'axe0';
+	                break;
+	        }
+	        weapon.shape = [[1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]];
+	        weapon.shapeWidth = 1;
+	        weapon.shapeHeight = 3;
+	    } else {
+	        weapon.name = 'Bow';
+	    }
+
+	    //weapon level
+	    weapon.level = this.rand(levelMin, levelMax);
+	    weapon.value = 20 * weapon.level;
+	    //add level modifier to name
+	    switch (weapon.level) {
+	        case 1:
+	            weapon.name = 'Broken ' + weapon.name;
+	            weapon.range = 2;
+	            weapon.weight = 4;
+	            weapon.durability = this.rand(8, 12);
+	            weapon.dmg.min = this.rand(1, 2);
+	            weapon.dmg.max = this.rand(5, 6);
+	            break;
+	        case 2:
+	            weapon.name = 'Worn ' + weapon.name;
+	            weapon.range = 3;
+	            weapon.weight = 5;
+	            weapon.durability = this.rand(10, 15);
+	            weapon.dmg.min = this.rand(2, 3);
+	            weapon.dmg.max = this.rand(7, 8);
+	            break;
+	        case 3:
+	            weapon.range = 4;
+	            weapon.weight = 7;
+	            weapon.durability = this.rand(12, 16);
+	            weapon.dmg.min = this.rand(3, 4);
+	            weapon.dmg.max = this.rand(9, 10);
+	            break;
+	        case 4:
+	            weapon.name = 'Sharp ' + weapon.name;
+	            weapon.range = 4;
+	            weapon.weight = 6;
+	            weapon.durability = this.rand(15, 18);
+	            weapon.dmg.min = this.rand(5, 6);
+	            weapon.dmg.max = this.rand(10, 12);
+	            break;
+	        case 5:
+	            weapon.name = 'Superior ' + weapon.name;
+	            weapon.range = 5;
+	            weapon.weight = 6;
+	            weapon.durability = this.rand(18, 22);
+	            weapon.dmg.min = this.rand(8, 10);
+	            weapon.dmg.max = this.rand(15, 18);
+	            break;
+	    }
+
+	    weapon.value += weapon.dmg.max - weapon.dmg.min;
+	    weapon.value += weapon.durability - 10;
+
+	    switch (this.rand(0, 6)) {
+	        case 0:
+	            weapon.magic.effect = this.getMagicEffect(weapon.level);
+	            weapon.name += ' of ' + weapon.magic.effect.attribute;
+	            weapon.value += 100 * weapon.level;
+	            break;
+	        default:
+	            break;
+	    }
+	    //return the weapon
+	    return weapon;
+	}
+
+	function rand(min, max) {
+	    return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	function getMagicEffect(lvl) {
+	    var effect = {};
+
+	    switch (this.rand(0, 4)) {
+	        case 0:
+	            effect.attribute = 'strength';
+	            break;
+	        case 1:
+	            effect.attribute = 'dexterity';
+	            break;
+	        case 2:
+	            effect.attribute = 'wisdom';
+	            break;
+	        case 3:
+	            effect.attribute = 'vitality';
+	            break;
+	    }
+
+	    effect.value = lvl;
+
+	    return effect;
+	}
+
+/***/ },
 /* 318 */
+/*!****************************!*\
+  !*** ./src/items/Armor.js ***!
+  \****************************/
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.build = build;
+	exports.rand = rand;
+	exports.getMagicEffect = getMagicEffect;
+	//Armor.js
+
+	function build(levelMin, levelMax) {
+	    var armor = {
+	        'name': 'null',
+	        'type': 'null',
+	        'inventoryType': 'hand',
+	        'level': 0,
+	        'durability': 0,
+	        'weight': 0,
+	        'ac': 0,
+	        'magic': {
+	            'effect': {
+	                'attribute': null,
+	                'value': -1
+	            }
+	        },
+	        'shape': [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0]],
+	        'shapeWidth': 2,
+	        'shapeHeight': 3,
+	        'inventorySlot': { x: 0, y: 0 },
+	        'value': 0
+	    };
+
+	    switch (this.rand(0, 3)) {
+	        case 0:
+	            armor.type = 'head';armor.inventoryType = 'head';
+	            break;
+	        case 1:
+	            armor.type = 'body';armor.inventoryType = 'body';
+	            break;
+	        case 2:
+	            armor.type = 'feet';armor.inventoryType = 'feet';
+	            break;
+	        case 3:
+	            armor.type = 'hand';armor.inventoryType = 'head';
+	            break;
+	    }
+
+	    switch (armor.type) {
+	        case 'head':
+	            armor.name = 'Helm';
+	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+	            armor.shapeWidth = 2;
+	            armor.shapeHeight = 2;
+	            armor.value += 15;
+	            armor.ac = 5;
+	            break;
+	        case 'body':
+	            armor.name = 'Armor';
+	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0]];
+	            armor.shapeWidth = 2;
+	            armor.shapeHeight = 3;
+	            armor.value += 25;
+	            armor.ac = 10;
+	            break;
+	        case 'feet':
+	            armor.name = 'Boots';
+	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+	            armor.shapeWidth = 2;
+	            armor.shapeHeight = 2;
+	            armor.value += 10;
+	            armor.ac = 5;
+	            break;
+	        case 'hand':
+	            armor.name = 'Shield';
+	            armor.sprite = 'shield3';
+	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+	            armor.shapeWidth = 2;
+	            armor.shapeHeight = 2;
+	            armor.value += 15;
+	            armor.ac = 5;
+	            break;
+	    }
+
+	    //armor level
+	    armor.level = this.rand(levelMin, levelMax);
+	    armor.value += 20 * armor.level;
+	    //add level modifier to name
+	    switch (armor.level) {
+	        case 1:
+	            armor.name = 'Leather ' + armor.name;
+	            armor.weight = 4;
+	            if (armor.type == 'body') {
+	                armor.weight = 7;
+	            }
+	            armor.durability = this.rand(8, 12);
+	            break;
+	        case 2:
+	            armor.name = 'Stone ' + armor.name;
+	            armor.weight = 5;
+	            if (armor.type == 'body') {
+	                armor.weight = 9;
+	            }
+	            armor.durability = this.rand(10, 15);
+	            armor.ac = armor.ac * 1.5;
+	            break;
+	        case 3:
+	            armor.name = 'Iron ' + armor.name;
+	            armor.weight = 7;
+	            if (armor.type == 'body') {
+	                armor.weight = 12;
+	            }
+	            armor.durability = this.rand(12, 16);
+	            armor.ac = armor.ac * 2;
+	            break;
+	        case 4:
+	            armor.name = 'Steel ' + armor.name;
+	            armor.weight = 9;
+	            if (armor.type == 'body') {
+	                armor.weight = 18;
+	            }
+	            armor.durability = this.rand(15, 18);
+	            armor.ac = armor.ac * 2.5;
+	            break;
+	        case 5:
+	            armor.name = 'Mythril ' + armor.name;
+	            armor.weight = 2;
+	            if (armor.type == 'body') {
+	                armor.weight = 4;
+	            }
+	            armor.durability = this.rand(18, 22);
+	            armor.ac = armor.ac * 3;
+	            break;
+	    }
+
+	    armor.value += armor.ac;
+	    armor.value += armor.durability - 10;
+
+	    switch (this.rand(0, 6)) {
+	        case 0:
+	            armor.magic.effect = this.getMagicEffect(armor.level);
+	            armor.name += ' of ' + armor.magic.effect.attribute;
+	            armor.value += 100 * armor.level;
+	            break;
+	        default:
+	            break;
+	    }
+
+	    //return the armor
+	    return armor;
+	}
+
+	function rand(min, max) {
+	    return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	function getMagicEffect(lvl) {
+	    var effect = {};
+
+	    switch (this.rand(0, 4)) {
+	        case 0:
+	            effect.attribute = 'strength';
+	            break;
+	        case 1:
+	            effect.attribute = 'dexterity';
+	            break;
+	        case 2:
+	            effect.attribute = 'wisdom';
+	            break;
+	        case 3:
+	            effect.attribute = 'vitality';
+	            break;
+	    }
+
+	    effect.value = lvl;
+
+	    return effect;
+	}
+
+/***/ },
+/* 319 */
+/*!********************************!*\
+  !*** ./src/items/Accessory.js ***!
+  \********************************/
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.build = build;
+	exports.rand = rand;
+	exports.getMagicEffect = getMagicEffect;
+	//Accessory.js
+
+	function build() {
+	    var accessory = {
+	        'name': 'null',
+	        'type': 'accessory',
+	        'inventoryType': 'accessory',
+	        'weight': 1,
+	        'magic': {
+	            'effect': {
+	                'attribute': null,
+	                'value': -1
+	            }
+	        },
+	        'shape': [[1, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+	        'shapeWidth': 1,
+	        'shapeHeight': 1,
+	        'inventorySlot': { x: 0, y: 0 },
+	        'value': 0
+	    };
+
+	    var strength = this.rand(0, 5);
+	    accessory.magic.effect = this.getMagicEffect(strength);
+	    accessory.name = 'Ring of ' + accessory.magic.effect.attribute;
+	    accessory.value += 175 * strength;
+
+	    //return the accessory
+	    return accessory;
+	}
+
+	function rand(min, max) {
+	    return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	function getMagicEffect(lvl) {
+	    var effect = {};
+
+	    switch (this.rand(0, 4)) {
+	        case 0:
+	            effect.attribute = 'strength';
+	            break;
+	        case 1:
+	            effect.attribute = 'dexterity';
+	            break;
+	        case 2:
+	            effect.attribute = 'wisdom';
+	            break;
+	        case 3:
+	            effect.attribute = 'vitality';
+	            break;
+	    }
+
+	    effect.value = lvl;
+
+	    return effect;
+	}
+
+/***/ },
+/* 320 */
 /*!***********************!*\
   !*** ./src/Player.js ***!
   \***********************/

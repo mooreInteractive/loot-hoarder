@@ -7,15 +7,20 @@ import SplashState from './states/Splash';
 import GameState from './states/Game';
 import MainMenu from './states/MainMenu';
 import Inventory from './states/Inventory';
+import Raid from './states/Raid';
+
 import Player from './Player';
 
 class Game extends Phaser.Game {
 
     constructor () {
-        let width = 768;
-        let height = 1024;
+        let baseWidth = 768;
+        let baseHeight = 1080;
 
-        super(width, height, Phaser.AUTO, 'content', null);
+        super(baseWidth, baseHeight, Phaser.AUTO, 'content', null);
+
+        this.baseWidth = baseWidth;
+        this.baseHeight = baseHeight;
 
         // let scalor = new ScaleManager(this, 100, 100);
         // console.log("scalor:", scalor);
@@ -45,6 +50,7 @@ class Game extends Phaser.Game {
         this.state.add('Game', GameState, false);
         this.state.add('MainMenu', MainMenu, false);
         this.state.add('Inventory', Inventory, false);
+        this.state.add('Raid', Raid, false);
 
         this.state.start('Boot');
     }
@@ -150,10 +156,8 @@ class Game extends Phaser.Game {
     OnResizeCalled() {
         let gameWidth = window.innerWidth;
         let gameHeight = window.innerHeight;
-        let scaleToFitX = gameWidth / 768;
-        let scaleToFitY = gameHeight / 1024;
-
-        let currentScreenRatio = gameHeight / gameWidth;
+        let scaleToFitX = gameWidth / this.baseWidth;
+        let scaleToFitY = gameHeight / this.baseHeight;
         let optimalRatio = Math.min(scaleToFitX, scaleToFitY);
 
         this.scale.setUserScale(optimalRatio, optimalRatio, 0, 0);

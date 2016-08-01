@@ -1,17 +1,15 @@
 import Phaser from 'phaser';
-import * as Forge from '../items/Forge';
-import {playerLevels} from '../data/levels';
-import { placeItemInSlot } from '../utils';
+import LootList from '../components/LootList';
 
 export default class extends Phaser.State {
-    init () {
+    init (loot = []) {
         this.inventoryOpen = false;
         this.game.player.savePlayerData();
-        this.lootKeepBtns = [];
-        this.lootSellBtns = [];
+        this.loot = loot;
     }
 
     create () {
+        this.lootList = new LootList(this.game, this.loot, this);
         //clear data button
         this.clearDataBtn = new Phaser.Button(this.game, this.game.world.width - 50, 0, 'redButton', this.clearPlayerData, this);
         this.clearDataBtn.scale.x = 0.2;
@@ -83,44 +81,13 @@ export default class extends Phaser.State {
         this.healthText.fontSize = 14;
         this.healthText.fill = '#FFFFFF';
 
-        /* Reused Enemy HealthBar Graphic */
-        let EnHpBarBg = this.game.add.bitmapData(106, 26);
-        let EnHpBar = this.game.add.bitmapData(100, 20);
-
-        EnHpBarBg.ctx.beginPath();
-        EnHpBarBg.ctx.rect(0, 0, 106, 26);
-        EnHpBarBg.ctx.fillStyle = '#111111';
-        EnHpBarBg.ctx.fill();
-
-        EnHpBar.ctx.beginPath();
-        EnHpBar.ctx.rect(0, 0, 100, 20);
-        EnHpBar.ctx.fillStyle = '#DE11CD';
-        EnHpBar.ctx.fill();
-
-        this.EnhealthBarBg = this.game.add.sprite(this.game.world.centerX+155, this.game.world.centerY-15, EnHpBarBg);
-        this.EnhealthBar = this.game.add.sprite(this.game.world.centerX+158, this.game.world.centerY-12, EnHpBar);
-        this.EnhealthBarBg.visible = false;
-        this.EnhealthBar.visible = false;
-
-
-        this.lootText = this.add.text(this.game.world.centerX - 150, this.game.world.centerY + 100, '');
-        this.lootText.font = 'Nunito';
-        this.lootText.fontSize = 22;
-        this.lootText.fill = '#000000';
-
         //walkign man
         this.dude = this.game.add.sprite(this.game.world.centerX - 50, this.game.world.centerY - 120, 'walkingMan');
         this.dude.scale.setTo(1.5, 1.5);
         this.dude.animations.add('walk', [30,31,32,33,34,35,36,37,38], 18);
         this.dude.animations.play('walk', 18, true);
 
-        //enSprite
-        this.enSprite = this.game.add.sprite(this.game.world.width + 70, this.game.world.centerY - 90, 'mob1');
-        this.enSprite.scale.x = -2;
-        this.enSprite.scale.y = 2;
-        this.enSprite.animations.add('walk', [0,1,2,3,4,5,6,7], 10);
-        this.enSprite.animations.play('walk', 10, true);
-        this.enSprite.visible = false;
+        this.lootList.updateLootTextAndButtons(this.loot);
 
     }
 
@@ -139,235 +106,7 @@ export default class extends Phaser.State {
 
     viewMap(dungeon){
         this.errorText.visible = false;
-
-        this.raidDungeon(dungeon);
-        //this.game.player.inventory.push(newRandWeapon);
-    }
-
-    raidDungeon(dungeon){
-        console.log('--dungeon beign raided:', dungeon);
-        let player = this.game.player;
-        if(player.battleStats.currentHealth > 1){
-            player.battling = true;
-            let loot = [];
-            this.enSprite.visible = true;
-
-            let checkForEnemies = () => {
-                if(dungeon.currentEnemies.length > 0){
-                    let tween = this.game.add.tween(this.enSprite).to( { x: this.game.world.centerX + 235 }, 400, null, true);
-                    tween.onComplete.addOnce(() => {
-                        this.EnhealthBarBg.visible = true;
-                        this.EnhealthBar.visible = true;
-                        battleEnemy(dungeon.currentEnemies[0]);
-                    }, this);
-                }
-            };
-
-
-            let battleEnemy = (enemy) => {
-                enemy.originalHp = enemy.hp;
-                while(enemy.hp > 0){
-                    let enHealthPercent = enemy.hp/enemy.originalHp < 0 ? 0 : enemy.hp/enemy.originalHp;
-                    this.EnhealthBar.scale.x = enHealthPercent;
-
-                    let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
-                    enemy.hp -= strike;
-                    let armorReduction = Math.ceil(enemy.dps*(player.battleStats.armor/100));
-                    let enStrike = enemy.dps - armorReduction;
-                    player.battleStats.currentHealth -= enStrike;
-                    console.log(`En: -${strike}hp (${enemy.hp}), Pl: -${enStrike}hp (${player.battleStats.currentHealth})`);
-                    if(player.battleStats.currentHealth < 1){ break; }
-                }
-
-                setTimeout(() => {
-                    if(enemy.hp < 1){//killed an enemey
-                        //get loot
-                        let lootChance = Forge.rand(0,100);
-                        if( lootChance > 50){
-                            loot.push(Forge.getRandomItem(1,3));
-                        }
-                        //get exp
-                        player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
-                        //remove enemy from dungeon
-                        //this.enSprite.visible = false;
-                        this.enSprite.position.x = this.game.world.width + 70;
-                        dungeon.currentEnemies.splice(0, 1);
-                        dungeon.enemiesLeft = dungeon.currentEnemies.length;
-                    }
-
-                    if(dungeon.currentEnemies.length == 0 || player.battleStats.currentHealth < 1){
-                        this.EnhealthBarBg.visible = false;
-                        this.EnhealthBar.visible = false;
-                        finishUpRaid(dungeon);
-                    } else {
-                        this.EnhealthBarBg.visible = false;
-                        this.EnhealthBar.visible = false;
-                        checkForEnemies();
-                    }
-                }, 1000);
-
-            };
-
-            let finishUpRaid = (dungeon) => {
-
-                //Done with enemies for loop
-                if(player.battleStats.currentHealth < 1){
-                    this.errorText.text = 'You\'re tired. ';
-                    if(loot.length > 0){
-                        this.errorText.text += 'loot: ' + loot.length;
-                    }
-                    this.errorText.visible = true;
-
-                    //remove enemy sprite
-                    let tween = this.game.add.tween(this.enSprite).to( { x: this.game.world.width + 135 }, 400, null, true);
-                    tween.onComplete.addOnce(() => {
-                        this.enSprite.visible = false;
-                    }, this);
-                }
-
-                this.updateDungeonEnemiesLeftText(dungeon);
-
-                //Dungeon Done
-                if(dungeon.enemiesLeft < 1){
-                    dungeon.currentEnemies = dungeon.enemies;
-                    dungeon.beaten = true;
-                    dungeon.enemiesLeft = dungeon.currentEnemies.length;
-                    this.game.player.latestUnlockedDungeon += 1;
-                    if(this.game.player.latestUnlockedDungeon > 2){
-                        this.game.player.latestUnlockedDungeon = 2;
-                    }
-                    this.updateDungeonEnemiesLeftText(dungeon);
-                }
-                //level up?
-                if(player.exp > playerLevels[player.level].maxExp){
-                    player.level += 1;
-                    this.errorText.text += 'Level Up!';
-                    this.errorText.visible = true;
-                }
-
-                player.battling = false;
-                this.saveDungeonData();
-                this.game.player.savePlayerData();
-
-                this.updateLootTextAndButtons(loot);
-
-                console.log('--raid gave:', loot);
-            };
-
-            checkForEnemies();
-        } else {
-            this.errorText.text = 'You should rest for a while.';
-            this.errorText.visible = true;
-        }
-    }
-
-    updateDungeonEnemiesLeftText(dungeon){
-        this.dungeonTexts[(dungeon.level-1)].text = `Enemies Left: ${dungeon.enemiesLeft}${dungeon.beaten ? '*' :''}`;
-    }
-
-    cleanUpLootButtons(){
-        let allBtns = this.lootKeepBtns.concat(this.lootSellBtns);
-        allBtns.forEach((btn) => {
-            btn.kill();
-        });
-    }
-
-    updateLootTextAndButtons(loot){
-        this.lootText.text = '';
-
-        this.cleanUpLootButtons();
-
-        this.lootKeepBtns = [];
-        this.lootSellBtns = [];
-
-        loot.forEach((item, index) => {
-
-            if(item.ac != null){//Armor
-                this.lootText.text += `[${item.level}] ${item.name} \n`;
-                this.lootText.text += `AC: ${item.ac}, Type: ${item.type} \n`;
-                if(item.magic.effect.attribute != null){
-                    this.lootText.text += `${item.magic.effect.attribute} +${item.magic.effect.value}\n`;
-                }
-                this.lootText.text += `\n`;
-            } else if(item.dmg != null){//Weapon
-                this.lootText.text += `[${item.level}] ${item.name} \n`;
-                this.lootText.text += `Dmg: ${item.dmg.min} - ${item.dmg.max} \n`;
-                if(item.magic.effect.attribute != null){
-                    this.lootText.text += `${item.magic.effect.attribute} +${item.magic.effect.value}\n`;
-                }
-                this.lootText.text += `\n`;
-            } else {
-                this.lootText.text += `${item.name} \n`;
-                if(item.magic.effect.attribute != null){
-                    this.lootText.text += `${item.magic.effect.attribute} +${item.magic.effect.value}\n`;
-                }
-                this.lootText.text += `\n`;
-            }
-
-
-            //add a couple buttons for this item
-            let addBtn = new Phaser.Button(this.game, this.game.world.centerX - 250, this.game.world.centerY + 125*(index+1), 'blueButton', () => {
-                console.log('--clicked keep, loot, item', loot, item);
-                let placed = this.tryToPlaceItemInInventory(item);
-                if(placed){
-                    loot.splice(loot.indexOf(item), 1);
-                    this.updateLootTextAndButtons(loot);
-                }
-            }, this);
-            addBtn.scale.x = 0.2;
-            addBtn.anchor.setTo(0.5);
-            this.game.add.existing(addBtn);
-            this.lootKeepBtns.push(addBtn);
-
-            let addBtnText = this.add.text(this.game, this.game.world.centerX - 250, this.game.world.centerY + 125*(index+1), '+');
-            addBtnText.font = 'Nunito';
-            addBtnText.fontSize = 24;
-            addBtnText.fill = '#111111';
-            addBtnText.anchor.setTo(0.5);
-
-            let sellBtn = new Phaser.Button(this.game, this.game.world.centerX - 200, this.game.world.centerY + 125*(index+1), 'yellowButton', () => {
-                console.log('Sell Item!');
-                this.game.player.gold += item.value;
-                loot.splice(loot.indexOf(item), 1);
-                this.updateLootTextAndButtons(loot);
-            }, this);
-
-            sellBtn.scale.x = 0.2;
-            sellBtn.anchor.setTo(0.5);
-            this.game.add.existing(sellBtn);
-            this.lootSellBtns.push(sellBtn);
-
-            let sellBtnText = this.add.text(this.game, this.game.world.centerX - 200, this.game.world.centerY + 125*(index+1), '$');
-            sellBtnText.font = 'Nunito';
-            sellBtnText.fontSize = 24;
-            sellBtnText.fill = '#111111';
-            sellBtnText.anchor.setTo(0.5);
-            sellBtnText.visible = true;
-        });
-    }
-
-    tryToPlaceItemInInventory(item){
-        let invSlots = this.game.player.backpack;
-        let itemPlaced = false;
-        for(let y = 0; y < invSlots.length; y++){//(row, y, slotsRow) => {
-            let row = invSlots[y];
-            for(let x = 0; x < row.length; x++){//row.forEach((slot, x, slotsCol) => {
-                itemPlaced = placeItemInSlot(this.game.player, item, {x,y});
-                if(itemPlaced){break;}
-            }
-            if(itemPlaced){break;}
-        }
-        if(itemPlaced === false){
-            this.errorText.visible = true;
-        }
-        return itemPlaced;
-        //console.log('--new item placed:', itemPlaced);
-    }
-
-    saveDungeonData(){
-        if(localStorage){
-            localStorage.setItem('loot-hoarder-dungeons', JSON.stringify(this.game.dungeons));
-        }
+        this.state.start('Raid', true, false, dungeon);
     }
 
     update(){
