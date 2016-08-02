@@ -137,10 +137,10 @@ export default class extends Phaser.State {
             let lootChance = Forge.rand(0,100);
             let lootThreshold = 50;
             let lootMin = 1;
-            let lootMac = 3;
+            let lootMax = 3;
             if(enemy.boss){lootThreshold = 20; lootMin = 2;}
             if( lootChance > lootThreshold){
-                this.loot.push(Forge.getRandomItem(1,3));
+                this.loot.push(Forge.getRandomItem(lootMin,lootMax));
             }
             //get exp
             player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
