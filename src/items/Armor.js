@@ -1,4 +1,5 @@
 //Armor.js
+import * as Constants from './constants';
 
 export function build(levelMin, levelMax) {
     let armor = {
@@ -15,11 +16,7 @@ export function build(levelMin, levelMax) {
                 'value': -1
             }
         },
-        'shape': [
-            [1,1,0,0],
-            [1,1,0,0],
-            [1,1,0,0],
-            [0,0,0,0]],
+        'shape': Constants.shapes.shape2x2,
         'shapeWidth': 2,
         'shapeHeight': 3,
         'inventorySlot': {x:0, y:0},
@@ -40,11 +37,7 @@ export function build(levelMin, levelMax) {
     switch(armor.type){
     case 'head':
         armor.name = 'Helm';
-        armor.shape = [
-            [1,1,0,0],
-            [1,1,0,0],
-            [0,0,0,0],
-            [0,0,0,0]];
+        armor.shape = Constants.shapes.shape2x2;
         armor.shapeWidth = 2;
         armor.shapeHeight = 2;
         armor.value += 15;
@@ -52,11 +45,7 @@ export function build(levelMin, levelMax) {
         break;
     case 'body':
         armor.name = 'Armor';
-        armor.shape = [
-            [1,1,0,0],
-            [1,1,0,0],
-            [1,1,0,0],
-            [0,0,0,0]];
+        armor.shape = Constants.shapes.shape2x3;
         armor.shapeWidth = 2;
         armor.shapeHeight = 3;
         armor.value += 25;
@@ -64,11 +53,7 @@ export function build(levelMin, levelMax) {
         break;
     case 'feet':
         armor.name = 'Boots';
-        armor.shape = [
-            [1,1,0,0],
-            [1,1,0,0],
-            [0,0,0,0],
-            [0,0,0,0]];
+        armor.shape = Constants.shapes.shape2x2;
         armor.shapeWidth = 2;
         armor.shapeHeight = 2;
         armor.value += 10;
@@ -77,11 +62,7 @@ export function build(levelMin, levelMax) {
     case 'hand':
         armor.name = 'Shield';
         armor.sprite = 'shield3';
-        armor.shape = [
-            [1,1,0,0],
-            [1,1,0,0],
-            [0,0,0,0],
-            [0,0,0,0]];
+        armor.shape = Constants.shapes.shape2x2;
         armor.shapeWidth = 2;
         armor.shapeHeight = 2;
         armor.value += 15;

@@ -1,4 +1,5 @@
 //Weapon.js
+import * as Constants from './constants';
 
 export function build(levelMin, levelMax) {
     let weapon = {
@@ -24,11 +25,7 @@ export function build(levelMin, levelMax) {
                 'uses': -1
             }
         },
-        'shape': [
-            [1,1,0,0],
-            [1,1,0,0],
-            [1,1,0,0],
-            [0,0,0,0]],
+        'shape': Constants.shapes.shape2x3,
         'shapeWidth': 2,
         'shapeHeight': 3,
         'inventorySlot': {x:0, y:0},
@@ -47,21 +44,20 @@ export function build(levelMin, levelMax) {
         switch(this.rand(0,3)){
         case 0: weapon.name = 'Spear';
             weapon.sprite = 'spear0';
+            weapon.shape = Constants.shapes.shape1x3;
+            weapon.shapeWidth = 1;
+            weapon.shapeHeight = 3;
             break;
         case 1: weapon.name = 'Sword';
             weapon.sprite = 'sword2';
+            weapon.shape = Constants.shapes.shape1x3;
+            weapon.shapeWidth = 1;
+            weapon.shapeHeight = 3;
             break;
         case 2: weapon.name = 'Axe';
             weapon.sprite = 'axe0';
             break;
         }
-        weapon.shape = [
-            [1,0,0,0],
-            [1,0,0,0],
-            [1,0,0,0],
-            [0,0,0,0]];
-        weapon.shapeWidth = 1;
-        weapon.shapeHeight = 3;
     } else {
         weapon.name = 'Bow';
         weapon.sprite = 'bow0';

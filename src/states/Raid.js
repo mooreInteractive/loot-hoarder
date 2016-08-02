@@ -97,7 +97,7 @@ export default class extends Phaser.State {
 
     queueEnemy(){
         if(this.dungeon.currentEnemies.length > 0 && this.currentEnemy == null){
-            let tween = this.game.add.tween(this.enSprite).to( { x: this.game.world.centerX + 235 }, 400, null, true);
+            this.game.add.tween(this.enSprite).to( { x: this.game.world.centerX + 235 }, 400, null, true);
             this.currentEnemy = this.dungeon.currentEnemies[0];
             this.currentEnemy.originalHp = this.currentEnemy.originalHp ? this.currentEnemy.originalHp : this.currentEnemy.hp;
             this.enHealthBarBg.visible = true;
@@ -135,7 +135,11 @@ export default class extends Phaser.State {
         if(enemy.hp < 1){//killed an enemey
             //get loot
             let lootChance = Forge.rand(0,100);
-            if( lootChance > 50){
+            let lootThreshold = 50;
+            let lootMin = 1;
+            let lootMac = 3;
+            if(enemy.boss){lootThreshold = 20; lootMin = 2;}
+            if( lootChance > lootThreshold){
                 this.loot.push(Forge.getRandomItem(1,3));
             }
             //get exp

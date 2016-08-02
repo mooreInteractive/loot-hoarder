@@ -9065,7 +9065,7 @@
 
 	var _Raid2 = _interopRequireDefault(_Raid);
 
-	var _Player = __webpack_require__(/*! ./Player */ 320);
+	var _Player = __webpack_require__(/*! ./Player */ 321);
 
 	var _Player2 = _interopRequireDefault(_Player);
 
@@ -9136,8 +9136,8 @@
 	                miniBoss: 2,
 	                boss: 5,
 	                defeated: false,
-	                enemies: [{ hp: 15, dps: 3 }, { hp: 15, dps: 3 }, { hp: 36, dps: 6 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 60, dps: 9 }],
-	                currentEnemies: [{ hp: 15, dps: 3 }, { hp: 15, dps: 3 }, { hp: 36, dps: 6 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 60, dps: 9 }]
+	                enemies: [{ hp: 15, dps: 3 }, { hp: 15, dps: 3 }, { hp: 36, dps: 6, boss: true }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 60, dps: 9, boss: true }],
+	                currentEnemies: [{ hp: 15, dps: 3 }, { hp: 15, dps: 3 }, { hp: 36, dps: 6, boss: true }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 60, dps: 9, boss: true }]
 	            }, {
 	                level: 2,
 	                enemiesAmount: 8,
@@ -9145,8 +9145,8 @@
 	                miniBoss: 3,
 	                boss: 7,
 	                defeated: false,
-	                enemies: [{ hp: 15, dps: 3 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 48, dps: 6 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 15, dps: 12 }, { hp: 105, dps: 12 }],
-	                currentEnemies: [{ hp: 15, dps: 3 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 48, dps: 6 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 15, dps: 12 }, { hp: 105, dps: 12 }]
+	                enemies: [{ hp: 15, dps: 3 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 48, dps: 6, boss: true }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 15, dps: 12 }, { hp: 105, dps: 12, boss: true }],
+	                currentEnemies: [{ hp: 15, dps: 3 }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 48, dps: 6, boss: true }, { hp: 18, dps: 6 }, { hp: 18, dps: 6 }, { hp: 15, dps: 12 }, { hp: 105, dps: 12, boss: true }]
 	            }, {
 	                level: 3,
 	                enemiesAmount: 10,
@@ -9154,8 +9154,8 @@
 	                miniBoss: 4,
 	                boss: 9,
 	                defeated: false,
-	                enemies: [{ hp: 18, dps: 6 }, { hp: 18, dps: 9 }, { hp: 30, dps: 12 }, { hp: 30, dps: 12 }, { hp: 75, dps: 18 }, { hp: 18, dps: 12 }, { hp: 36, dps: 6 }, { hp: 36, dps: 6 }, { hp: 45, dps: 15 }, { hp: 165, dps: 30 }],
-	                currentEnemies: [{ hp: 18, dps: 6 }, { hp: 18, dps: 9 }, { hp: 30, dps: 12 }, { hp: 30, dps: 12 }, { hp: 75, dps: 18 }, { hp: 18, dps: 12 }, { hp: 36, dps: 6 }, { hp: 36, dps: 6 }, { hp: 45, dps: 15 }, { hp: 165, dps: 30 }]
+	                enemies: [{ hp: 18, dps: 6 }, { hp: 18, dps: 9 }, { hp: 30, dps: 12 }, { hp: 30, dps: 12 }, { hp: 75, dps: 18, boss: true }, { hp: 18, dps: 12 }, { hp: 36, dps: 6 }, { hp: 36, dps: 6 }, { hp: 45, dps: 15 }, { hp: 165, dps: 30, boss: true }],
+	                currentEnemies: [{ hp: 18, dps: 6 }, { hp: 18, dps: 9 }, { hp: 30, dps: 12 }, { hp: 30, dps: 12 }, { hp: 75, dps: 18, boss: true }, { hp: 18, dps: 12 }, { hp: 36, dps: 6 }, { hp: 36, dps: 6 }, { hp: 45, dps: 15 }, { hp: 165, dps: 30, boss: true }]
 	            }];
 
 	            if (localStorage) {
@@ -112432,7 +112432,7 @@
 	        key: 'queueEnemy',
 	        value: function queueEnemy() {
 	            if (this.dungeon.currentEnemies.length > 0 && this.currentEnemy == null) {
-	                var tween = this.game.add.tween(this.enSprite).to({ x: this.game.world.centerX + 235 }, 400, null, true);
+	                this.game.add.tween(this.enSprite).to({ x: this.game.world.centerX + 235 }, 400, null, true);
 	                this.currentEnemy = this.dungeon.currentEnemies[0];
 	                this.currentEnemy.originalHp = this.currentEnemy.originalHp ? this.currentEnemy.originalHp : this.currentEnemy.hp;
 	                this.enHealthBarBg.visible = true;
@@ -112472,7 +112472,13 @@
 	                //killed an enemey
 	                //get loot
 	                var lootChance = Forge.rand(0, 100);
-	                if (lootChance > 50) {
+	                var lootThreshold = 50;
+	                var lootMin = 1;
+	                var lootMac = 3;
+	                if (enemy.boss) {
+	                    lootThreshold = 20;lootMin = 2;
+	                }
+	                if (lootChance > lootThreshold) {
 	                    this.loot.push(Forge.getRandomItem(1, 3));
 	                }
 	                //get exp
@@ -112631,11 +112637,11 @@
 
 	var Weapon = _interopRequireWildcard(_Weapon);
 
-	var _Armor = __webpack_require__(/*! ./Armor */ 318);
+	var _Armor = __webpack_require__(/*! ./Armor */ 319);
 
 	var Armor = _interopRequireWildcard(_Armor);
 
-	var _Accessory = __webpack_require__(/*! ./Accessory */ 319);
+	var _Accessory = __webpack_require__(/*! ./Accessory */ 320);
 
 	var Accessory = _interopRequireWildcard(_Accessory);
 
@@ -112662,7 +112668,7 @@
 /*!*****************************!*\
   !*** ./src/items/Weapon.js ***!
   \*****************************/
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -112672,7 +112678,12 @@
 	exports.build = build;
 	exports.rand = rand;
 	exports.getMagicEffect = getMagicEffect;
-	//Weapon.js
+
+	var _constants = __webpack_require__(/*! ./constants */ 318);
+
+	var Constants = _interopRequireWildcard(_constants);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function build(levelMin, levelMax) {
 	    var weapon = {
@@ -112698,7 +112709,7 @@
 	                'uses': -1
 	            }
 	        },
-	        'shape': [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0]],
+	        'shape': Constants.shapes.shape2x3,
 	        'shapeWidth': 2,
 	        'shapeHeight': 3,
 	        'inventorySlot': { x: 0, y: 0 },
@@ -112720,19 +112731,22 @@
 	            case 0:
 	                weapon.name = 'Spear';
 	                weapon.sprite = 'spear0';
+	                weapon.shape = Constants.shapes.shape1x3;
+	                weapon.shapeWidth = 1;
+	                weapon.shapeHeight = 3;
 	                break;
 	            case 1:
 	                weapon.name = 'Sword';
 	                weapon.sprite = 'sword2';
+	                weapon.shape = Constants.shapes.shape1x3;
+	                weapon.shapeWidth = 1;
+	                weapon.shapeHeight = 3;
 	                break;
 	            case 2:
 	                weapon.name = 'Axe';
 	                weapon.sprite = 'axe0';
 	                break;
 	        }
-	        weapon.shape = [[1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]];
-	        weapon.shapeWidth = 1;
-	        weapon.shapeHeight = 3;
 	    } else {
 	        weapon.name = 'Bow';
 	        weapon.sprite = 'bow0';
@@ -112798,7 +112812,8 @@
 	    }
 	    //return the weapon
 	    return weapon;
-	}
+	} //Weapon.js
+
 
 	function rand(min, max) {
 	    return Math.floor(Math.random() * (max - min)) + min;
@@ -112829,10 +112844,32 @@
 
 /***/ },
 /* 318 */
+/*!********************************!*\
+  !*** ./src/items/constants.js ***!
+  \********************************/
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var shapes = exports.shapes = {
+	    shape1x3: [[1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]],
+
+	    shape2x3: [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0]],
+
+	    shape1x1: [[1, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+
+	    shape2x2: [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+	};
+
+/***/ },
+/* 319 */
 /*!****************************!*\
   !*** ./src/items/Armor.js ***!
   \****************************/
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -112842,7 +112879,12 @@
 	exports.build = build;
 	exports.rand = rand;
 	exports.getMagicEffect = getMagicEffect;
-	//Armor.js
+
+	var _constants = __webpack_require__(/*! ./constants */ 318);
+
+	var Constants = _interopRequireWildcard(_constants);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function build(levelMin, levelMax) {
 	    var armor = {
@@ -112859,7 +112901,7 @@
 	                'value': -1
 	            }
 	        },
-	        'shape': [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0]],
+	        'shape': Constants.shapes.shape2x2,
 	        'shapeWidth': 2,
 	        'shapeHeight': 3,
 	        'inventorySlot': { x: 0, y: 0 },
@@ -112884,7 +112926,7 @@
 	    switch (armor.type) {
 	        case 'head':
 	            armor.name = 'Helm';
-	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+	            armor.shape = Constants.shapes.shape2x2;
 	            armor.shapeWidth = 2;
 	            armor.shapeHeight = 2;
 	            armor.value += 15;
@@ -112892,7 +112934,7 @@
 	            break;
 	        case 'body':
 	            armor.name = 'Armor';
-	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0]];
+	            armor.shape = Constants.shapes.shape2x3;
 	            armor.shapeWidth = 2;
 	            armor.shapeHeight = 3;
 	            armor.value += 25;
@@ -112900,7 +112942,7 @@
 	            break;
 	        case 'feet':
 	            armor.name = 'Boots';
-	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+	            armor.shape = Constants.shapes.shape2x2;
 	            armor.shapeWidth = 2;
 	            armor.shapeHeight = 2;
 	            armor.value += 10;
@@ -112909,7 +112951,7 @@
 	        case 'hand':
 	            armor.name = 'Shield';
 	            armor.sprite = 'shield3';
-	            armor.shape = [[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+	            armor.shape = Constants.shapes.shape2x2;
 	            armor.shapeWidth = 2;
 	            armor.shapeHeight = 2;
 	            armor.value += 15;
@@ -112983,79 +113025,8 @@
 
 	    //return the armor
 	    return armor;
-	}
+	} //Armor.js
 
-	function rand(min, max) {
-	    return Math.floor(Math.random() * (max - min)) + min;
-	}
-
-	function getMagicEffect(lvl) {
-	    var effect = {};
-
-	    switch (this.rand(0, 4)) {
-	        case 0:
-	            effect.attribute = 'strength';
-	            break;
-	        case 1:
-	            effect.attribute = 'dexterity';
-	            break;
-	        case 2:
-	            effect.attribute = 'wisdom';
-	            break;
-	        case 3:
-	            effect.attribute = 'vitality';
-	            break;
-	    }
-
-	    effect.value = lvl;
-
-	    return effect;
-	}
-
-/***/ },
-/* 319 */
-/*!********************************!*\
-  !*** ./src/items/Accessory.js ***!
-  \********************************/
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.build = build;
-	exports.rand = rand;
-	exports.getMagicEffect = getMagicEffect;
-	//Accessory.js
-
-	function build() {
-	    var accessory = {
-	        'name': 'null',
-	        'type': 'accessory',
-	        'inventoryType': 'accessory',
-	        'weight': 1,
-	        'magic': {
-	            'effect': {
-	                'attribute': null,
-	                'value': -1
-	            }
-	        },
-	        'shape': [[1, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-	        'shapeWidth': 1,
-	        'shapeHeight': 1,
-	        'inventorySlot': { x: 0, y: 0 },
-	        'value': 0
-	    };
-
-	    var strength = this.rand(0, 5);
-	    accessory.magic.effect = this.getMagicEffect(strength);
-	    accessory.name = 'Ring of ' + accessory.magic.effect.attribute;
-	    accessory.value += 175 * strength;
-
-	    //return the accessory
-	    return accessory;
-	}
 
 	function rand(min, max) {
 	    return Math.floor(Math.random() * (max - min)) + min;
@@ -113086,6 +113057,84 @@
 
 /***/ },
 /* 320 */
+/*!********************************!*\
+  !*** ./src/items/Accessory.js ***!
+  \********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.build = build;
+	exports.rand = rand;
+	exports.getMagicEffect = getMagicEffect;
+
+	var _constants = __webpack_require__(/*! ./constants */ 318);
+
+	var Constants = _interopRequireWildcard(_constants);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function build() {
+	    var accessory = {
+	        'name': 'null',
+	        'type': 'accessory',
+	        'inventoryType': 'accessory',
+	        'weight': 1,
+	        'magic': {
+	            'effect': {
+	                'attribute': null,
+	                'value': -1
+	            }
+	        },
+	        'shape': Constants.shapes.shape1x1,
+	        'shapeWidth': 1,
+	        'shapeHeight': 1,
+	        'inventorySlot': { x: 0, y: 0 },
+	        'value': 0
+	    };
+
+	    var strength = this.rand(0, 5);
+	    accessory.magic.effect = this.getMagicEffect(strength);
+	    accessory.name = 'Ring of ' + accessory.magic.effect.attribute;
+	    accessory.value += 175 * strength;
+
+	    //return the accessory
+	    return accessory;
+	} //Accessory.js
+
+
+	function rand(min, max) {
+	    return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	function getMagicEffect(lvl) {
+	    var effect = {};
+
+	    switch (this.rand(0, 4)) {
+	        case 0:
+	            effect.attribute = 'strength';
+	            break;
+	        case 1:
+	            effect.attribute = 'dexterity';
+	            break;
+	        case 2:
+	            effect.attribute = 'wisdom';
+	            break;
+	        case 3:
+	            effect.attribute = 'vitality';
+	            break;
+	    }
+
+	    effect.value = lvl;
+
+	    return effect;
+	}
+
+/***/ },
+/* 321 */
 /*!***********************!*\
   !*** ./src/Player.js ***!
   \***********************/

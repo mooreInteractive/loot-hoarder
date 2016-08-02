@@ -1,4 +1,5 @@
 //Accessory.js
+import * as Constants from './constants';
 
 export function build() {
     let accessory = {
@@ -12,11 +13,7 @@ export function build() {
                 'value': -1
             }
         },
-        'shape': [
-            [1,0,0,0],
-            [0,0,0,0],
-            [0,0,0,0],
-            [0,0,0,0]],
+        'shape': Constants.shapes.shape1x1,
         'shapeWidth': 1,
         'shapeHeight': 1,
         'inventorySlot': {x:0, y:0},

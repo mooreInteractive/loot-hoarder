@@ -68,18 +68,18 @@ class Game extends Phaser.Game {
                 enemies: [
                     {hp: 15, dps: 3},
                     {hp: 15, dps: 3},
-                    {hp: 36, dps: 6},
+                    {hp: 36, dps: 6, boss: true},
                     {hp: 18, dps: 6},
                     {hp: 18, dps: 6},
-                    {hp: 60, dps: 9}
+                    {hp: 60, dps: 9, boss: true}
                 ],
                 currentEnemies: [
                     {hp: 15, dps: 3},
                     {hp: 15, dps: 3},
-                    {hp: 36, dps: 6},
+                    {hp: 36, dps: 6, boss: true},
                     {hp: 18, dps: 6},
                     {hp: 18, dps: 6},
-                    {hp: 60, dps: 9}
+                    {hp: 60, dps: 9, boss: true}
                 ]
             },
             {
@@ -93,21 +93,21 @@ class Game extends Phaser.Game {
                     {hp: 15, dps: 3},
                     {hp: 18, dps: 6},
                     {hp: 18, dps: 6},
-                    {hp: 48, dps: 6},
+                    {hp: 48, dps: 6, boss: true},
                     {hp: 18, dps: 6},
                     {hp: 18, dps: 6},
                     {hp: 15, dps: 12},
-                    {hp: 105, dps: 12}
+                    {hp: 105, dps: 12, boss: true}
                 ],
                 currentEnemies: [
                     {hp: 15, dps: 3},
                     {hp: 18, dps: 6},
                     {hp: 18, dps: 6},
-                    {hp: 48, dps: 6},
+                    {hp: 48, dps: 6, boss: true},
                     {hp: 18, dps: 6},
                     {hp: 18, dps: 6},
                     {hp: 15, dps: 12},
-                    {hp: 105, dps: 12}
+                    {hp: 105, dps: 12, boss: true}
                 ]
             },
             {
@@ -122,24 +122,24 @@ class Game extends Phaser.Game {
                     {hp: 18, dps: 9},
                     {hp: 30, dps: 12},
                     {hp: 30, dps: 12},
-                    {hp: 75, dps: 18},
+                    {hp: 75, dps: 18, boss: true},
                     {hp: 18, dps: 12},
                     {hp: 36, dps: 6},
                     {hp: 36, dps: 6},
                     {hp: 45, dps: 15},
-                    {hp: 165, dps: 30}
+                    {hp: 165, dps: 30, boss: true}
                 ],
                 currentEnemies: [
                     {hp: 18, dps: 6},
                     {hp: 18, dps: 9},
                     {hp: 30, dps: 12},
                     {hp: 30, dps: 12},
-                    {hp: 75, dps: 18},
+                    {hp: 75, dps: 18, boss: true},
                     {hp: 18, dps: 12},
                     {hp: 36, dps: 6},
                     {hp: 36, dps: 6},
                     {hp: 45, dps: 15},
-                    {hp: 165, dps: 30}
+                    {hp: 165, dps: 30, boss: true}
                 ]
             }
         ];
