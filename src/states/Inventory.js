@@ -43,16 +43,16 @@ export default class extends Phaser.State {
         //Player Stats
         this.playerInfo = this.add.text(50, 120, '');
         this.playerInfo.font = 'Nunito';
-        this.playerInfo.fontSize = 12;
+        this.playerInfo.fontSize = 24;
         this.playerInfo.fill = '#000000';
-        this.playerInfo2 = this.add.text(200, 120, '');
+        this.playerInfo2 = this.add.text(450, 320, '');
         this.playerInfo2.font = 'Nunito';
-        this.playerInfo2.fontSize = 12;
+        this.playerInfo2.fontSize = 24;
         this.playerInfo2.fill = '#000000';
 
-        this.playerInfoTitle = this.add.text(50, 100, 'Character');
+        this.playerInfoTitle = this.add.text(50, 75, 'Character');
         this.playerInfoTitle.font = 'Nunito';
-        this.playerInfoTitle.fontSize = 15;
+        this.playerInfoTitle.fontSize = 28;
         this.playerInfoTitle.fill = '#000000';
     }
 
@@ -68,7 +68,7 @@ export default class extends Phaser.State {
         this.playerInfo.text += `Wisdom: ${this.game.player.battleStats.wisdom} \n`;
 
         this.playerInfo2.text = `Dmg: ${this.game.player.battleStats.dmg.min} - ${this.game.player.battleStats.dmg.max} \n`;
-        this.playerInfo2.text += `Armor: ${this.game.player.battleStats.armor} \n\n\n`;
+        this.playerInfo2.text += `Armor: ${this.game.player.battleStats.armor} \n`;
         this.playerInfo2.text += `Gold: ${this.game.player.gold} \n`;
         this.playerInfo2.text += `Carried Weight: ${this.game.player.battleStats.totalWeight}`;
     }

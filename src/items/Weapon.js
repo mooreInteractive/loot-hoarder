@@ -64,6 +64,7 @@ export function build(levelMin, levelMax) {
         weapon.shapeHeight = 3;
     } else {
         weapon.name = 'Bow';
+        weapon.sprite = 'bow0';
     }
 
     //weapon level

@@ -8,6 +8,12 @@ export default class extends Phaser.State {
         this.inventoryOpen = false;
         this.game.player.savePlayerData();
         this.dungeon = dungeon;
+        this.frameCount = 1;
+        this.currentEnemy = null;
+        this.game.player.battling = true;
+        this.raidStarted = false;
+        this.raidEnded = false;
+        this.loot = [];
     }
 
     create () {
@@ -49,10 +55,10 @@ export default class extends Phaser.State {
         EnHpBar.ctx.fillStyle = '#DE11CD';
         EnHpBar.ctx.fill();
 
-        this.EnhealthBarBg = this.game.add.sprite(this.game.world.centerX+155, this.game.world.centerY-15, EnHpBarBg);
-        this.EnhealthBar = this.game.add.sprite(this.game.world.centerX+158, this.game.world.centerY-12, EnHpBar);
-        this.EnhealthBarBg.visible = false;
-        this.EnhealthBar.visible = false;
+        this.enHealthBarBg = this.game.add.sprite(this.game.world.centerX+155, this.game.world.centerY-15, EnHpBarBg);
+        this.enHealthBar = this.game.add.sprite(this.game.world.centerX+158, this.game.world.centerY-12, EnHpBar);
+        this.enHealthBarBg.visible = false;
+        this.enHealthBar.visible = false;
 
         this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 50, 'You\'re over-encumbered');
         this.errorText.font = 'Nunito';
@@ -73,127 +79,129 @@ export default class extends Phaser.State {
         this.enSprite.scale.y = 2;
         this.enSprite.animations.add('walk', [0,1,2,3,4,5,6,7], 10);
         this.enSprite.animations.play('walk', 10, true);
-        this.enSprite.visible = false;
 
-        this.raidDungeon(this.dungeon);
+        this.dmgText = this.add.text(this.game.world.centerX, this.game.world.centerY - 120, '');
+        this.dmgText.font = 'Nunito';
+        this.dmgText.fontSize = 22;
+        this.dmgText.fill = '#CD1313';
+        this.dmgText.visible = false;
 
+        this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY - 120, '');
+        this.enDmgText.font = 'Nunito';
+        this.enDmgText.fontSize = 22;
+        this.enDmgText.fill = '#CD1313';
+        this.enDmgText.visible = false;
+
+        this.queueEnemy();
     }
 
-    raidDungeon(dungeon){
-        console.log('--dungeon beign raided:', dungeon);
+    queueEnemy(){
+        if(this.dungeon.currentEnemies.length > 0 && this.currentEnemy == null){
+            let tween = this.game.add.tween(this.enSprite).to( { x: this.game.world.centerX + 235 }, 400, null, true);
+            this.currentEnemy = this.dungeon.currentEnemies[0];
+            this.currentEnemy.originalHp = this.currentEnemy.originalHp ? this.currentEnemy.originalHp : this.currentEnemy.hp;
+            this.enHealthBarBg.visible = true;
+            this.enHealthBar.visible = true;
+
+        } else if(this.dungeon.currentEnemies.length == 0){
+            console.log('no more enemies in this dungeon...');
+        }
+    }
+
+    action(){
         let player = this.game.player;
-        if(player.battleStats.currentHealth > 1){
-            player.battling = true;
-            let loot = [];
-            this.enSprite.visible = true;
+        let enemy = this.currentEnemy;
+        let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
 
-            let checkForEnemies = () => {
-                if(dungeon.currentEnemies.length > 0){
-                    let tween = this.game.add.tween(this.enSprite).to( { x: this.game.world.centerX + 235 }, 400, null, true);
-                    tween.onComplete.addOnce(() => {
-                        this.EnhealthBarBg.visible = true;
-                        this.EnhealthBar.visible = true;
-                        battleEnemy(dungeon.currentEnemies[0]);
-                    }, this);
-                }
-            };
+        enemy.hp -= strike;
 
+        let armorReduction = Math.ceil(enemy.dps*(player.battleStats.armor/100));
+        let enStrike = enemy.dps - armorReduction;
 
-            let battleEnemy = (enemy) => {
-                enemy.originalHp = enemy.hp;
-                while(enemy.hp > 0){
-                    let enHealthPercent = enemy.hp/enemy.originalHp < 0 ? 0 : enemy.hp/enemy.originalHp;
-                    this.EnhealthBar.scale.x = enHealthPercent;
+        player.battleStats.currentHealth -= enStrike;
 
-                    let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
-                    enemy.hp -= strike;
-                    let armorReduction = Math.ceil(enemy.dps*(player.battleStats.armor/100));
-                    let enStrike = enemy.dps - armorReduction;
-                    player.battleStats.currentHealth -= enStrike;
-                    console.log(`En: -${strike}hp (${enemy.hp}), Pl: -${enStrike}hp (${player.battleStats.currentHealth})`);
-                    if(player.battleStats.currentHealth < 1){ break; }
-                }
+        this.dmgText.text = `- ${enStrike}hp`;
+        this.dmgText.visible = true;
+        this.enDmgText.text = `- ${strike}hp`;
+        this.enDmgText.visible = true;
 
-                setTimeout(() => {
-                    if(enemy.hp < 1){//killed an enemey
-                        //get loot
-                        let lootChance = Forge.rand(0,100);
-                        if( lootChance > 50){
-                            loot.push(Forge.getRandomItem(1,3));
-                        }
-                        //get exp
-                        player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
-                        //remove enemy from dungeon
-                        //this.enSprite.visible = false;
-                        this.enSprite.position.x = this.game.world.width + 70;
-                        dungeon.currentEnemies.splice(0, 1);
-                        dungeon.enemiesLeft = dungeon.currentEnemies.length;
-                    }
+        console.log(`En: -${strike}hp (${enemy.hp}/${enemy.originalHp}), Pl: -${enStrike}hp (${player.battleStats.currentHealth})`);
+    }
 
-                    if(dungeon.currentEnemies.length == 0 || player.battleStats.currentHealth < 1){
-                        this.EnhealthBarBg.visible = false;
-                        this.EnhealthBar.visible = false;
-                        finishUpRaid();
-                    } else {
-                        this.EnhealthBarBg.visible = false;
-                        this.EnhealthBar.visible = false;
-                        checkForEnemies();
-                    }
-                }, 1000);
+    assessment(){
+        let player = this.game.player;
+        let enemy = this.currentEnemy;
 
-            };
+        if(enemy.hp < 1){//killed an enemey
+            //get loot
+            let lootChance = Forge.rand(0,100);
+            if( lootChance > 50){
+                this.loot.push(Forge.getRandomItem(1,3));
+            }
+            //get exp
+            player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
+            //remove enemy from dungeon
+            //this.enSprite.visible = false;
+            this.enSprite.position.x = this.game.world.width + 70;//TODO animate out/explode/die
+            this.dungeon.currentEnemies.splice(0, 1);
+            this.dungeon.enemiesLeft = this.dungeon.currentEnemies.length;
+            this.enHealthBarBg.visible = false;
+            this.enHealthBar.visible = false;
 
-            let finishUpRaid = () => {
+            this.currentEnemy = null;
+        }
 
-                //Done with enemies for loop
-                if(player.battleStats.currentHealth < 1){
-                    this.errorText.text = 'You\'re tired. ';
-                    if(loot.length > 0){
-                        this.errorText.text += 'loot: ' + loot.length;
-                    }
-                    this.errorText.visible = true;
+        if(this.dungeon.currentEnemies.length == 0 || player.battleStats.currentHealth < 1){
+            this.finishUpRaid();
+        }
+    }
 
-                    //remove enemy sprite
-                    let tween = this.game.add.tween(this.enSprite).to( { x: this.game.world.width + 135 }, 400, null, true);
-                    tween.onComplete.addOnce(() => {
-                        this.enSprite.visible = false;
-                    }, this);
-                }
+    finishUpRaid(){
+        let player = this.game.player;
+        let dungeon = this.dungeon;
+        //Done with enemies for loop
+        if(player.battleStats.currentHealth < 1){
+            this.errorText.text = 'You\'re tired. ';
+            if(this.loot.length > 0){
+                this.errorText.text += 'loot: ' + this.loot.length;
+            }
+            this.errorText.visible = true;
 
-                //Dungeon Done
-                if(dungeon.enemiesLeft < 1){
-                    dungeon.currentEnemies = dungeon.enemies;
-                    dungeon.beaten = true;
-                    dungeon.enemiesLeft = dungeon.currentEnemies.length;
-                    this.game.player.latestUnlockedDungeon += 1;
-                    if(this.game.player.latestUnlockedDungeon > 2){
-                        this.game.player.latestUnlockedDungeon = 2;
-                    }
-                }
+            //remove enemy sprite
+            let tween = this.game.add.tween(this.enSprite).to( { x: this.game.world.width + 135 }, 400, null, true);
+            tween.onComplete.addOnce(() => {
+                this.enSprite.visible = false;
+            }, this);
+        }
 
-                //level up?
-                if(player.exp > playerLevels[player.level].maxExp){
-                    player.level += 1;
-                    this.errorText.text += 'Level Up!';
-                    this.errorText.visible = true;
-                }
+        //Dungeon Done
+        if(dungeon.enemiesLeft < 1){
+            dungeon.currentEnemies = dungeon.enemies;
+            dungeon.beaten = true;
+            //TODO - bestowe dungeon ring
+            dungeon.enemiesLeft = dungeon.currentEnemies.length;
+            this.game.player.latestUnlockedDungeon += 1;
+            if(this.game.player.latestUnlockedDungeon > 2){
+                this.game.player.latestUnlockedDungeon = 2;
+            }
+        }
 
-                player.battling = false;
-                this.saveDungeonData();
-                this.game.player.savePlayerData();
-
-                this.lootList.updateLootTextAndButtons(loot);
-
-                console.log('--raid gave:', loot);
-
-                this.game.state.start('MainMenu', true, false, loot);
-            };
-
-            checkForEnemies();
-        } else {
-            this.errorText.text = 'You should rest for a while.';
+        //level up?
+        if(player.exp > playerLevels[player.level].maxExp){
+            player.level += 1;
+            this.errorText.text += 'Level Up!';
             this.errorText.visible = true;
         }
+
+        player.battling = false;
+        this.saveDungeonData();
+        this.game.player.savePlayerData();
+
+        this.lootList.updateLootTextAndButtons(this.loot);
+
+        console.log('--raid gave:', this.loot);
+
+        this.raidEnded = true;
     }
 
     saveDungeonData(){
@@ -202,7 +210,40 @@ export default class extends Phaser.State {
         }
     }
 
+    resetHitText(){
+        this.dmgText.text = '';
+        this.dmgText.visible = false;
+        this.enDmgText.text = '';
+        this.enDmgText.visible = false;
+        this.dmgText.position.y = this.game.world.centerY - 120;
+        this.enDmgText.position.y = this.game.world.centerY - 120;
+    }
+
     update(){
+        if(this.frameCount == 0){
+            if(this.raidEnded){this.game.state.start('MainMenu', true, false, this.loot);}
+            this.resetHitText();
+            this.queueEnemy();
+            this.action();
+            this.assessment();
+        }
+
+        this.frameCount += 1;
+
+        if(this.raidStarted){
+            if(this.frameCount == 60){
+                this.frameCount = 0;
+            }
+        } else {
+            if(this.frameCount == 90){
+                this.raidStarted = true;
+                this.frameCount = 0;
+            }
+        }
+
+
+        this.dmgText.position.y -= 1;
+        this.enDmgText.position.y -= 1;
         /* Player Health */
         let currHealth = this.game.player.battleStats.currentHealth;
         let maxHealth = this.game.player.battleStats.health;
@@ -211,6 +252,9 @@ export default class extends Phaser.State {
 
         this.healthText.text = `Hp: ${currHealth}/${maxHealth}`;
         this.healthBar.scale.x = healthPercent;
+
+        /* Enemy Health */
+        this.enHealthBar.scale.x = this.currentEnemy ? this.currentEnemy.hp/this.currentEnemy.originalHp : 0;
     }
 
     render (){

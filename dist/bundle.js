@@ -111097,6 +111097,7 @@
 	            this.load.image('shield3', './assets/images/items/shield.png');
 	            this.load.image('sword2', './assets/images/items/sword.png');
 	            this.load.image('axe0', './assets/images/items/axe.png');
+	            this.load.image('bow0', './assets/images/items/bow.png');
 
 	            this.game.load.spritesheet('mob1', './assets/images/Mob1.png', 32, 32);
 	            this.game.load.spritesheet('walkingMan', './assets/images/child_walk_tanned.png', 64, 64);
@@ -111829,16 +111830,16 @@
 	            //Player Stats
 	            this.playerInfo = this.add.text(50, 120, '');
 	            this.playerInfo.font = 'Nunito';
-	            this.playerInfo.fontSize = 12;
+	            this.playerInfo.fontSize = 24;
 	            this.playerInfo.fill = '#000000';
-	            this.playerInfo2 = this.add.text(200, 120, '');
+	            this.playerInfo2 = this.add.text(450, 320, '');
 	            this.playerInfo2.font = 'Nunito';
-	            this.playerInfo2.fontSize = 12;
+	            this.playerInfo2.fontSize = 24;
 	            this.playerInfo2.fill = '#000000';
 
-	            this.playerInfoTitle = this.add.text(50, 100, 'Character');
+	            this.playerInfoTitle = this.add.text(50, 75, 'Character');
 	            this.playerInfoTitle.font = 'Nunito';
-	            this.playerInfoTitle.fontSize = 15;
+	            this.playerInfoTitle.fontSize = 28;
 	            this.playerInfoTitle.fill = '#000000';
 	        }
 	    }, {
@@ -111855,7 +111856,7 @@
 	            this.playerInfo.text += 'Wisdom: ' + this.game.player.battleStats.wisdom + ' \n';
 
 	            this.playerInfo2.text = 'Dmg: ' + this.game.player.battleStats.dmg.min + ' - ' + this.game.player.battleStats.dmg.max + ' \n';
-	            this.playerInfo2.text += 'Armor: ' + this.game.player.battleStats.armor + ' \n\n\n';
+	            this.playerInfo2.text += 'Armor: ' + this.game.player.battleStats.armor + ' \n';
 	            this.playerInfo2.text += 'Gold: ' + this.game.player.gold + ' \n';
 	            this.playerInfo2.text += 'Carried Weight: ' + this.game.player.battleStats.totalWeight;
 	        }
@@ -112340,6 +112341,12 @@
 	            this.inventoryOpen = false;
 	            this.game.player.savePlayerData();
 	            this.dungeon = dungeon;
+	            this.frameCount = 1;
+	            this.currentEnemy = null;
+	            this.game.player.battling = true;
+	            this.raidStarted = false;
+	            this.raidEnded = false;
+	            this.loot = [];
 	        }
 	    }, {
 	        key: 'create',
@@ -112382,10 +112389,10 @@
 	            EnHpBar.ctx.fillStyle = '#DE11CD';
 	            EnHpBar.ctx.fill();
 
-	            this.EnhealthBarBg = this.game.add.sprite(this.game.world.centerX + 155, this.game.world.centerY - 15, EnHpBarBg);
-	            this.EnhealthBar = this.game.add.sprite(this.game.world.centerX + 158, this.game.world.centerY - 12, EnHpBar);
-	            this.EnhealthBarBg.visible = false;
-	            this.EnhealthBar.visible = false;
+	            this.enHealthBarBg = this.game.add.sprite(this.game.world.centerX + 155, this.game.world.centerY - 15, EnHpBarBg);
+	            this.enHealthBar = this.game.add.sprite(this.game.world.centerX + 158, this.game.world.centerY - 12, EnHpBar);
+	            this.enHealthBarBg.visible = false;
+	            this.enHealthBar.visible = false;
 
 	            this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 50, 'You\'re over-encumbered');
 	            this.errorText.font = 'Nunito';
@@ -112406,132 +112413,135 @@
 	            this.enSprite.scale.y = 2;
 	            this.enSprite.animations.add('walk', [0, 1, 2, 3, 4, 5, 6, 7], 10);
 	            this.enSprite.animations.play('walk', 10, true);
-	            this.enSprite.visible = false;
 
-	            this.raidDungeon(this.dungeon);
+	            this.dmgText = this.add.text(this.game.world.centerX, this.game.world.centerY - 120, '');
+	            this.dmgText.font = 'Nunito';
+	            this.dmgText.fontSize = 22;
+	            this.dmgText.fill = '#CD1313';
+	            this.dmgText.visible = false;
+
+	            this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY - 120, '');
+	            this.enDmgText.font = 'Nunito';
+	            this.enDmgText.fontSize = 22;
+	            this.enDmgText.fill = '#CD1313';
+	            this.enDmgText.visible = false;
+
+	            this.queueEnemy();
 	        }
 	    }, {
-	        key: 'raidDungeon',
-	        value: function raidDungeon(dungeon) {
+	        key: 'queueEnemy',
+	        value: function queueEnemy() {
+	            if (this.dungeon.currentEnemies.length > 0 && this.currentEnemy == null) {
+	                var tween = this.game.add.tween(this.enSprite).to({ x: this.game.world.centerX + 235 }, 400, null, true);
+	                this.currentEnemy = this.dungeon.currentEnemies[0];
+	                this.currentEnemy.originalHp = this.currentEnemy.originalHp ? this.currentEnemy.originalHp : this.currentEnemy.hp;
+	                this.enHealthBarBg.visible = true;
+	                this.enHealthBar.visible = true;
+	            } else if (this.dungeon.currentEnemies.length == 0) {
+	                console.log('no more enemies in this dungeon...');
+	            }
+	        }
+	    }, {
+	        key: 'action',
+	        value: function action() {
+	            var player = this.game.player;
+	            var enemy = this.currentEnemy;
+	            var strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
+
+	            enemy.hp -= strike;
+
+	            var armorReduction = Math.ceil(enemy.dps * (player.battleStats.armor / 100));
+	            var enStrike = enemy.dps - armorReduction;
+
+	            player.battleStats.currentHealth -= enStrike;
+
+	            this.dmgText.text = '- ' + enStrike + 'hp';
+	            this.dmgText.visible = true;
+	            this.enDmgText.text = '- ' + strike + 'hp';
+	            this.enDmgText.visible = true;
+
+	            console.log('En: -' + strike + 'hp (' + enemy.hp + '/' + enemy.originalHp + '), Pl: -' + enStrike + 'hp (' + player.battleStats.currentHealth + ')');
+	        }
+	    }, {
+	        key: 'assessment',
+	        value: function assessment() {
+	            var player = this.game.player;
+	            var enemy = this.currentEnemy;
+
+	            if (enemy.hp < 1) {
+	                //killed an enemey
+	                //get loot
+	                var lootChance = Forge.rand(0, 100);
+	                if (lootChance > 50) {
+	                    this.loot.push(Forge.getRandomItem(1, 3));
+	                }
+	                //get exp
+	                player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
+	                //remove enemy from dungeon
+	                //this.enSprite.visible = false;
+	                this.enSprite.position.x = this.game.world.width + 70; //TODO animate out/explode/die
+	                this.dungeon.currentEnemies.splice(0, 1);
+	                this.dungeon.enemiesLeft = this.dungeon.currentEnemies.length;
+	                this.enHealthBarBg.visible = false;
+	                this.enHealthBar.visible = false;
+
+	                this.currentEnemy = null;
+	            }
+
+	            if (this.dungeon.currentEnemies.length == 0 || player.battleStats.currentHealth < 1) {
+	                this.finishUpRaid();
+	            }
+	        }
+	    }, {
+	        key: 'finishUpRaid',
+	        value: function finishUpRaid() {
 	            var _this2 = this;
 
-	            console.log('--dungeon beign raided:', dungeon);
 	            var player = this.game.player;
-	            if (player.battleStats.currentHealth > 1) {
-	                (function () {
-	                    player.battling = true;
-	                    var loot = [];
-	                    _this2.enSprite.visible = true;
+	            var dungeon = this.dungeon;
+	            //Done with enemies for loop
+	            if (player.battleStats.currentHealth < 1) {
+	                this.errorText.text = 'You\'re tired. ';
+	                if (this.loot.length > 0) {
+	                    this.errorText.text += 'loot: ' + this.loot.length;
+	                }
+	                this.errorText.visible = true;
 
-	                    var checkForEnemies = function checkForEnemies() {
-	                        if (dungeon.currentEnemies.length > 0) {
-	                            var tween = _this2.game.add.tween(_this2.enSprite).to({ x: _this2.game.world.centerX + 235 }, 400, null, true);
-	                            tween.onComplete.addOnce(function () {
-	                                _this2.EnhealthBarBg.visible = true;
-	                                _this2.EnhealthBar.visible = true;
-	                                battleEnemy(dungeon.currentEnemies[0]);
-	                            }, _this2);
-	                        }
-	                    };
+	                //remove enemy sprite
+	                var tween = this.game.add.tween(this.enSprite).to({ x: this.game.world.width + 135 }, 400, null, true);
+	                tween.onComplete.addOnce(function () {
+	                    _this2.enSprite.visible = false;
+	                }, this);
+	            }
 
-	                    var battleEnemy = function battleEnemy(enemy) {
-	                        enemy.originalHp = enemy.hp;
-	                        while (enemy.hp > 0) {
-	                            var enHealthPercent = enemy.hp / enemy.originalHp < 0 ? 0 : enemy.hp / enemy.originalHp;
-	                            _this2.EnhealthBar.scale.x = enHealthPercent;
+	            //Dungeon Done
+	            if (dungeon.enemiesLeft < 1) {
+	                dungeon.currentEnemies = dungeon.enemies;
+	                dungeon.beaten = true;
+	                //TODO - bestowe dungeon ring
+	                dungeon.enemiesLeft = dungeon.currentEnemies.length;
+	                this.game.player.latestUnlockedDungeon += 1;
+	                if (this.game.player.latestUnlockedDungeon > 2) {
+	                    this.game.player.latestUnlockedDungeon = 2;
+	                }
+	            }
 
-	                            var strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
-	                            enemy.hp -= strike;
-	                            var armorReduction = Math.ceil(enemy.dps * (player.battleStats.armor / 100));
-	                            var enStrike = enemy.dps - armorReduction;
-	                            player.battleStats.currentHealth -= enStrike;
-	                            console.log('En: -' + strike + 'hp (' + enemy.hp + '), Pl: -' + enStrike + 'hp (' + player.battleStats.currentHealth + ')');
-	                            if (player.battleStats.currentHealth < 1) {
-	                                break;
-	                            }
-	                        }
-
-	                        setTimeout(function () {
-	                            if (enemy.hp < 1) {
-	                                //killed an enemey
-	                                //get loot
-	                                var lootChance = Forge.rand(0, 100);
-	                                if (lootChance > 50) {
-	                                    loot.push(Forge.getRandomItem(1, 3));
-	                                }
-	                                //get exp
-	                                player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
-	                                //remove enemy from dungeon
-	                                //this.enSprite.visible = false;
-	                                _this2.enSprite.position.x = _this2.game.world.width + 70;
-	                                dungeon.currentEnemies.splice(0, 1);
-	                                dungeon.enemiesLeft = dungeon.currentEnemies.length;
-	                            }
-
-	                            if (dungeon.currentEnemies.length == 0 || player.battleStats.currentHealth < 1) {
-	                                _this2.EnhealthBarBg.visible = false;
-	                                _this2.EnhealthBar.visible = false;
-	                                finishUpRaid();
-	                            } else {
-	                                _this2.EnhealthBarBg.visible = false;
-	                                _this2.EnhealthBar.visible = false;
-	                                checkForEnemies();
-	                            }
-	                        }, 1000);
-	                    };
-
-	                    var finishUpRaid = function finishUpRaid() {
-
-	                        //Done with enemies for loop
-	                        if (player.battleStats.currentHealth < 1) {
-	                            _this2.errorText.text = 'You\'re tired. ';
-	                            if (loot.length > 0) {
-	                                _this2.errorText.text += 'loot: ' + loot.length;
-	                            }
-	                            _this2.errorText.visible = true;
-
-	                            //remove enemy sprite
-	                            var tween = _this2.game.add.tween(_this2.enSprite).to({ x: _this2.game.world.width + 135 }, 400, null, true);
-	                            tween.onComplete.addOnce(function () {
-	                                _this2.enSprite.visible = false;
-	                            }, _this2);
-	                        }
-
-	                        //Dungeon Done
-	                        if (dungeon.enemiesLeft < 1) {
-	                            dungeon.currentEnemies = dungeon.enemies;
-	                            dungeon.beaten = true;
-	                            dungeon.enemiesLeft = dungeon.currentEnemies.length;
-	                            _this2.game.player.latestUnlockedDungeon += 1;
-	                            if (_this2.game.player.latestUnlockedDungeon > 2) {
-	                                _this2.game.player.latestUnlockedDungeon = 2;
-	                            }
-	                        }
-
-	                        //level up?
-	                        if (player.exp > _levels.playerLevels[player.level].maxExp) {
-	                            player.level += 1;
-	                            _this2.errorText.text += 'Level Up!';
-	                            _this2.errorText.visible = true;
-	                        }
-
-	                        player.battling = false;
-	                        _this2.saveDungeonData();
-	                        _this2.game.player.savePlayerData();
-
-	                        _this2.lootList.updateLootTextAndButtons(loot);
-
-	                        console.log('--raid gave:', loot);
-
-	                        _this2.game.state.start('MainMenu', true, false, loot);
-	                    };
-
-	                    checkForEnemies();
-	                })();
-	            } else {
-	                this.errorText.text = 'You should rest for a while.';
+	            //level up?
+	            if (player.exp > _levels.playerLevels[player.level].maxExp) {
+	                player.level += 1;
+	                this.errorText.text += 'Level Up!';
 	                this.errorText.visible = true;
 	            }
+
+	            player.battling = false;
+	            this.saveDungeonData();
+	            this.game.player.savePlayerData();
+
+	            this.lootList.updateLootTextAndButtons(this.loot);
+
+	            console.log('--raid gave:', this.loot);
+
+	            this.raidEnded = true;
 	        }
 	    }, {
 	        key: 'saveDungeonData',
@@ -112541,8 +112551,43 @@
 	            }
 	        }
 	    }, {
+	        key: 'resetHitText',
+	        value: function resetHitText() {
+	            this.dmgText.text = '';
+	            this.dmgText.visible = false;
+	            this.enDmgText.text = '';
+	            this.enDmgText.visible = false;
+	            this.dmgText.position.y = this.game.world.centerY - 120;
+	            this.enDmgText.position.y = this.game.world.centerY - 120;
+	        }
+	    }, {
 	        key: 'update',
 	        value: function update() {
+	            if (this.frameCount == 0) {
+	                if (this.raidEnded) {
+	                    this.game.state.start('MainMenu', true, false, this.loot);
+	                }
+	                this.resetHitText();
+	                this.queueEnemy();
+	                this.action();
+	                this.assessment();
+	            }
+
+	            this.frameCount += 1;
+
+	            if (this.raidStarted) {
+	                if (this.frameCount == 60) {
+	                    this.frameCount = 0;
+	                }
+	            } else {
+	                if (this.frameCount == 90) {
+	                    this.raidStarted = true;
+	                    this.frameCount = 0;
+	                }
+	            }
+
+	            this.dmgText.position.y -= 1;
+	            this.enDmgText.position.y -= 1;
 	            /* Player Health */
 	            var currHealth = this.game.player.battleStats.currentHealth;
 	            var maxHealth = this.game.player.battleStats.health;
@@ -112553,6 +112598,9 @@
 
 	            this.healthText.text = 'Hp: ' + currHealth + '/' + maxHealth;
 	            this.healthBar.scale.x = healthPercent;
+
+	            /* Enemy Health */
+	            this.enHealthBar.scale.x = this.currentEnemy ? this.currentEnemy.hp / this.currentEnemy.originalHp : 0;
 	        }
 	    }, {
 	        key: 'render',
@@ -112687,6 +112735,7 @@
 	        weapon.shapeHeight = 3;
 	    } else {
 	        weapon.name = 'Bow';
+	        weapon.sprite = 'bow0';
 	    }
 
 	    //weapon level
