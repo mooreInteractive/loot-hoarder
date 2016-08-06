@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import LootList from '../components/LootList';
+import MainMenu from '../components/MainMenu';
 
 export default class extends Phaser.State {
     init (loot = []) {
@@ -10,21 +11,11 @@ export default class extends Phaser.State {
 
     create () {
         this.lootList = new LootList(this.game, this.loot, this);
+        new MainMenu(this.game, this.loot, this);
         //clear data button
         this.clearDataBtn = new Phaser.Button(this.game, this.game.world.width - 50, 0, 'redButton', this.clearPlayerData, this);
         this.clearDataBtn.scale.x = 0.2;
         this.game.add.existing(this.clearDataBtn);
-
-        //Inv Button
-        this.inventoryBtn = new Phaser.Button(this.game, 150, 50, 'blueButton', this.openInventory, this);
-        this.inventoryBtn.anchor.setTo(0.5);
-        this.game.add.existing(this.inventoryBtn);
-
-        this.inventoryText = this.add.text(150, 50, 'Inventory');
-        this.inventoryText.font = 'Nunito';
-        this.inventoryText.fontSize = 28;
-        this.inventoryText.fill = '#111111';
-        this.inventoryText.anchor.setTo(0.5);
 
         //Raid Dungeons
         this.raidBtns = [];
@@ -37,14 +28,14 @@ export default class extends Phaser.State {
             this.raidBtns.push(btn);
 
             let raidText = this.add.text(150, 55 + 55*(index+1), `Raid D-${(index+1)}`);
-            raidText.font = 'Nunito';
+            raidText.font = 'Oswald';
             raidText.fontSize = 28;
             raidText.fill = '#111111';
             raidText.anchor.setTo(0.5);
             this.raidTexts.push(raidText);
 
             let dungeonText = this.add.text(250, 45 + 55*(index+1), `Enemies Left: ${dungeon.enemiesLeft}`);
-            dungeonText.font = 'Nunito';
+            dungeonText.font = 'Oswald';
             dungeonText.fontSize = 22;
             dungeonText.fill = '#000000';
             this.dungeonTexts.push(dungeonText);
@@ -52,38 +43,39 @@ export default class extends Phaser.State {
 
 
 
-        this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 50, 'You\'re over-encumbered');
-        this.errorText.font = 'Nunito';
+        this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 75, 'You\'re over-encumbered');
+        this.errorText.font = 'Oswald';
         this.errorText.fontSize = 22;
         this.errorText.fill = '#DE1313';
         this.errorText.anchor.setTo(0.5);
         this.errorText.visible = false;
 
         /* Player Health Bar Graphic and Text */
-        let healthBarBackgroundBitMap = this.game.add.bitmapData(106, 26);
-        let healthBarBitMap = this.game.add.bitmapData(100, 20);
+        let healthBarBackgroundBitMap = this.game.add.bitmapData(212, 52);
+        let healthBarBitMap = this.game.add.bitmapData(200, 40);
 
         healthBarBackgroundBitMap.ctx.beginPath();
-        healthBarBackgroundBitMap.ctx.rect(0, 0, 106, 26);
+        healthBarBackgroundBitMap.ctx.rect(0, 0, 212, 52);
         healthBarBackgroundBitMap.ctx.fillStyle = '#111111';
         healthBarBackgroundBitMap.ctx.fill();
 
         healthBarBitMap.ctx.beginPath();
-        healthBarBitMap.ctx.rect(0, 0, 100, 20);
+        healthBarBitMap.ctx.rect(0, 0, 200, 40);
         healthBarBitMap.ctx.fillStyle = '#DE1111';
         healthBarBitMap.ctx.fill();
 
-        this.healthBarBg = this.game.add.sprite(this.game.world.centerX-55, this.game.world.centerY-15, healthBarBackgroundBitMap);
-        this.healthBar = this.game.add.sprite(this.game.world.centerX-52, this.game.world.centerY-12, healthBarBitMap);
+        this.healthBarBg = this.game.add.sprite(this.game.world.centerX-105, this.game.world.centerY, healthBarBackgroundBitMap);
+        this.healthBar = this.game.add.sprite(this.game.world.centerX-99, this.game.world.centerY+6, healthBarBitMap);
 
-        this.healthText = this.add.text(this.game.world.centerX - 50, this.game.world.centerY-12, 'Hp:');
-        this.healthText.font = 'Nunito';
-        this.healthText.fontSize = 14;
+        this.healthText = this.add.text(this.game.world.centerX - 95, this.game.world.centerY+6, 'Hp:');
+        this.healthText.font = 'Oswald';
+        this.healthText.fontSize = 24;
         this.healthText.fill = '#FFFFFF';
 
         //walkign man
-        this.dude = this.game.add.sprite(this.game.world.centerX - 50, this.game.world.centerY - 120, 'walkingMan');
-        this.dude.scale.setTo(1.5, 1.5);
+        this.dude = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY-200, 'walkingMan');
+        this.dude.anchor.setTo(0.5);
+        this.dude.scale.setTo(6,6);
         this.dude.animations.add('walk', [30,31,32,33,34,35,36,37,38], 18);
         this.dude.animations.play('walk', 18, true);
 
@@ -100,13 +92,14 @@ export default class extends Phaser.State {
         }
     }
 
-    openInventory(){
-        this.state.start('Inventory');
-    }
-
     viewMap(dungeon){
-        this.errorText.visible = false;
-        this.state.start('Raid', true, false, dungeon);
+        if(this.game.player.battleStats.currentHealth > 1){
+            this.errorText.visible = false;
+            this.state.start('Raid', true, false, dungeon);
+        } else {
+            this.errorText.visible = true;
+            this.errorText.text = 'You\'re too tired.';
+        }
     }
 
     update(){

@@ -9057,7 +9057,7 @@
 
 	var _MainMenu2 = _interopRequireDefault(_MainMenu);
 
-	var _Inventory = __webpack_require__(/*! ./states/Inventory */ 313);
+	var _Inventory = __webpack_require__(/*! ./states/Inventory */ 314);
 
 	var _Inventory2 = _interopRequireDefault(_Inventory);
 
@@ -9065,7 +9065,7 @@
 
 	var _Raid2 = _interopRequireDefault(_Raid);
 
-	var _Player = __webpack_require__(/*! ./Player */ 321);
+	var _Player = __webpack_require__(/*! ./Player */ 322);
 
 	var _Player2 = _interopRequireDefault(_Player);
 
@@ -111073,7 +111073,7 @@
 
 	            _webfontloader2.default.load({
 	                google: {
-	                    families: ['Nunito']
+	                    families: ['Oswald']
 	                },
 	                active: this.fontsLoaded
 	            });
@@ -111380,11 +111380,14 @@
 
 	            this.game.add.existing(playBtn);
 
-	            var banner = this.add.text(this.game.world.centerX, this.game.world.centerY + 50, 'Play');
-	            banner.font = 'Nunito';
+	            var banner = this.add.text(this.game.world.centerX, this.game.world.centerY + 80, 'Play');
+	            banner.font = 'Oswald';
 	            banner.fontSize = 40;
 	            banner.fill = '#111111';
 	            banner.anchor.setTo(0.5);
+	            banner.inputEnabled = true;
+	            banner.events.onInputDown.add(this.playClicked, this);
+	            banner.input.useHandCursor = true;
 	        }
 	    }, {
 	        key: 'render',
@@ -111424,6 +111427,10 @@
 
 	var _LootList2 = _interopRequireDefault(_LootList);
 
+	var _MainMenu = __webpack_require__(/*! ../components/MainMenu */ 313);
+
+	var _MainMenu2 = _interopRequireDefault(_MainMenu);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -111456,21 +111463,11 @@
 	            var _this2 = this;
 
 	            this.lootList = new _LootList2.default(this.game, this.loot, this);
+	            new _MainMenu2.default(this.game, this.loot, this);
 	            //clear data button
 	            this.clearDataBtn = new _phaser2.default.Button(this.game, this.game.world.width - 50, 0, 'redButton', this.clearPlayerData, this);
 	            this.clearDataBtn.scale.x = 0.2;
 	            this.game.add.existing(this.clearDataBtn);
-
-	            //Inv Button
-	            this.inventoryBtn = new _phaser2.default.Button(this.game, 150, 50, 'blueButton', this.openInventory, this);
-	            this.inventoryBtn.anchor.setTo(0.5);
-	            this.game.add.existing(this.inventoryBtn);
-
-	            this.inventoryText = this.add.text(150, 50, 'Inventory');
-	            this.inventoryText.font = 'Nunito';
-	            this.inventoryText.fontSize = 28;
-	            this.inventoryText.fill = '#111111';
-	            this.inventoryText.anchor.setTo(0.5);
 
 	            //Raid Dungeons
 	            this.raidBtns = [];
@@ -111483,51 +111480,52 @@
 	                _this2.raidBtns.push(btn);
 
 	                var raidText = _this2.add.text(150, 55 + 55 * (index + 1), 'Raid D-' + (index + 1));
-	                raidText.font = 'Nunito';
+	                raidText.font = 'Oswald';
 	                raidText.fontSize = 28;
 	                raidText.fill = '#111111';
 	                raidText.anchor.setTo(0.5);
 	                _this2.raidTexts.push(raidText);
 
 	                var dungeonText = _this2.add.text(250, 45 + 55 * (index + 1), 'Enemies Left: ' + dungeon.enemiesLeft);
-	                dungeonText.font = 'Nunito';
+	                dungeonText.font = 'Oswald';
 	                dungeonText.fontSize = 22;
 	                dungeonText.fill = '#000000';
 	                _this2.dungeonTexts.push(dungeonText);
 	            });
 
-	            this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 50, 'You\'re over-encumbered');
-	            this.errorText.font = 'Nunito';
+	            this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 75, 'You\'re over-encumbered');
+	            this.errorText.font = 'Oswald';
 	            this.errorText.fontSize = 22;
 	            this.errorText.fill = '#DE1313';
 	            this.errorText.anchor.setTo(0.5);
 	            this.errorText.visible = false;
 
 	            /* Player Health Bar Graphic and Text */
-	            var healthBarBackgroundBitMap = this.game.add.bitmapData(106, 26);
-	            var healthBarBitMap = this.game.add.bitmapData(100, 20);
+	            var healthBarBackgroundBitMap = this.game.add.bitmapData(212, 52);
+	            var healthBarBitMap = this.game.add.bitmapData(200, 40);
 
 	            healthBarBackgroundBitMap.ctx.beginPath();
-	            healthBarBackgroundBitMap.ctx.rect(0, 0, 106, 26);
+	            healthBarBackgroundBitMap.ctx.rect(0, 0, 212, 52);
 	            healthBarBackgroundBitMap.ctx.fillStyle = '#111111';
 	            healthBarBackgroundBitMap.ctx.fill();
 
 	            healthBarBitMap.ctx.beginPath();
-	            healthBarBitMap.ctx.rect(0, 0, 100, 20);
+	            healthBarBitMap.ctx.rect(0, 0, 200, 40);
 	            healthBarBitMap.ctx.fillStyle = '#DE1111';
 	            healthBarBitMap.ctx.fill();
 
-	            this.healthBarBg = this.game.add.sprite(this.game.world.centerX - 55, this.game.world.centerY - 15, healthBarBackgroundBitMap);
-	            this.healthBar = this.game.add.sprite(this.game.world.centerX - 52, this.game.world.centerY - 12, healthBarBitMap);
+	            this.healthBarBg = this.game.add.sprite(this.game.world.centerX - 105, this.game.world.centerY, healthBarBackgroundBitMap);
+	            this.healthBar = this.game.add.sprite(this.game.world.centerX - 99, this.game.world.centerY + 6, healthBarBitMap);
 
-	            this.healthText = this.add.text(this.game.world.centerX - 50, this.game.world.centerY - 12, 'Hp:');
-	            this.healthText.font = 'Nunito';
-	            this.healthText.fontSize = 14;
+	            this.healthText = this.add.text(this.game.world.centerX - 95, this.game.world.centerY + 6, 'Hp:');
+	            this.healthText.font = 'Oswald';
+	            this.healthText.fontSize = 24;
 	            this.healthText.fill = '#FFFFFF';
 
 	            //walkign man
-	            this.dude = this.game.add.sprite(this.game.world.centerX - 50, this.game.world.centerY - 120, 'walkingMan');
-	            this.dude.scale.setTo(1.5, 1.5);
+	            this.dude = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY - 200, 'walkingMan');
+	            this.dude.anchor.setTo(0.5);
+	            this.dude.scale.setTo(6, 6);
 	            this.dude.animations.add('walk', [30, 31, 32, 33, 34, 35, 36, 37, 38], 18);
 	            this.dude.animations.play('walk', 18, true);
 
@@ -111544,15 +111542,15 @@
 	            }
 	        }
 	    }, {
-	        key: 'openInventory',
-	        value: function openInventory() {
-	            this.state.start('Inventory');
-	        }
-	    }, {
 	        key: 'viewMap',
 	        value: function viewMap(dungeon) {
-	            this.errorText.visible = false;
-	            this.state.start('Raid', true, false, dungeon);
+	            if (this.game.player.battleStats.currentHealth > 1) {
+	                this.errorText.visible = false;
+	                this.state.start('Raid', true, false, dungeon);
+	            } else {
+	                this.errorText.visible = true;
+	                this.errorText.text = 'You\'re too tired.';
+	            }
 	        }
 	    }, {
 	        key: 'update',
@@ -111622,7 +111620,7 @@
 	        this.lootSellBtns = [];
 
 	        this.lootText = this.gameState.add.text(this.game.world.centerX - 150, this.game.world.centerY + 100, '');
-	        this.lootText.font = 'Nunito';
+	        this.lootText.font = 'Oswald';
 	        this.lootText.fontSize = 22;
 	        this.lootText.fill = '#000000';
 	    }
@@ -111710,7 +111708,7 @@
 	                _this.lootKeepBtns.push(addBtn);
 
 	                var addBtnText = _this.gameState.add.text(_this.game, _this.game.world.centerX - 250, _this.game.world.centerY + 125 * (index + 1), '+');
-	                addBtnText.font = 'Nunito';
+	                addBtnText.font = 'Oswald';
 	                addBtnText.fontSize = 24;
 	                addBtnText.fill = '#111111';
 	                addBtnText.anchor.setTo(0.5);
@@ -111728,7 +111726,7 @@
 	                _this.lootSellBtns.push(sellBtn);
 
 	                var sellBtnText = _this.gameState.add.text(_this.game, _this.game.world.centerX - 200, _this.game.world.centerY + 125 * (index + 1), '$');
-	                sellBtnText.font = 'Nunito';
+	                sellBtnText.font = 'Oswald';
 	                sellBtnText.fontSize = 24;
 	                sellBtnText.fill = '#111111';
 	                sellBtnText.anchor.setTo(0.5);
@@ -111744,6 +111742,98 @@
 
 /***/ },
 /* 313 */
+/*!************************************!*\
+  !*** ./src/components/MainMenu.js ***!
+  \************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _phaser = __webpack_require__(/*! phaser */ 304);
+
+	var _phaser2 = _interopRequireDefault(_phaser);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var MainMenu = function () {
+	    function MainMenu(game, loot, gameState) {
+	        _classCallCheck(this, MainMenu);
+
+	        this.game = game;
+	        this.loot = loot;
+	        this.gameState = gameState;
+
+	        //Inv Button
+	        this.inventoryBtn = new _phaser2.default.Button(this.game, 150, this.game.world.height - 50, 'blueButton', this.openInventory, this);
+	        this.inventoryBtn.scale.x = 1.2;
+	        this.inventoryBtn.scale.y = 1.5;
+	        this.inventoryBtn.anchor.setTo(0.5);
+	        this.game.add.existing(this.inventoryBtn);
+
+	        this.inventoryText = this.gameState.add.text(150, this.game.world.height - 50, 'Inventory');
+	        this.inventoryText.font = 'Oswald';
+	        this.inventoryText.fontSize = 28;
+	        this.inventoryText.fill = '#111111';
+	        this.inventoryText.anchor.setTo(0.5);
+
+	        //Shop Button
+	        this.shopBtn = new _phaser2.default.Button(this.game, this.game.world.width - 150, this.game.world.height - 50, 'yellowButton', function () {
+	            console.log('shop');
+	        }, this);
+	        this.shopBtn.scale.x = 1.2;
+	        this.shopBtn.scale.y = 1.5;
+	        this.shopBtn.anchor.setTo(0.5);
+	        this.game.add.existing(this.shopBtn);
+
+	        this.shopText = this.gameState.add.text(this.game.world.width - 150, this.game.world.height - 50, 'Town Shop');
+	        this.shopText.font = 'Oswald';
+	        this.shopText.fontSize = 28;
+	        this.shopText.fill = '#111111';
+	        this.shopText.anchor.setTo(0.5);
+
+	        //Main Button
+	        this.shopBtn = new _phaser2.default.Button(this.game, this.game.world.centerX, this.game.world.height - 75, 'redButton', this.openMain, this);
+	        this.shopBtn.scale.x = 1;
+	        this.shopBtn.scale.y = 3;
+	        this.shopBtn.anchor.setTo(0.5);
+	        this.game.add.existing(this.shopBtn);
+
+	        var shopTextStyle = { font: 'bold 28px Oswald', fill: '#111111', boundsAlignH: 'center', boundsAlignV: 'middle' };
+	        this.shopText = this.gameState.add.text(this.game.world.centerX, this.game.world.height - 75, 'Main\nMenu', shopTextStyle);
+	        this.shopText.anchor.setTo(0.5);
+	    }
+
+	    _createClass(MainMenu, [{
+	        key: 'openInventory',
+	        value: function openInventory() {
+	            if (this.gameState.key != 'Inventory') {
+	                this.gameState.state.start('Inventory');
+	            }
+	        }
+	    }, {
+	        key: 'openMain',
+	        value: function openMain() {
+	            if (this.gameState.key != 'MainMenu') {
+	                this.gameState.state.start('MainMenu');
+	            }
+	        }
+	    }]);
+
+	    return MainMenu;
+	}();
+
+	exports.default = MainMenu;
+
+/***/ },
+/* 314 */
 /*!*********************************!*\
   !*** ./src/states/Inventory.js ***!
   \*********************************/
@@ -111765,7 +111855,11 @@
 
 	var utils = _interopRequireWildcard(_utils);
 
-	var _levels = __webpack_require__(/*! ../data/levels */ 314);
+	var _levels = __webpack_require__(/*! ../data/levels */ 321);
+
+	var _MainMenu = __webpack_require__(/*! ../components/MainMenu */ 313);
+
+	var _MainMenu2 = _interopRequireDefault(_MainMenu);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -111795,22 +111889,6 @@
 	    }, {
 	        key: 'preload',
 	        value: function preload() {
-	            //Inv Button
-	            this.inventoryBtn = new _phaser2.default.Button(this.game, 150, 50, 'blueButton', this.backToMain, this);
-	            this.inventoryBtn.anchor.setTo(0.5);
-	        }
-	    }, {
-	        key: 'create',
-	        value: function create() {
-
-	            this.backToMainButton();
-
-	            this.inventoryGridBackground();
-
-	            this.equippedGridBackground();
-
-	            this.drawInventoryItems();
-
 	            //ItemHoverBG
 	            var itemHoverBG = this.game.add.bitmapData(200, 350);
 	            itemHoverBG.ctx.beginPath();
@@ -111818,29 +111896,40 @@
 	            itemHoverBG.ctx.fillStyle = '#000000';
 	            itemHoverBG.ctx.fill();
 	            this.hoverItemBG = this.game.add.sprite(0, 0, itemHoverBG);
-	            this.hoverItemBG.alpha = 0.5;
+	            this.hoverItemBG.alpha = 0.8;
 	            this.hoverItemBG.visible = false;
 
 	            //item hover text
 	            this.inventoryItem = this.add.text(this.hoverItemBG.position.x + 5, this.hoverItemBG.position.y + 5, '');
-	            this.inventoryItem.font = 'Nunito';
-	            this.inventoryItem.fontSize = 11;
+	            this.inventoryItem.font = 'Oswald';
+	            this.inventoryItem.fontSize = 14;
 	            this.inventoryItem.fill = '#FFFFFF';
 
 	            //Player Stats
 	            this.playerInfo = this.add.text(50, 120, '');
-	            this.playerInfo.font = 'Nunito';
+	            this.playerInfo.font = 'Oswald';
 	            this.playerInfo.fontSize = 24;
 	            this.playerInfo.fill = '#000000';
 	            this.playerInfo2 = this.add.text(450, 320, '');
-	            this.playerInfo2.font = 'Nunito';
+	            this.playerInfo2.font = 'Oswald';
 	            this.playerInfo2.fontSize = 24;
 	            this.playerInfo2.fill = '#000000';
 
 	            this.playerInfoTitle = this.add.text(50, 75, 'Character');
-	            this.playerInfoTitle.font = 'Nunito';
+	            this.playerInfoTitle.font = 'Oswald';
 	            this.playerInfoTitle.fontSize = 28;
 	            this.playerInfoTitle.fill = '#000000';
+	        }
+	    }, {
+	        key: 'create',
+	        value: function create() {
+	            this.inventoryGridBackground();
+
+	            this.equippedGridBackground();
+
+	            this.drawInventoryItems();
+
+	            new _MainMenu2.default(this.game, this.loot, this);
 	        }
 	    }, {
 	        key: 'updateCharacterText',
@@ -111859,22 +111948,6 @@
 	            this.playerInfo2.text += 'Armor: ' + this.game.player.battleStats.armor + ' \n';
 	            this.playerInfo2.text += 'Gold: ' + this.game.player.gold + ' \n';
 	            this.playerInfo2.text += 'Carried Weight: ' + this.game.player.battleStats.totalWeight;
-	        }
-	    }, {
-	        key: 'backToMainButton',
-	        value: function backToMainButton() {
-	            this.game.add.existing(this.inventoryBtn);
-
-	            this.inventoryText = this.add.text(150, 50, '<- Go Back  ');
-	            this.inventoryText.font = 'Nunito';
-	            this.inventoryText.fontSize = 28;
-	            this.inventoryText.fill = '#111111';
-	            this.inventoryText.anchor.setTo(0.5);
-	        }
-	    }, {
-	        key: 'backToMain',
-	        value: function backToMain() {
-	            this.state.start('MainMenu');
 	        }
 	    }, {
 	        key: 'equippedGridBackground',
@@ -112252,42 +112325,6 @@
 	exports.default = _class;
 
 /***/ },
-/* 314 */
-/*!****************************!*\
-  !*** ./src/data/levels.js ***!
-  \****************************/
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	//data/levels.js
-
-	var playerLevels = exports.playerLevels = [{
-	    level: 1,
-	    minExp: 0,
-	    maxExp: 50
-	}, {
-	    level: 2,
-	    minExp: 51,
-	    maxExp: 150
-	}, {
-	    level: 3,
-	    minExp: 151,
-	    maxExp: 300
-	}, {
-	    level: 4,
-	    minExp: 301,
-	    maxExp: 600
-	}, {
-	    level: 5,
-	    minExp: 601,
-	    maxExp: 1200
-	}];
-
-/***/ },
 /* 315 */
 /*!****************************!*\
   !*** ./src/states/Raid.js ***!
@@ -112310,7 +112347,7 @@
 
 	var Forge = _interopRequireWildcard(_Forge);
 
-	var _levels = __webpack_require__(/*! ../data/levels */ 314);
+	var _levels = __webpack_require__(/*! ../data/levels */ 321);
 
 	var _LootList = __webpack_require__(/*! ../components/LootList */ 312);
 
@@ -112371,7 +112408,7 @@
 	            this.healthBar = this.game.add.sprite(this.game.world.centerX - 52, this.game.world.centerY - 12, healthBarBitMap);
 
 	            this.healthText = this.add.text(this.game.world.centerX - 50, this.game.world.centerY - 12, 'Hp:');
-	            this.healthText.font = 'Nunito';
+	            this.healthText.font = 'Oswald';
 	            this.healthText.fontSize = 14;
 	            this.healthText.fill = '#FFFFFF';
 
@@ -112395,7 +112432,7 @@
 	            this.enHealthBar.visible = false;
 
 	            this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 50, 'You\'re over-encumbered');
-	            this.errorText.font = 'Nunito';
+	            this.errorText.font = 'Oswald';
 	            this.errorText.fontSize = 22;
 	            this.errorText.fill = '#DE1313';
 	            this.errorText.anchor.setTo(0.5);
@@ -112415,13 +112452,13 @@
 	            this.enSprite.animations.play('walk', 10, true);
 
 	            this.dmgText = this.add.text(this.game.world.centerX, this.game.world.centerY - 120, '');
-	            this.dmgText.font = 'Nunito';
+	            this.dmgText.font = 'Oswald';
 	            this.dmgText.fontSize = 22;
 	            this.dmgText.fill = '#CD1313';
 	            this.dmgText.visible = false;
 
 	            this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY - 120, '');
-	            this.enDmgText.font = 'Nunito';
+	            this.enDmgText.font = 'Oswald';
 	            this.enDmgText.fontSize = 22;
 	            this.enDmgText.fill = '#CD1313';
 	            this.enDmgText.visible = false;
@@ -112474,12 +112511,12 @@
 	                var lootChance = Forge.rand(0, 100);
 	                var lootThreshold = 50;
 	                var lootMin = 1;
-	                var lootMac = 3;
+	                var lootMax = 3;
 	                if (enemy.boss) {
 	                    lootThreshold = 20;lootMin = 2;
 	                }
 	                if (lootChance > lootThreshold) {
-	                    this.loot.push(Forge.getRandomItem(1, 3));
+	                    this.loot.push(Forge.getRandomItem(lootMin, lootMax));
 	                }
 	                //get exp
 	                player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
@@ -113135,6 +113172,42 @@
 
 /***/ },
 /* 321 */
+/*!****************************!*\
+  !*** ./src/data/levels.js ***!
+  \****************************/
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	//data/levels.js
+
+	var playerLevels = exports.playerLevels = [{
+	    level: 1,
+	    minExp: 0,
+	    maxExp: 50
+	}, {
+	    level: 2,
+	    minExp: 51,
+	    maxExp: 150
+	}, {
+	    level: 3,
+	    minExp: 151,
+	    maxExp: 300
+	}, {
+	    level: 4,
+	    minExp: 301,
+	    maxExp: 600
+	}, {
+	    level: 5,
+	    minExp: 601,
+	    maxExp: 1200
+	}];
+
+/***/ },
+/* 322 */
 /*!***********************!*\
   !*** ./src/Player.js ***!
   \***********************/

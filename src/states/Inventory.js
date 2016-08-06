@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import * as utils from '../utils';
 import {playerLevels} from '../data/levels';
+import MainMenu from '../components/MainMenu';
 
 export default class extends Phaser.State {
     init () {
@@ -9,21 +10,6 @@ export default class extends Phaser.State {
     }
 
     preload () {
-        //Inv Button
-        this.inventoryBtn = new Phaser.Button(this.game, 150, 50, 'blueButton', this.backToMain, this);
-        this.inventoryBtn.anchor.setTo(0.5);
-    }
-
-    create () {
-
-        this.backToMainButton();
-
-        this.inventoryGridBackground();
-
-        this.equippedGridBackground();
-
-        this.drawInventoryItems();
-
         //ItemHoverBG
         let itemHoverBG = this.game.add.bitmapData(200, 350);
         itemHoverBG.ctx.beginPath();
@@ -31,29 +17,39 @@ export default class extends Phaser.State {
         itemHoverBG.ctx.fillStyle = '#000000';
         itemHoverBG.ctx.fill();
         this.hoverItemBG = this.game.add.sprite(0, 0, itemHoverBG);
-        this.hoverItemBG.alpha = 0.5;
+        this.hoverItemBG.alpha = 0.8;
         this.hoverItemBG.visible = false;
 
         //item hover text
         this.inventoryItem = this.add.text(this.hoverItemBG.position.x+5, this.hoverItemBG.position.y+5, '');
-        this.inventoryItem.font = 'Nunito';
-        this.inventoryItem.fontSize = 11;
+        this.inventoryItem.font = 'Oswald';
+        this.inventoryItem.fontSize = 14;
         this.inventoryItem.fill = '#FFFFFF';
 
         //Player Stats
         this.playerInfo = this.add.text(50, 120, '');
-        this.playerInfo.font = 'Nunito';
+        this.playerInfo.font = 'Oswald';
         this.playerInfo.fontSize = 24;
         this.playerInfo.fill = '#000000';
         this.playerInfo2 = this.add.text(450, 320, '');
-        this.playerInfo2.font = 'Nunito';
+        this.playerInfo2.font = 'Oswald';
         this.playerInfo2.fontSize = 24;
         this.playerInfo2.fill = '#000000';
 
         this.playerInfoTitle = this.add.text(50, 75, 'Character');
-        this.playerInfoTitle.font = 'Nunito';
+        this.playerInfoTitle.font = 'Oswald';
         this.playerInfoTitle.fontSize = 28;
         this.playerInfoTitle.fill = '#000000';
+    }
+
+    create () {
+        this.inventoryGridBackground();
+
+        this.equippedGridBackground();
+
+        this.drawInventoryItems();
+
+        new MainMenu(this.game, this.loot, this);
     }
 
     updateCharacterText(){
@@ -71,20 +67,6 @@ export default class extends Phaser.State {
         this.playerInfo2.text += `Armor: ${this.game.player.battleStats.armor} \n`;
         this.playerInfo2.text += `Gold: ${this.game.player.gold} \n`;
         this.playerInfo2.text += `Carried Weight: ${this.game.player.battleStats.totalWeight}`;
-    }
-
-    backToMainButton(){
-        this.game.add.existing(this.inventoryBtn);
-
-        this.inventoryText = this.add.text(150, 50, '<- Go Back  ');
-        this.inventoryText.font = 'Nunito';
-        this.inventoryText.fontSize = 28;
-        this.inventoryText.fill = '#111111';
-        this.inventoryText.anchor.setTo(0.5);
-    }
-
-    backToMain () {
-        this.state.start('MainMenu');
     }
 
     equippedGridBackground(){

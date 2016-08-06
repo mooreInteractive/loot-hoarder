@@ -37,7 +37,7 @@ export default class extends Phaser.State {
         this.healthBar = this.game.add.sprite(this.game.world.centerX-52, this.game.world.centerY-12, healthBarBitMap);
 
         this.healthText = this.add.text(this.game.world.centerX - 50, this.game.world.centerY-12, 'Hp:');
-        this.healthText.font = 'Nunito';
+        this.healthText.font = 'Oswald';
         this.healthText.fontSize = 14;
         this.healthText.fill = '#FFFFFF';
 
@@ -61,7 +61,7 @@ export default class extends Phaser.State {
         this.enHealthBar.visible = false;
 
         this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 50, 'You\'re over-encumbered');
-        this.errorText.font = 'Nunito';
+        this.errorText.font = 'Oswald';
         this.errorText.fontSize = 22;
         this.errorText.fill = '#DE1313';
         this.errorText.anchor.setTo(0.5);
@@ -81,13 +81,13 @@ export default class extends Phaser.State {
         this.enSprite.animations.play('walk', 10, true);
 
         this.dmgText = this.add.text(this.game.world.centerX, this.game.world.centerY - 120, '');
-        this.dmgText.font = 'Nunito';
+        this.dmgText.font = 'Oswald';
         this.dmgText.fontSize = 22;
         this.dmgText.fill = '#CD1313';
         this.dmgText.visible = false;
 
         this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY - 120, '');
-        this.enDmgText.font = 'Nunito';
+        this.enDmgText.font = 'Oswald';
         this.enDmgText.fontSize = 22;
         this.enDmgText.fill = '#CD1313';
         this.enDmgText.visible = false;

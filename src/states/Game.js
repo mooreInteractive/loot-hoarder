@@ -10,11 +10,14 @@ export default class extends Phaser.State {
 
         this.game.add.existing(playBtn);
 
-        let banner = this.add.text(this.game.world.centerX, this.game.world.centerY+50, 'Play');
-        banner.font = 'Nunito';
+        let banner = this.add.text(this.game.world.centerX, this.game.world.centerY+80, 'Play');
+        banner.font = 'Oswald';
         banner.fontSize = 40;
         banner.fill = '#111111';
         banner.anchor.setTo(0.5);
+        banner.inputEnabled = true;
+        banner.events.onInputDown.add(this.playClicked, this);
+        banner.input.useHandCursor = true;
 
     }
 

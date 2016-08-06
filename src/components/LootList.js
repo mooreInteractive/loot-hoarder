@@ -11,7 +11,7 @@ export default class LootList{
         this.lootSellBtns = [];
 
         this.lootText = this.gameState.add.text(this.game.world.centerX - 150, this.game.world.centerY + 100, '');
-        this.lootText.font = 'Nunito';
+        this.lootText.font = 'Oswald';
         this.lootText.fontSize = 22;
         this.lootText.fill = '#000000';
     }
@@ -88,7 +88,7 @@ export default class LootList{
             this.lootKeepBtns.push(addBtn);
 
             let addBtnText = this.gameState.add.text(this.game, this.game.world.centerX - 250, this.game.world.centerY + 125*(index+1), '+');
-            addBtnText.font = 'Nunito';
+            addBtnText.font = 'Oswald';
             addBtnText.fontSize = 24;
             addBtnText.fill = '#111111';
             addBtnText.anchor.setTo(0.5);
@@ -106,7 +106,7 @@ export default class LootList{
             this.lootSellBtns.push(sellBtn);
 
             let sellBtnText = this.gameState.add.text(this.game, this.game.world.centerX - 200, this.game.world.centerY + 125*(index+1), '$');
-            sellBtnText.font = 'Nunito';
+            sellBtnText.font = 'Oswald';
             sellBtnText.fontSize = 24;
             sellBtnText.fill = '#111111';
             sellBtnText.anchor.setTo(0.5);

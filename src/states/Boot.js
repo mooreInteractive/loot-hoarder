@@ -15,7 +15,7 @@ export default class extends Phaser.State {
 
         WebFont.load({
             google: {
-                families: ['Nunito']
+                families: ['Oswald']
             },
             active: this.fontsLoaded
         });
