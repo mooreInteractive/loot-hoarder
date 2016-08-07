@@ -33,14 +33,14 @@ export default class MainMenu{
         this.shopText.anchor.setTo(0.5);
 
         //Main Button
-        this.mainBtn = new Phaser.Button(this.game, this.game.world.centerX, this.game.world.height - 75, 'redButton', this.openMain, this);
+        this.mainBtn = new Phaser.Button(this.game, this.game.world.centerX, this.game.world.height - 87, 'redButton', this.openMain, this);
         this.mainBtn.scale.x = 1;
         this.mainBtn.scale.y = 3;
         this.mainBtn.anchor.setTo(0.5);
         this.game.add.existing(this.mainBtn);
 
         let mainTextStyle = {font: 'bold 28px Oswald', fill: '#111111'};
-        this.mainText = this.gameState.add.text(this.game.world.centerX, this.game.world.height - 75, 'Main\nMenu', mainTextStyle);
+        this.mainText = this.gameState.add.text(this.game.world.centerX, this.game.world.height - 90, 'Main\nMenu', mainTextStyle);
         this.mainText.anchor.setTo(0.5);
     }
 

@@ -20,25 +20,25 @@ export default class extends Phaser.State {
         this.lootList = new LootList(this.game, [], this);
 
         /* Player Health Bar Graphic and Text */
-        let healthBarBackgroundBitMap = this.game.add.bitmapData(106, 26);
-        let healthBarBitMap = this.game.add.bitmapData(100, 20);
+        let healthBarBackgroundBitMap = this.game.add.bitmapData(212, 52);
+        let healthBarBitMap = this.game.add.bitmapData(200, 40);
 
         healthBarBackgroundBitMap.ctx.beginPath();
-        healthBarBackgroundBitMap.ctx.rect(0, 0, 106, 26);
+        healthBarBackgroundBitMap.ctx.rect(0, 0, 212, 52);
         healthBarBackgroundBitMap.ctx.fillStyle = '#111111';
         healthBarBackgroundBitMap.ctx.fill();
 
         healthBarBitMap.ctx.beginPath();
-        healthBarBitMap.ctx.rect(0, 0, 100, 20);
+        healthBarBitMap.ctx.rect(0, 0, 200, 40);
         healthBarBitMap.ctx.fillStyle = '#DE1111';
         healthBarBitMap.ctx.fill();
 
-        this.healthBarBg = this.game.add.sprite(this.game.world.centerX-55, this.game.world.centerY-15, healthBarBackgroundBitMap);
-        this.healthBar = this.game.add.sprite(this.game.world.centerX-52, this.game.world.centerY-12, healthBarBitMap);
+        this.healthBarBg = this.game.add.sprite(this.game.world.centerX-105, this.game.world.centerY, healthBarBackgroundBitMap);
+        this.healthBar = this.game.add.sprite(this.game.world.centerX-99, this.game.world.centerY+6, healthBarBitMap);
 
-        this.healthText = this.add.text(this.game.world.centerX - 50, this.game.world.centerY-12, 'Hp:');
+        this.healthText = this.add.text(this.game.world.centerX - 95, this.game.world.centerY+6, 'Hp:');
         this.healthText.font = 'Oswald';
-        this.healthText.fontSize = 14;
+        this.healthText.fontSize = 24;
         this.healthText.fill = '#FFFFFF';
 
         /* Reused Enemy HealthBar Graphic */
@@ -60,7 +60,7 @@ export default class extends Phaser.State {
         this.enHealthBarBg.visible = false;
         this.enHealthBar.visible = false;
 
-        this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 50, 'You\'re over-encumbered');
+        this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 75, 'You\'re over-encumbered');
         this.errorText.font = 'Oswald';
         this.errorText.fontSize = 22;
         this.errorText.fill = '#DE1313';
@@ -68,8 +68,9 @@ export default class extends Phaser.State {
         this.errorText.visible = false;
 
         //walkign man
-        this.dude = this.game.add.sprite(this.game.world.centerX - 50, this.game.world.centerY - 120, 'walkingMan');
-        this.dude.scale.setTo(1.5, 1.5);
+        this.dude = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY-200, 'walkingMan');
+        this.dude.anchor.setTo(0.5);
+        this.dude.scale.setTo(6,6);
         this.dude.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
         this.dude.animations.play('walk', 15, true);
 
@@ -80,9 +81,9 @@ export default class extends Phaser.State {
         this.enSprite.animations.add('walk', [0,1,2,3,4,5,6,7], 10);
         this.enSprite.animations.play('walk', 10, true);
 
-        this.dmgText = this.add.text(this.game.world.centerX, this.game.world.centerY - 120, '');
+        this.dmgText = this.add.text(this.game.world.centerX - 200, this.game.world.centerY + 80, '');
         this.dmgText.font = 'Oswald';
-        this.dmgText.fontSize = 22;
+        this.dmgText.fontSize = 28;
         this.dmgText.fill = '#CD1313';
         this.dmgText.visible = false;
 
@@ -92,7 +93,29 @@ export default class extends Phaser.State {
         this.enDmgText.fill = '#CD1313';
         this.enDmgText.visible = false;
 
-        this.queueEnemy();
+        this.animateBattleStart();
+
+
+    }
+
+    animateBattleStart(){
+        let animTime = 600;
+        //Move Avater to battle position, then start the battle
+        let tween = this.game.add.tween(this.dude).to( { x: this.game.world.centerX - 200, y: this.game.world.centerY }, animTime, null, true);
+        this.game.add.tween(this.dude.scale).to( { x: 4, y: 4 }, animTime, null, true);
+
+        //hp bar and text
+        this.game.add.tween(this.healthBarBg).to( { x: this.game.world.centerX-305, y: this.game.world.centerY + 140 }, animTime, null, true);
+        this.game.add.tween(this.healthBar).to( { x: this.game.world.centerX-299, y: this.game.world.centerY+146 }, animTime, null, true);
+
+        this.game.add.tween(this.healthText).to( { x: this.game.world.centerX - 295, y: this.game.world.centerY+146 }, animTime, null, true);
+
+        tween.onComplete.addOnce(() => {
+            this.queueEnemy();
+        }, this);
+
+        //Move the health bar and text with it
+
     }
 
     queueEnemy(){
