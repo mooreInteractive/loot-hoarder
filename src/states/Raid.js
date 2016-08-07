@@ -70,8 +70,8 @@ export default class extends Phaser.State {
         //walkign man
         this.dude = this.game.add.sprite(this.game.world.centerX - 50, this.game.world.centerY - 120, 'walkingMan');
         this.dude.scale.setTo(1.5, 1.5);
-        this.dude.animations.add('walk', [30,31,32,33,34,35,36,37,38], 18);
-        this.dude.animations.play('walk', 18, true);
+        this.dude.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
+        this.dude.animations.play('walk', 15, true);
 
         //enSprite
         this.enSprite = this.game.add.sprite(this.game.world.width + 70, this.game.world.centerY - 90, 'mob1');

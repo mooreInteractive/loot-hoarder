@@ -76,8 +76,8 @@ export default class extends Phaser.State {
         this.dude = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY-200, 'walkingMan');
         this.dude.anchor.setTo(0.5);
         this.dude.scale.setTo(6,6);
-        this.dude.animations.add('walk', [30,31,32,33,34,35,36,37,38], 18);
-        this.dude.animations.play('walk', 18, true);
+        this.dude.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
+        this.dude.animations.play('walk', 15, true);
 
         this.lootList.updateLootTextAndButtons(this.loot);
 

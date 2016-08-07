@@ -9061,7 +9061,7 @@
 
 	var _Inventory2 = _interopRequireDefault(_Inventory);
 
-	var _Raid = __webpack_require__(/*! ./states/Raid */ 315);
+	var _Raid = __webpack_require__(/*! ./states/Raid */ 316);
 
 	var _Raid2 = _interopRequireDefault(_Raid);
 
@@ -111100,7 +111100,7 @@
 	            this.load.image('bow0', './assets/images/items/bow.png');
 
 	            this.game.load.spritesheet('mob1', './assets/images/Mob1.png', 32, 32);
-	            this.game.load.spritesheet('walkingMan', './assets/images/child_walk_tanned.png', 64, 64);
+	            this.game.load.spritesheet('walkingMan', './assets/images/tanned.png', 64, 64);
 	        }
 	    }, {
 	        key: 'render',
@@ -111526,8 +111526,8 @@
 	            this.dude = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY - 200, 'walkingMan');
 	            this.dude.anchor.setTo(0.5);
 	            this.dude.scale.setTo(6, 6);
-	            this.dude.animations.add('walk', [30, 31, 32, 33, 34, 35, 36, 37, 38], 18);
-	            this.dude.animations.play('walk', 18, true);
+	            this.dude.animations.add('walk', [143, 144, 145, 146, 147, 148, 149, 150, 151], 15);
+	            this.dude.animations.play('walk', 15, true);
 
 	            this.lootList.updateLootTextAndButtons(this.loot);
 	        }
@@ -111800,15 +111800,15 @@
 	        this.shopText.anchor.setTo(0.5);
 
 	        //Main Button
-	        this.shopBtn = new _phaser2.default.Button(this.game, this.game.world.centerX, this.game.world.height - 75, 'redButton', this.openMain, this);
-	        this.shopBtn.scale.x = 1;
-	        this.shopBtn.scale.y = 3;
-	        this.shopBtn.anchor.setTo(0.5);
-	        this.game.add.existing(this.shopBtn);
+	        this.mainBtn = new _phaser2.default.Button(this.game, this.game.world.centerX, this.game.world.height - 75, 'redButton', this.openMain, this);
+	        this.mainBtn.scale.x = 1;
+	        this.mainBtn.scale.y = 3;
+	        this.mainBtn.anchor.setTo(0.5);
+	        this.game.add.existing(this.mainBtn);
 
-	        var shopTextStyle = { font: 'bold 28px Oswald', fill: '#111111', boundsAlignH: 'center', boundsAlignV: 'middle' };
-	        this.shopText = this.gameState.add.text(this.game.world.centerX, this.game.world.height - 75, 'Main\nMenu', shopTextStyle);
-	        this.shopText.anchor.setTo(0.5);
+	        var mainTextStyle = { font: 'bold 28px Oswald', fill: '#111111' };
+	        this.mainText = this.gameState.add.text(this.game.world.centerX, this.game.world.height - 75, 'Main\nMenu', mainTextStyle);
+	        this.mainText.anchor.setTo(0.5);
 	    }
 
 	    _createClass(MainMenu, [{
@@ -111855,7 +111855,7 @@
 
 	var utils = _interopRequireWildcard(_utils);
 
-	var _levels = __webpack_require__(/*! ../data/levels */ 321);
+	var _levels = __webpack_require__(/*! ../data/levels */ 315);
 
 	var _MainMenu = __webpack_require__(/*! ../components/MainMenu */ 313);
 
@@ -111889,6 +111889,11 @@
 	    }, {
 	        key: 'preload',
 	        value: function preload() {
+
+	            this.inventoryGridBackground();
+	            this.equippedGridBackground();
+	            this.drawInventoryItems();
+
 	            //ItemHoverBG
 	            var itemHoverBG = this.game.add.bitmapData(200, 350);
 	            itemHoverBG.ctx.beginPath();
@@ -111906,7 +111911,7 @@
 	            this.inventoryItem.fill = '#FFFFFF';
 
 	            //Player Stats
-	            this.playerInfo = this.add.text(50, 120, '');
+	            this.playerInfo = this.add.text(100, 75, '');
 	            this.playerInfo.font = 'Oswald';
 	            this.playerInfo.fontSize = 24;
 	            this.playerInfo.fill = '#000000';
@@ -111914,20 +111919,10 @@
 	            this.playerInfo2.font = 'Oswald';
 	            this.playerInfo2.fontSize = 24;
 	            this.playerInfo2.fill = '#000000';
-
-	            this.playerInfoTitle = this.add.text(50, 75, 'Character');
-	            this.playerInfoTitle.font = 'Oswald';
-	            this.playerInfoTitle.fontSize = 28;
-	            this.playerInfoTitle.fill = '#000000';
 	        }
 	    }, {
 	        key: 'create',
 	        value: function create() {
-	            this.inventoryGridBackground();
-
-	            this.equippedGridBackground();
-
-	            this.drawInventoryItems();
 
 	            new _MainMenu2.default(this.game, this.loot, this);
 	        }
@@ -112327,6 +112322,42 @@
 /***/ },
 /* 315 */
 /*!****************************!*\
+  !*** ./src/data/levels.js ***!
+  \****************************/
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	//data/levels.js
+
+	var playerLevels = exports.playerLevels = [{
+	    level: 1,
+	    minExp: 0,
+	    maxExp: 50
+	}, {
+	    level: 2,
+	    minExp: 51,
+	    maxExp: 150
+	}, {
+	    level: 3,
+	    minExp: 151,
+	    maxExp: 300
+	}, {
+	    level: 4,
+	    minExp: 301,
+	    maxExp: 600
+	}, {
+	    level: 5,
+	    minExp: 601,
+	    maxExp: 1200
+	}];
+
+/***/ },
+/* 316 */
+/*!****************************!*\
   !*** ./src/states/Raid.js ***!
   \****************************/
 /***/ function(module, exports, __webpack_require__) {
@@ -112343,11 +112374,11 @@
 
 	var _phaser2 = _interopRequireDefault(_phaser);
 
-	var _Forge = __webpack_require__(/*! ../items/Forge */ 316);
+	var _Forge = __webpack_require__(/*! ../items/Forge */ 317);
 
 	var Forge = _interopRequireWildcard(_Forge);
 
-	var _levels = __webpack_require__(/*! ../data/levels */ 321);
+	var _levels = __webpack_require__(/*! ../data/levels */ 315);
 
 	var _LootList = __webpack_require__(/*! ../components/LootList */ 312);
 
@@ -112441,8 +112472,8 @@
 	            //walkign man
 	            this.dude = this.game.add.sprite(this.game.world.centerX - 50, this.game.world.centerY - 120, 'walkingMan');
 	            this.dude.scale.setTo(1.5, 1.5);
-	            this.dude.animations.add('walk', [30, 31, 32, 33, 34, 35, 36, 37, 38], 18);
-	            this.dude.animations.play('walk', 18, true);
+	            this.dude.animations.add('walk', [143, 144, 145, 146, 147, 148, 149, 150, 151], 15);
+	            this.dude.animations.play('walk', 15, true);
 
 	            //enSprite
 	            this.enSprite = this.game.add.sprite(this.game.world.width + 70, this.game.world.centerY - 90, 'mob1');
@@ -112656,7 +112687,7 @@
 	exports.default = _class;
 
 /***/ },
-/* 316 */
+/* 317 */
 /*!****************************!*\
   !*** ./src/items/Forge.js ***!
   \****************************/
@@ -112670,15 +112701,15 @@
 	exports.getRandomItem = getRandomItem;
 	exports.rand = rand;
 
-	var _Weapon = __webpack_require__(/*! ./Weapon */ 317);
+	var _Weapon = __webpack_require__(/*! ./Weapon */ 318);
 
 	var Weapon = _interopRequireWildcard(_Weapon);
 
-	var _Armor = __webpack_require__(/*! ./Armor */ 319);
+	var _Armor = __webpack_require__(/*! ./Armor */ 320);
 
 	var Armor = _interopRequireWildcard(_Armor);
 
-	var _Accessory = __webpack_require__(/*! ./Accessory */ 320);
+	var _Accessory = __webpack_require__(/*! ./Accessory */ 321);
 
 	var Accessory = _interopRequireWildcard(_Accessory);
 
@@ -112701,7 +112732,7 @@
 	}
 
 /***/ },
-/* 317 */
+/* 318 */
 /*!*****************************!*\
   !*** ./src/items/Weapon.js ***!
   \*****************************/
@@ -112716,7 +112747,7 @@
 	exports.rand = rand;
 	exports.getMagicEffect = getMagicEffect;
 
-	var _constants = __webpack_require__(/*! ./constants */ 318);
+	var _constants = __webpack_require__(/*! ./constants */ 319);
 
 	var Constants = _interopRequireWildcard(_constants);
 
@@ -112880,7 +112911,7 @@
 	}
 
 /***/ },
-/* 318 */
+/* 319 */
 /*!********************************!*\
   !*** ./src/items/constants.js ***!
   \********************************/
@@ -112902,7 +112933,7 @@
 	};
 
 /***/ },
-/* 319 */
+/* 320 */
 /*!****************************!*\
   !*** ./src/items/Armor.js ***!
   \****************************/
@@ -112917,7 +112948,7 @@
 	exports.rand = rand;
 	exports.getMagicEffect = getMagicEffect;
 
-	var _constants = __webpack_require__(/*! ./constants */ 318);
+	var _constants = __webpack_require__(/*! ./constants */ 319);
 
 	var Constants = _interopRequireWildcard(_constants);
 
@@ -113093,7 +113124,7 @@
 	}
 
 /***/ },
-/* 320 */
+/* 321 */
 /*!********************************!*\
   !*** ./src/items/Accessory.js ***!
   \********************************/
@@ -113108,7 +113139,7 @@
 	exports.rand = rand;
 	exports.getMagicEffect = getMagicEffect;
 
-	var _constants = __webpack_require__(/*! ./constants */ 318);
+	var _constants = __webpack_require__(/*! ./constants */ 319);
 
 	var Constants = _interopRequireWildcard(_constants);
 
@@ -113169,42 +113200,6 @@
 
 	    return effect;
 	}
-
-/***/ },
-/* 321 */
-/*!****************************!*\
-  !*** ./src/data/levels.js ***!
-  \****************************/
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	//data/levels.js
-
-	var playerLevels = exports.playerLevels = [{
-	    level: 1,
-	    minExp: 0,
-	    maxExp: 50
-	}, {
-	    level: 2,
-	    minExp: 51,
-	    maxExp: 150
-	}, {
-	    level: 3,
-	    minExp: 151,
-	    maxExp: 300
-	}, {
-	    level: 4,
-	    minExp: 301,
-	    maxExp: 600
-	}, {
-	    level: 5,
-	    minExp: 601,
-	    maxExp: 1200
-	}];
 
 /***/ },
 /* 322 */

@@ -10,6 +10,11 @@ export default class extends Phaser.State {
     }
 
     preload () {
+
+        this.inventoryGridBackground();
+        this.equippedGridBackground();
+        this.drawInventoryItems();
+
         //ItemHoverBG
         let itemHoverBG = this.game.add.bitmapData(200, 350);
         itemHoverBG.ctx.beginPath();
@@ -27,7 +32,7 @@ export default class extends Phaser.State {
         this.inventoryItem.fill = '#FFFFFF';
 
         //Player Stats
-        this.playerInfo = this.add.text(50, 120, '');
+        this.playerInfo = this.add.text(100, 75, '');
         this.playerInfo.font = 'Oswald';
         this.playerInfo.fontSize = 24;
         this.playerInfo.fill = '#000000';
@@ -35,19 +40,9 @@ export default class extends Phaser.State {
         this.playerInfo2.font = 'Oswald';
         this.playerInfo2.fontSize = 24;
         this.playerInfo2.fill = '#000000';
-
-        this.playerInfoTitle = this.add.text(50, 75, 'Character');
-        this.playerInfoTitle.font = 'Oswald';
-        this.playerInfoTitle.fontSize = 28;
-        this.playerInfoTitle.fill = '#000000';
     }
 
     create () {
-        this.inventoryGridBackground();
-
-        this.equippedGridBackground();
-
-        this.drawInventoryItems();
 
         new MainMenu(this.game, this.loot, this);
     }
