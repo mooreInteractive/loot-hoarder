@@ -144,7 +144,7 @@ export default class extends Phaser.State {
                       || (item.inventoryType == 'head' && slots[i].type == 'head')
                       || (item.inventoryType == 'body' && slots[i].type == 'body')
                       || (item.inventoryType == 'feet' && slots[i].type == 'feet')
-                      || (item.inventoryType == 'accessory' && slots[i].type == 'accessory')
+                      || (item.inventoryType == 'accessory' && (['accessory1','accessory2','accessory3','accessory4']).indexOf(slots[i].type) > -1)
                     ){
                         hitSlot = slots[i];
                     }

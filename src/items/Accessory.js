@@ -7,6 +7,7 @@ export function build() {
         'type': 'accessory',
         'inventoryType': 'accessory',
         'weight': 1,
+        'durability': 100,
         'magic': {
             'effect':{
                 'attribute': null,
@@ -17,10 +18,12 @@ export function build() {
         'shapeWidth': 1,
         'shapeHeight': 1,
         'inventorySlot': {x:0, y:0},
-        'value': 0
+        'value': 0,
+        'sprite': 'redRing'
     };
 
-    let strength = this.rand(0,5);
+    let strength = this.rand(1,5);
+    accessory.level = strength;
     accessory.magic.effect = this.getMagicEffect(strength);
     accessory.name = 'Ring of '+accessory.magic.effect.attribute;
     accessory.value += 175*strength;
