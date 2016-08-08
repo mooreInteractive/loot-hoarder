@@ -5,6 +5,14 @@ export default class extends Phaser.State {
     init () {}
 
     create () {
+        //this.waterBg = this.game.add.sprite(0, 0, 'water');
+        this.water = this.game.add.tileSprite(0, 0, 32 * 6, 32 * 9, 'water');
+        this.water.scale.setTo(4,4);
+        this.water.animations.add('flow', null, 4, true);
+        this.water.animations.play('flow');
+
+
+
         new MainNavigation(this.game, this);
 
         //Raid Dungeons
