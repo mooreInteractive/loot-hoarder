@@ -283,18 +283,6 @@ export default class extends Phaser.State {
         }, this);
 
         this.equippedItemsGroup.add(drawnObject);
-
-        // if(item.sprite){
-        //     let shank = this.game.add.sprite(this.equippedSlots.position.x + slotSprite.position.x + ((slotSprite.width - item.shapeWidth*27)/2), this.equippedSlots.position.y + slotSprite.position.y + ((slotSprite.height - (item.shapeHeight*27))/2), item.sprite);
-        //     shank.scale.x = 0.5;
-        //     shank.scale.y = 0.5;
-        //     shank.inputEnabled = true;
-        //     shank.input.enableDrag();
-        //     shank.originalPosition = shank.position.clone();
-        //
-        //     this.equippedItemsGroup.add(shank);
-        //     drawnObject.itemSprite = shank;
-        // }
     }
 
     drawInventoryItems(){
