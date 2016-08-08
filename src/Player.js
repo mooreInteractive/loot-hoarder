@@ -14,6 +14,7 @@ class Player {
     createNewPlayer(){
         this.level = 0;
         this.exp = 0;
+        this.skillPoints = 0;
         this.battling = false;
         this.latestUnlockedDungeon = 1;
         this.inventory = [];
@@ -103,6 +104,7 @@ class Player {
     heal(){
         if(!this.battling){
             this.battleStats.currentHealth += this.battleStats.wisdom * 1;
+            //this.savePlayerData();
             //healed hooks
             if(    this.battleStats.currentHealth == this.baseStats.health
                 || this.battleStats.currentHealth%(Math.floor(this.baseStats.health/.25)) == 0//quarter health increments
@@ -113,6 +115,27 @@ class Player {
         if(this.battleStats.currentHealth > this.battleStats.health){
             this.battleStats.currentHealth = this.battleStats.health;
         }
+    }
+
+    levelUp(){
+        this.level += 1;
+        this.skillPoints += 1;
+    }
+
+    skillUp(skill){
+        switch(skill){
+        case 0: this.baseStats.strength += 1;
+            break;
+        case 1: this.baseStats.dexterity += 1;
+            break;
+        case 2: this.baseStats.vitality += 1;
+            break;
+        case 3: this.baseStats.wisdom += 1;
+            break;
+        }
+        this.skillPoints -= 1;
+        this.updateBattleStats();
+        this.savePlayerData();
     }
 
     resetBattleStatsAttributes(){
@@ -175,6 +198,7 @@ class Player {
             let playerData = JSON.stringify({
                 level:this.level,
                 exp: this.exp,
+                skillPoints: this.skillPoints,
                 inventory: this.inventory,
                 backpack: backpackImage,
                 equipped: this.equipped,
@@ -202,6 +226,7 @@ class Player {
 
         this.level = playerData.level;
         this.exp = playerData.exp;
+        this.skillPoints = playerData.skillPoints;
         this.battling = false;
         this.inventory = playerData.inventory;
         this.equipped = playerData.equipped;

@@ -238,9 +238,8 @@ export default class extends Phaser.State {
 
         //level up?
         if(player.exp > playerLevels[player.level].maxExp){
-            player.level += 1;
+            player.levelUp();
             this.errorText.text += 'Level Up!';
-            this.errorText.visible = true;
         }
 
         player.battling = false;

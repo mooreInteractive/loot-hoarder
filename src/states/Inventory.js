@@ -25,25 +25,44 @@ export default class extends Phaser.State {
         this.hoverItemBG.alpha = 0.8;
         this.hoverItemBG.visible = false;
 
+        let Oswald14White = {font: 'Oswald', fontSize: 14, fill: '#FFFFFF' };
+        let Oswald24Black = {font: 'Oswald', fontSize: 24, fill: '#000000' };
         //item hover text
-        this.inventoryItem = this.add.text(this.hoverItemBG.position.x+5, this.hoverItemBG.position.y+5, '');
-        this.inventoryItem.font = 'Oswald';
-        this.inventoryItem.fontSize = 14;
-        this.inventoryItem.fill = '#FFFFFF';
+        this.inventoryItem = this.add.text(this.hoverItemBG.position.x+5, this.hoverItemBG.position.y+5, '', Oswald14White);
 
         //Player Stats
-        this.playerInfo = this.add.text(100, 75, '');
-        this.playerInfo.font = 'Oswald';
-        this.playerInfo.fontSize = 24;
-        this.playerInfo.fill = '#000000';
-        this.playerInfo2 = this.add.text(450, 320, '');
-        this.playerInfo2.font = 'Oswald';
-        this.playerInfo2.fontSize = 24;
-        this.playerInfo2.fill = '#000000';
+        this.playerInfo = this.add.text(100, 75, '', Oswald24Black);
+        this.playerInfo2 = this.add.text(450, 320, '', Oswald24Black);
+
+        //skillPoint + Buttons
+        let Oswald24Blue = {font: 'Oswald', fontSize: 36, fill: '#1313DE'};
+
+        this.plusBtns = [
+            this.add.text(75, 248, '+', Oswald24Blue),
+            this.add.text(75, 285, '+', Oswald24Blue),
+            this.add.text(75, 322, '+', Oswald24Blue),
+            this.add.text(75, 359, '+', Oswald24Blue)
+        ];
+
+        this.plusBtns.forEach((btn, index) => {
+            console.log('player:', this.game.player);
+            btn.visible = this.game.player.skillPoints > 0;
+            btn.inputEnabled = true;
+            btn.events.onInputDown.add(this.plusClicked.bind(this, index), this);
+            btn.input.useHandCursor = true;
+        });
+
     }
 
     create () {
         new MainNavigation(this.game, this);
+    }
+
+    plusClicked(index){
+        this.game.player.skillUp(index);
+        this.plusBtns.forEach((btn) => {
+            btn.visible = false;
+        });
     }
 
     updateCharacterText(){
@@ -146,6 +165,7 @@ export default class extends Phaser.State {
                       || (item.inventoryType == 'feet' && slots[i].type == 'feet')
                       || (item.inventoryType == 'accessory' && (['accessory1','accessory2','accessory3','accessory4']).indexOf(slots[i].type) > -1)
                     ){
+                        console.log('-mouseOverEquipmentSlot:', slots[i].type);
                         hitSlot = slots[i];
                     }
                 }
@@ -228,17 +248,6 @@ export default class extends Phaser.State {
         }, this);
 
         this.inventoryItemsGroup.add(drawnObject);
-
-        // if(item.sprite){
-        //     let shank = this.game.add.sprite(gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - (item.shapeWidth*54))/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - (item.shapeHeight*54))/2), item.sprite);
-        //
-        //     shank.inputEnabled = true;
-        //     shank.input.enableDrag();
-        //     shank.originalPosition = shank.position.clone();
-        //
-        //     this.inventoryItemsGroup.add(shank);
-        //     drawnObject.itemSprite = shank;
-        // }
     }
 
     addEquippedSprite(item, gridPos, key){
@@ -304,6 +313,7 @@ export default class extends Phaser.State {
     }
 
     startDrag(sprite, item, equipped=false){
+        console.log('-startDrag(sprite, item, equipped)', sprite, item, equipped);
         if(equipped){
             utils.unequipItem(this.game.player, item);
         } else {
@@ -313,6 +323,7 @@ export default class extends Phaser.State {
     }
 
     stopDrag(currentSprite, item, gridPos, mouse){
+        console.log('-stopDrag(sprite, item, gridPos)', currentSprite, item, gridPos);
         let mouseCollidesInvSlot = false;
         let slot = {x:0,y:0};
 
