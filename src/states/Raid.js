@@ -62,7 +62,6 @@ export default class extends Phaser.State {
         this.errorText.fontSize = 22;
         this.errorText.fill = '#DE1313';
         this.errorText.anchor.setTo(0.5);
-        this.errorText.visible = false;
 
         //walkign man
         this.dude = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY-200, 'walkingMan');
@@ -215,7 +214,6 @@ export default class extends Phaser.State {
             if(this.game.loot.length > 0){
                 this.errorText.text += `\n total loot: ${this.game.loot.length}.`;
             }
-            this.errorText.visible = true;
 
             //remove enemy sprite
             let tween = this.game.add.tween(this.enSprite).to( { x: this.game.world.width + 135 }, 400, null, true);
