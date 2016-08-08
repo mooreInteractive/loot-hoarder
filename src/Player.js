@@ -15,7 +15,7 @@ class Player {
         this.level = 0;
         this.exp = 0;
         this.battling = false;
-        this.latestUnlockedDungeon = 0;
+        this.latestUnlockedDungeon = 1;
         this.inventory = [];
         this.gold = 0;
         this.baseStats = {
@@ -195,7 +195,7 @@ class Player {
         let oldTime = localStorage.getItem('loot-hoarder-clock');
         let newTime = Math.floor((new Date).getTime()/1000);
         let baseHealth = playerData.baseStats.health;
-        let timeDiff = newTime - oldTime;
+        let timeDiff = (newTime - oldTime) > 0 ? newTime - oldTime : 0 ;
         let healthOverTime = playerData.currentHealth + timeDiff;
         let currHp = healthOverTime > baseHealth ? baseHealth : healthOverTime;
         console.log('--timeDiff, overtime, currHP', oldTime, newTime, timeDiff, healthOverTime, currHp);

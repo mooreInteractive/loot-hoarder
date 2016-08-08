@@ -6,8 +6,11 @@ import BootState from './states/Boot';
 import SplashState from './states/Splash';
 import GameState from './states/Game';
 import MainMenu from './states/MainMenu';
+import Options from './states/Options';
 import Inventory from './states/Inventory';
 import Raid from './states/Raid';
+import DungeonMap from './states/DungeonMap';
+import LootView from './states/LootView';
 
 import Player from './Player';
 
@@ -41,6 +44,7 @@ class Game extends Phaser.Game {
         }
         //Loot Hoarder Variables
         this.player = new Player(playerData);
+        this.loot = [];
 
         this.setupDungeons();
         this.lastGameTime = playerClock;
@@ -48,9 +52,13 @@ class Game extends Phaser.Game {
         this.state.add('Boot', BootState, false);
         this.state.add('Splash', SplashState, false);
         this.state.add('Game', GameState, false);
+
         this.state.add('MainMenu', MainMenu, false);
+        this.state.add('Options', Options, false);
         this.state.add('Inventory', Inventory, false);
         this.state.add('Raid', Raid, false);
+        this.state.add('DungeonMap', DungeonMap, false);
+        this.state.add('LootView', LootView, false);
 
         this.state.start('Boot');
     }

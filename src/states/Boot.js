@@ -20,8 +20,10 @@ export default class extends Phaser.State {
             active: this.fontsLoaded
         });
 
-        let text = this.add.text(this.world.centerX, this.world.centerY, 'loading fonts', { font: '16px Arial', fill: '#dddddd', align: 'center' });
+        let text = this.add.text(this.world.centerX, this.world.centerY+25, 'loading fonts', { font: '28px Tahoma', fill: '#000000', align: 'center' });
         text.anchor.setTo(0.5, 0.5);
+
+        text.text = 'loading images';
 
         this.load.image('loaderBg', './assets/images/loader-bg.png');
         this.load.image('loaderBar', './assets/images/loader-bar.png');
@@ -32,6 +34,7 @@ export default class extends Phaser.State {
         this.load.image('greyButton', './assets/images/grey_button00.png');
         this.load.image('yellowButton', './assets/images/yellow_button00.png');
         this.load.image('redButton', './assets/images/red_button00.png');
+        this.load.image('optionsBanner', './assets/images/options_banner.png');
 
         //weapons
         this.load.image('shank0', './assets/images/items/shank.png');
@@ -42,6 +45,7 @@ export default class extends Phaser.State {
         this.load.image('bow0', './assets/images/items/bow.png');
 
         this.game.load.spritesheet('mob1', './assets/images/Mob1.png', 32, 32);
+
         this.game.load.spritesheet('walkingMan', './assets/images/tanned.png', 64, 64);
     }
 

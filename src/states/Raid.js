@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 import * as Forge from '../items/Forge';
 import {playerLevels} from '../data/levels';
-import LootList from '../components/LootList';
 
 export default class extends Phaser.State {
     init (dungeon) {
@@ -13,12 +12,10 @@ export default class extends Phaser.State {
         this.game.player.battling = true;
         this.raidStarted = false;
         this.raidEnded = false;
-        this.loot = [];
+        this.endAnimStarted = false;
     }
 
     create () {
-        this.lootList = new LootList(this.game, [], this);
-
         /* Player Health Bar Graphic and Text */
         let healthBarBackgroundBitMap = this.game.add.bitmapData(212, 52);
         let healthBarBitMap = this.game.add.bitmapData(200, 40);
@@ -42,25 +39,25 @@ export default class extends Phaser.State {
         this.healthText.fill = '#FFFFFF';
 
         /* Reused Enemy HealthBar Graphic */
-        let EnHpBarBg = this.game.add.bitmapData(106, 26);
-        let EnHpBar = this.game.add.bitmapData(100, 20);
+        let EnHpBarBg = this.game.add.bitmapData(212, 52);
+        let EnHpBar = this.game.add.bitmapData(212, 40);
 
         EnHpBarBg.ctx.beginPath();
-        EnHpBarBg.ctx.rect(0, 0, 106, 26);
+        EnHpBarBg.ctx.rect(0, 0, 212, 52);
         EnHpBarBg.ctx.fillStyle = '#111111';
         EnHpBarBg.ctx.fill();
 
         EnHpBar.ctx.beginPath();
-        EnHpBar.ctx.rect(0, 0, 100, 20);
+        EnHpBar.ctx.rect(0, 0, 200, 40);
         EnHpBar.ctx.fillStyle = '#DE11CD';
         EnHpBar.ctx.fill();
 
-        this.enHealthBarBg = this.game.add.sprite(this.game.world.centerX+155, this.game.world.centerY-15, EnHpBarBg);
-        this.enHealthBar = this.game.add.sprite(this.game.world.centerX+158, this.game.world.centerY-12, EnHpBar);
+        this.enHealthBarBg = this.game.add.sprite(this.game.world.centerX+155, this.game.world.centerY+140, EnHpBarBg);
+        this.enHealthBar = this.game.add.sprite(this.game.world.centerX+161, this.game.world.centerY+146, EnHpBar);
         this.enHealthBarBg.visible = false;
         this.enHealthBar.visible = false;
 
-        this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 75, 'You\'re over-encumbered');
+        this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 275, '');
         this.errorText.font = 'Oswald';
         this.errorText.fontSize = 22;
         this.errorText.fill = '#DE1313';
@@ -75,9 +72,9 @@ export default class extends Phaser.State {
         this.dude.animations.play('walk', 15, true);
 
         //enSprite
-        this.enSprite = this.game.add.sprite(this.game.world.width + 70, this.game.world.centerY - 90, 'mob1');
-        this.enSprite.scale.x = -2;
-        this.enSprite.scale.y = 2;
+        this.enSprite = this.game.add.sprite(this.game.world.width + 70, this.game.world.centerY + 25, 'mob1');
+        this.enSprite.anchor.setTo(0.5);
+        this.enSprite.scale.setTo(-6,6);
         this.enSprite.animations.add('walk', [0,1,2,3,4,5,6,7], 10);
         this.enSprite.animations.play('walk', 10, true);
 
@@ -87,19 +84,18 @@ export default class extends Phaser.State {
         this.dmgText.fill = '#CD1313';
         this.dmgText.visible = false;
 
-        this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY - 120, '');
+        this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY + 80, '');
         this.enDmgText.font = 'Oswald';
-        this.enDmgText.fontSize = 22;
+        this.enDmgText.fontSize = 28;
         this.enDmgText.fill = '#CD1313';
         this.enDmgText.visible = false;
 
         this.animateBattleStart();
 
-
     }
 
     animateBattleStart(){
-        let animTime = 600;
+        let animTime = 400;
         //Move Avater to battle position, then start the battle
         let tween = this.game.add.tween(this.dude).to( { x: this.game.world.centerX - 200, y: this.game.world.centerY }, animTime, null, true);
         this.game.add.tween(this.dude.scale).to( { x: 4, y: 4 }, animTime, null, true);
@@ -110,6 +106,7 @@ export default class extends Phaser.State {
 
         this.game.add.tween(this.healthText).to( { x: this.game.world.centerX - 295, y: this.game.world.centerY+146 }, animTime, null, true);
 
+
         tween.onComplete.addOnce(() => {
             this.queueEnemy();
         }, this);
@@ -118,16 +115,36 @@ export default class extends Phaser.State {
 
     }
 
+    animateBattleEnd(){
+        this.endAnimStarted = true;
+        let animTime = 600;
+        //Move Avater to battle position, then start the battle
+        let tween = this.game.add.tween(this.dude).to( { x: this.game.world.centerX, y: this.game.world.centerY - 200 }, animTime, null, true);
+        this.game.add.tween(this.dude.scale).to( { x: 6, y: 6 }, animTime, null, true);
+
+        //hp bar and text
+        this.game.add.tween(this.healthBarBg).to( { x: this.game.world.centerX-105, y: this.game.world.centerY }, animTime, null, true);
+        this.game.add.tween(this.healthBar).to( { x: this.game.world.centerX-99, y: this.game.world.centerY+6 }, animTime, null, true);
+
+        this.game.add.tween(this.healthText).to( { x: this.game.world.centerX - 95, y: this.game.world.centerY+6 }, animTime, null, true);
+
+        tween.onComplete.addOnce(() => {
+            this.game.state.start('MainMenu', true, false);
+        }, this);
+
+
+    }
+
     queueEnemy(){
         if(this.dungeon.currentEnemies.length > 0 && this.currentEnemy == null){
-            this.game.add.tween(this.enSprite).to( { x: this.game.world.centerX + 235 }, 400, null, true);
+            this.game.add.tween(this.enSprite).to( { x: this.game.world.centerX + 255 }, 400, null, true);
             this.currentEnemy = this.dungeon.currentEnemies[0];
             this.currentEnemy.originalHp = this.currentEnemy.originalHp ? this.currentEnemy.originalHp : this.currentEnemy.hp;
             this.enHealthBarBg.visible = true;
             this.enHealthBar.visible = true;
 
         } else if(this.dungeon.currentEnemies.length == 0){
-            console.log('no more enemies in this dungeon...');
+            this.errorText.text += '\nNo more enemies in this dungeon...';
         }
     }
 
@@ -156,6 +173,7 @@ export default class extends Phaser.State {
         let enemy = this.currentEnemy;
 
         if(enemy.hp < 1){//killed an enemey
+            this.errorText.text += `\nDefeated Enemy.`;
             //get loot
             let lootChance = Forge.rand(0,100);
             let lootThreshold = 50;
@@ -163,7 +181,12 @@ export default class extends Phaser.State {
             let lootMax = 3;
             if(enemy.boss){lootThreshold = 20; lootMin = 2;}
             if( lootChance > lootThreshold){
-                this.loot.push(Forge.getRandomItem(lootMin,lootMax));
+                this.game.loot.push(Forge.getRandomItem(lootMin,lootMax));
+                this.errorText.text += `\nDropped item!`;
+            } else if(lootChance > 10){
+                let goldDrop = Math.floor(lootChance / 10);
+                this.game.player.gold += goldDrop;
+                this.errorText.text += `\nDropped ${goldDrop} gold.`;
             }
             //get exp
             player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
@@ -188,9 +211,9 @@ export default class extends Phaser.State {
         let dungeon = this.dungeon;
         //Done with enemies for loop
         if(player.battleStats.currentHealth < 1){
-            this.errorText.text = 'You\'re tired. ';
-            if(this.loot.length > 0){
-                this.errorText.text += 'loot: ' + this.loot.length;
+            this.errorText.text += '\nYou were knocked out.';
+            if(this.game.loot.length > 0){
+                this.errorText.text += `\n total loot: ${this.game.loot.length}.`;
             }
             this.errorText.visible = true;
 
@@ -207,9 +230,9 @@ export default class extends Phaser.State {
             dungeon.beaten = true;
             //TODO - bestowe dungeon ring
             dungeon.enemiesLeft = dungeon.currentEnemies.length;
-            this.game.player.latestUnlockedDungeon += 1;
-            if(this.game.player.latestUnlockedDungeon > 2){
-                this.game.player.latestUnlockedDungeon = 2;
+            let latest = this.game.player.latestUnlockedDungeon;
+            if(latest < dungeon.level + 1){
+                this.game.player.latestUnlockedDungeon += 1;
             }
         }
 
@@ -224,9 +247,7 @@ export default class extends Phaser.State {
         this.saveDungeonData();
         this.game.player.savePlayerData();
 
-        this.lootList.updateLootTextAndButtons(this.loot);
-
-        console.log('--raid gave:', this.loot);
+        console.log('--raid gave:', this.game.loot);
 
         this.raidEnded = true;
     }
@@ -248,11 +269,17 @@ export default class extends Phaser.State {
 
     update(){
         if(this.frameCount == 0){
-            if(this.raidEnded){this.game.state.start('MainMenu', true, false, this.loot);}
-            this.resetHitText();
-            this.queueEnemy();
-            this.action();
-            this.assessment();
+            if(this.raidEnded){
+                if(!this.endAnimStarted){
+                    this.animateBattleEnd();
+                }
+                //this.game.state.start('MainMenu', true, false);
+            } else {
+                this.resetHitText();
+                this.queueEnemy();
+                this.action();
+                this.assessment();
+            }
         }
 
         this.frameCount += 1;
@@ -274,14 +301,14 @@ export default class extends Phaser.State {
         /* Player Health */
         let currHealth = this.game.player.battleStats.currentHealth;
         let maxHealth = this.game.player.battleStats.health;
-        let healthPercent = currHealth/maxHealth;
+        let healthPercent = currHealth / maxHealth;
         if(healthPercent < 0){ healthPercent = 0; }
 
         this.healthText.text = `Hp: ${currHealth}/${maxHealth}`;
         this.healthBar.scale.x = healthPercent;
 
         /* Enemy Health */
-        this.enHealthBar.scale.x = this.currentEnemy ? this.currentEnemy.hp/this.currentEnemy.originalHp : 0;
+        this.enHealthBar.scale.x = this.currentEnemy ? this.currentEnemy.hp / this.currentEnemy.originalHp : 0;
     }
 
     render (){

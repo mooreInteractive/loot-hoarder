@@ -1,47 +1,39 @@
 import Phaser from 'phaser';
-import LootList from '../components/LootList';
-import MainMenu from '../components/MainMenu';
+import MainNavigation from '../components/MainNavigation';
 
 export default class extends Phaser.State {
-    init (loot = []) {
+    init () {
         this.inventoryOpen = false;
         this.game.player.savePlayerData();
-        this.loot = loot;
     }
 
     create () {
-        this.lootList = new LootList(this.game, this.loot, this);
-        new MainMenu(this.game, this.loot, this);
+        new MainNavigation(this.game, this);
         //clear data button
-        this.clearDataBtn = new Phaser.Button(this.game, this.game.world.width - 50, 0, 'redButton', this.clearPlayerData, this);
-        this.clearDataBtn.scale.x = 0.2;
-        this.game.add.existing(this.clearDataBtn);
+        this.optionsBtn = new Phaser.Button(this.game, this.game.world.width - 118, 0, 'optionsBanner', this.viewOptions, this);
+        this.optionsBtn.scale.setTo(2,2);
+        this.game.add.existing(this.optionsBtn);
 
-        //Raid Dungeons
-        this.raidBtns = [];
-        this.raidTexts = [];
-        this.dungeonTexts = [];
-        this.game.dungeons.forEach((dungeon, index)=> {
-            let btn = new Phaser.Button(this.game, 150, 55 + 55*(index+1), 'redButton', this.viewMap.bind(this, dungeon), this);
-            btn.anchor.setTo(0.5);
-            this.game.add.existing(btn);
-            this.raidBtns.push(btn);
+        this.raidBtn = new Phaser.Button(this.game, this.game.world.width - 200, this.game.world.height - 300, 'redButton', this.viewMap, this);
+        this.raidBtn.scale.setTo(1.5,4);
+        this.raidBtn.anchor.setTo(0.5);
+        this.raidBtn.alpha = 0.5;
+        this.game.add.existing(this.raidBtn);
 
-            let raidText = this.add.text(150, 55 + 55*(index+1), `Raid D-${(index+1)}`);
-            raidText.font = 'Oswald';
-            raidText.fontSize = 28;
-            raidText.fill = '#111111';
-            raidText.anchor.setTo(0.5);
-            this.raidTexts.push(raidText);
+        let raidBtnStyle = {fontSize: 56, font: 'Oswald', fill: '#000000'};
+        this.raidBtnText = this.add.text(this.game.world.width - 200, this.game.world.height - 300, 'RAID', raidBtnStyle);
+        this.raidBtnText.anchor.setTo(0.5);
+        this.raidBtnText.alpha = 0.5;
 
-            let dungeonText = this.add.text(250, 45 + 55*(index+1), `Enemies Left: ${dungeon.enemiesLeft}`);
-            dungeonText.font = 'Oswald';
-            dungeonText.fontSize = 22;
-            dungeonText.fill = '#000000';
-            this.dungeonTexts.push(dungeonText);
-        });
+        this.lootBtn = new Phaser.Button(this.game, 200, this.game.world.height - 300, 'greenButton', this.viewLoot, this);
+        this.lootBtn.scale.setTo(1.5,4);
+        this.lootBtn.anchor.setTo(0.5);
+        this.lootBtn.alpha = 0.5;
+        this.game.add.existing(this.lootBtn);
 
-
+        this.lootBtnText = this.add.text(200, this.game.world.height - 300, 'LOOT', raidBtnStyle);
+        this.lootBtnText.anchor.setTo(0.5);
+        this.lootBtnText.alpha = 0.5;
 
         this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 75, 'You\'re over-encumbered');
         this.errorText.font = 'Oswald';
@@ -78,27 +70,26 @@ export default class extends Phaser.State {
         this.dude.scale.setTo(6,6);
         this.dude.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
         this.dude.animations.play('walk', 15, true);
-
-        this.lootList.updateLootTextAndButtons(this.loot);
-
     }
 
-    clearPlayerData(){
-        if(localStorage){
-            localStorage.removeItem('loot-hoarder-dungeons');
-            localStorage.removeItem('loot-hoarder-player');
-            localStorage.removeItem('loot-hoarder-clock');
-            window.location.reload();
-        }
+    viewOptions(){
+        this.state.start('Options');
     }
 
-    viewMap(dungeon){
+    viewMap(){
         if(this.game.player.battleStats.currentHealth > 1){
             this.errorText.visible = false;
-            this.state.start('Raid', true, false, dungeon);
+            this.state.start('DungeonMap');
+            //this.state.start('Raid', true, false, dungeon);
         } else {
             this.errorText.visible = true;
             this.errorText.text = 'You\'re too tired.';
+        }
+    }
+
+    viewLoot(){
+        if(this.game.loot.length > 0){
+            this.state.start('LootView');
         }
     }
 
@@ -110,6 +101,22 @@ export default class extends Phaser.State {
 
         this.healthText.text = `Hp: ${currHealth}/${maxHealth}`;
         this.healthBar.scale.x = healthPercent;
+
+        if(currHealth > 1){
+            this.raidBtn.alpha = 1;
+            this.raidBtnText.alpha = 1;
+        } else {
+            this.raidBtn.alpha = 0.5;
+            this.raidBtnText.alpha = 0.5;
+        }
+
+        if(this.game.loot.length > 0){
+            this.lootBtn.alpha = 1;
+            this.lootBtnText.alpha = 1;
+        } else {
+            this.lootBtn.alpha = 0.5;
+            this.lootBtnText.alpha = 0.5;
+        }
     }
 
     render (){

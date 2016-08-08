@@ -2,15 +2,15 @@ import Phaser from 'phaser';
 import { placeItemInSlot } from '../utils';
 
 export default class LootList{
-    constructor(game, loot, gameState){
+    constructor(game, gameState){
         this.game = game;
-        this.loot = loot;
+        this.loot = game.loot;
         this.gameState = gameState;
 
         this.lootKeepBtns = [];
         this.lootSellBtns = [];
 
-        this.lootText = this.gameState.add.text(this.game.world.centerX - 150, this.game.world.centerY + 100, '');
+        this.lootText = this.gameState.add.text(this.game.world.centerX - 150, 200, '');
         this.lootText.font = 'Oswald';
         this.lootText.fontSize = 22;
         this.lootText.fill = '#000000';
@@ -40,13 +40,18 @@ export default class LootList{
         return itemPlaced;
     }
 
-    updateLootTextAndButtons(loot){
+    updateLootTextAndButtons(){
+        let loot = this.game.loot;
         this.lootText.text = '';
 
         this.cleanUpLootButtons();
 
         this.lootKeepBtns = [];
         this.lootSellBtns = [];
+
+        if(loot.length == 0){
+            this.game.state.start('Inventory');
+        }
 
         loot.forEach((item, index) => {
 
@@ -74,7 +79,7 @@ export default class LootList{
 
 
             //add a couple buttons for this item
-            let addBtn = new Phaser.Button(this.game, this.game.world.centerX - 250, this.game.world.centerY + 125*(index+1), 'blueButton', () => {
+            let addBtn = new Phaser.Button(this.game, this.game.world.centerX - 250, 225*(index+1), 'blueButton', () => {
                 console.log('--clicked keep, loot, item', loot, item);
                 let placed = this.tryToPlaceItemInInventory(item);
                 if(placed){
@@ -84,16 +89,16 @@ export default class LootList{
             }, this);
             addBtn.scale.x = 0.2;
             addBtn.anchor.setTo(0.5);
-            this.game.add.existing(addBtn);
+            this.gameState.add.existing(addBtn);
             this.lootKeepBtns.push(addBtn);
 
-            let addBtnText = this.gameState.add.text(this.game, this.game.world.centerX - 250, this.game.world.centerY + 125*(index+1), '+');
+            let addBtnText = this.gameState.add.text(this.game, this.game.world.centerX - 250, 225*(index+1), '+');
             addBtnText.font = 'Oswald';
             addBtnText.fontSize = 24;
             addBtnText.fill = '#111111';
             addBtnText.anchor.setTo(0.5);
 
-            let sellBtn = new Phaser.Button(this.game, this.game.world.centerX - 200, this.game.world.centerY + 125*(index+1), 'yellowButton', () => {
+            let sellBtn = new Phaser.Button(this.game, this.game.world.centerX - 200, 225*(index+1), 'yellowButton', () => {
                 console.log('Sell Item!');
                 this.game.player.gold += item.value;
                 loot.splice(loot.indexOf(item), 1);
@@ -105,12 +110,11 @@ export default class LootList{
             this.game.add.existing(sellBtn);
             this.lootSellBtns.push(sellBtn);
 
-            let sellBtnText = this.gameState.add.text(this.game, this.game.world.centerX - 200, this.game.world.centerY + 125*(index+1), '$');
+            let sellBtnText = this.gameState.add.text(this.game, this.game.world.centerX - 200, 225*(index+1), '$');
             sellBtnText.font = 'Oswald';
             sellBtnText.fontSize = 24;
             sellBtnText.fill = '#111111';
             sellBtnText.anchor.setTo(0.5);
-            sellBtnText.visible = true;
         });
     }
 }

@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import * as utils from '../utils';
 import {playerLevels} from '../data/levels';
-import MainMenu from '../components/MainMenu';
+import MainNavigation from '../components/MainNavigation';
 
 export default class extends Phaser.State {
     init () {
@@ -43,8 +43,7 @@ export default class extends Phaser.State {
     }
 
     create () {
-
-        new MainMenu(this.game, this.loot, this);
+        new MainNavigation(this.game, this);
     }
 
     updateCharacterText(){
