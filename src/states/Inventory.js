@@ -362,10 +362,12 @@ export default class extends Phaser.State {
                 } else {
                     currentSprite.position.copyFrom(currentSprite.originalPosition);
                     utils.equipItem(this.game.player, item, {type: item.inventorySlot});
+                    currentSprite.kill();
                 }
             } else if(equipSlot != undefined && equipSlot != false && this.game.player.equipped[equipSlot.type] == null){
                 utils.equipItem(this.game.player, item, equipSlot);
                 this.addEquippedSprite(item, gridPos, equipSlot.type);
+                currentSprite.kill();
             } else {
                 currentSprite.position.copyFrom(currentSprite.originalPosition);
                 utils.equipItem(this.game.player, item, {type: item.inventorySlot});
@@ -417,11 +419,15 @@ export default class extends Phaser.State {
 
     render (){
         this.updateCharacterText();
-        let time = Math.floor(this.time.totalElapsedSeconds());
-        if(this.game.lastGameTime != time){
-            this.game.lastGameTime = time;
+        let time = Math.floor((new Date).getTime()/1000);
+        let storedTime = localStorage.getItem('loot-hoarder-clock');
+        if( storedTime != time){
+            let timeDiff = time - storedTime;
+            localStorage.setItem('loot-hoarder-clock', time);
             if(this.game.player.battleStats.currentHealth < this.game.player.battleStats.health){
-                this.game.player.heal();
+                for(let i = 0; i < timeDiff; i++){
+                    this.game.player.heal();
+                }
             }
         }
     }

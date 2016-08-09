@@ -20,7 +20,7 @@ export default class extends Phaser.State {
         this.raidBtn.alpha = 0.5;
         this.game.add.existing(this.raidBtn);
 
-        let raidBtnStyle = {fontSize: 56, font: 'Oswald', fill: '#000000'};
+        let raidBtnStyle = {fontSize: 72, font: 'Oswald', fill: '#000000'};
         this.raidBtnText = this.add.text(this.game.world.width - 200, this.game.world.height - 300, 'RAID', raidBtnStyle);
         this.raidBtnText.anchor.setTo(0.5);
         this.raidBtnText.alpha = 0.5;
@@ -121,10 +121,14 @@ export default class extends Phaser.State {
 
     render (){
         let time = Math.floor((new Date).getTime()/1000);
-        if(localStorage.getItem('loot-hoarder-clock') != time){
+        let storedTime = localStorage.getItem('loot-hoarder-clock');
+        if( storedTime != time){
+            let timeDiff = time - storedTime;
             localStorage.setItem('loot-hoarder-clock', time);
             if(this.game.player.battleStats.currentHealth < this.game.player.battleStats.health){
-                this.game.player.heal();
+                for(let i = 0; i < timeDiff; i++){
+                    this.game.player.heal();
+                }
             }
         }
     }
