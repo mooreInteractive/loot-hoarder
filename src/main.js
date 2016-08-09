@@ -73,6 +73,11 @@ class Game extends Phaser.Game {
                 miniBoss: 2,
                 boss: 5,
                 defeated: false,
+                sprite: {
+                    image: 'chesslike',
+                    x: 450,
+                    y: 650
+                },
                 enemies: [
                     {hp: 15, dps: 3},
                     {hp: 15, dps: 3},
@@ -97,6 +102,11 @@ class Game extends Phaser.Game {
                 miniBoss: 3,
                 boss: 7,
                 defeated: false,
+                sprite: {
+                    image: 'chesslike',
+                    x: 500,
+                    y: 350
+                },
                 enemies: [
                     {hp: 15, dps: 3},
                     {hp: 18, dps: 6},
@@ -125,6 +135,11 @@ class Game extends Phaser.Game {
                 miniBoss: 4,
                 boss: 9,
                 defeated: false,
+                sprite: {
+                    image: 'chesslike',
+                    x: 150,
+                    y: 500
+                },
                 enemies: [
                     {hp: 18, dps: 6},
                     {hp: 18, dps: 9},

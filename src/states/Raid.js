@@ -73,9 +73,9 @@ export default class extends Phaser.State {
         //enSprite
         this.enSprite = this.game.add.sprite(this.game.world.width + 70, this.game.world.centerY + 25, 'mob1');
         this.enSprite.anchor.setTo(0.5);
-        this.enSprite.scale.setTo(-6,6);
-        this.enSprite.animations.add('walk', [0,1,2,3,4,5,6,7], 10);
-        this.enSprite.animations.play('walk', 10, true);
+        this.enSprite.scale.setTo(2,2);
+        this.enSprite.animations.add('walk', [0,1,2,3,4], 5);
+        this.enSprite.animations.play('walk', 5, true);
 
         this.dmgText = this.add.text(this.game.world.centerX - 200, this.game.world.centerY + 80, '');
         this.dmgText.font = 'Oswald';
