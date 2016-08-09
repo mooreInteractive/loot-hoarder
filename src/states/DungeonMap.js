@@ -62,4 +62,18 @@ export default class extends Phaser.State {
         }
     }
 
+    render (){
+        let time = Math.floor((new Date).getTime()/1000);
+        let storedTime = localStorage.getItem('loot-hoarder-clock');
+        if( storedTime != time){
+            let timeDiff = time - storedTime;
+            localStorage.setItem('loot-hoarder-clock', time);
+            if(this.game.player.battleStats.currentHealth < this.game.player.battleStats.health){
+                for(let i = 0; i < timeDiff; i++){
+                    this.game.player.heal();
+                }
+            }
+        }
+    }
+
 }
