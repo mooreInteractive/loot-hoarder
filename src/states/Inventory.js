@@ -60,9 +60,11 @@ export default class extends Phaser.State {
 
     plusClicked(index){
         this.game.player.skillUp(index);
-        this.plusBtns.forEach((btn) => {
-            btn.visible = false;
-        });
+        if(this.game.player.skillPoints < 1){
+            this.plusBtns.forEach((btn) => {
+                btn.visible = false;
+            });
+        }
     }
 
     updateCharacterText(){

@@ -79,20 +79,20 @@ class Game extends Phaser.Game {
                     y: 650
                 },
                 enemies: [
-                    {hp: 15, dps: 3},
-                    {hp: 15, dps: 3},
-                    {hp: 36, dps: 6, boss: true},
-                    {hp: 18, dps: 6},
-                    {hp: 18, dps: 6},
-                    {hp: 60, dps: 9, boss: true}
+                    {hp: 15, dps: 1},
+                    {hp: 15, dps: 1},
+                    {hp: 36, dps: 3, boss: true},
+                    {hp: 18, dps: 3},
+                    {hp: 18, dps: 3},
+                    {hp: 60, dps: 5, boss: true}
                 ],
                 currentEnemies: [
-                    {hp: 15, dps: 3},
-                    {hp: 15, dps: 3},
-                    {hp: 36, dps: 6, boss: true},
-                    {hp: 18, dps: 6},
-                    {hp: 18, dps: 6},
-                    {hp: 60, dps: 9, boss: true}
+                    {hp: 15, dps: 1},
+                    {hp: 15, dps: 1},
+                    {hp: 36, dps: 3, boss: true},
+                    {hp: 18, dps: 3},
+                    {hp: 18, dps: 3},
+                    {hp: 60, dps: 5, boss: true}
                 ]
             },
             {

@@ -141,9 +141,10 @@ export default class extends Phaser.State {
             this.currentEnemy.originalHp = this.currentEnemy.originalHp ? this.currentEnemy.originalHp : this.currentEnemy.hp;
             this.enHealthBarBg.visible = true;
             this.enHealthBar.visible = true;
-
-        } else if(this.dungeon.currentEnemies.length == 0){
-            this.errorText.text += '\nNo more enemies in this dungeon...';
+        } else {
+            if(this.currentEnemy == null){
+                console.log('--no enemies left here...', this.dungeon);
+            }
         }
     }
 
@@ -224,7 +225,7 @@ export default class extends Phaser.State {
 
         //Dungeon Done
         if(dungeon.enemiesLeft < 1){
-            dungeon.currentEnemies = dungeon.enemies;
+            dungeon.currentEnemies = dungeon.enemies.slice();
             dungeon.beaten = true;
             //TODO - bestowe dungeon ring
             dungeon.enemiesLeft = dungeon.currentEnemies.length;
@@ -262,6 +263,8 @@ export default class extends Phaser.State {
         this.enDmgText.visible = false;
         this.dmgText.position.y = this.game.world.centerY - 120;
         this.enDmgText.position.y = this.game.world.centerY - 120;
+        this.dmgText.alpha = 1;
+        this.enDmgText.alpha = 1;
     }
 
     update(){
@@ -295,6 +298,9 @@ export default class extends Phaser.State {
 
         this.dmgText.position.y -= 1;
         this.enDmgText.position.y -= 1;
+        this.dmgText.alpha -= 0.01;
+        this.enDmgText.alpha -= 0.01;
+
         /* Player Health */
         let currHealth = this.game.player.battleStats.currentHealth;
         let maxHealth = this.game.player.battleStats.health;
