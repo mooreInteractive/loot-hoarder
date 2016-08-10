@@ -135,6 +135,7 @@ export default class extends Phaser.State {
     }
 
     queueEnemy(){
+        console.log('--Queue START');
         if(this.dungeon.currentEnemies.length > 0 && this.currentEnemy == null){
             this.game.add.tween(this.enSprite).to( { x: this.game.world.centerX + 255 }, 400, null, true);
             this.currentEnemy = this.dungeon.currentEnemies[0];
@@ -146,9 +147,11 @@ export default class extends Phaser.State {
                 console.log('--no enemies left here...', this.dungeon);
             }
         }
+        console.log('--Queue END');
     }
 
     action(){
+        console.log('--Action START');
         let player = this.game.player;
         let enemy = this.currentEnemy;
         let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
@@ -166,9 +169,11 @@ export default class extends Phaser.State {
         this.enDmgText.visible = true;
 
         console.log(`En: -${strike}hp (${enemy.hp}/${enemy.originalHp}), Pl: -${enStrike}hp (${player.battleStats.currentHealth})`);
+        console.log('--Action END');
     }
 
     assessment(){
+        console.log('--Assess START');
         let player = this.game.player;
         let enemy = this.currentEnemy;
 
@@ -204,6 +209,7 @@ export default class extends Phaser.State {
         if(this.dungeon.currentEnemies.length == 0 || player.battleStats.currentHealth < 1){
             this.finishUpRaid();
         }
+        console.log('--Assess END');
     }
 
     finishUpRaid(){
@@ -225,7 +231,9 @@ export default class extends Phaser.State {
 
         //Dungeon Done
         if(dungeon.enemiesLeft < 1){
+            console.log('-*-Resetting dungeon...', dungeon.enemies, dungeon.currentEnemies);
             dungeon.currentEnemies = dungeon.enemies.slice();
+            console.log('-*-Done Resetting dungeon...', dungeon.enemies, dungeon.currentEnemies);
             dungeon.beaten = true;
             //TODO - bestowe dungeon ring
             dungeon.enemiesLeft = dungeon.currentEnemies.length;
@@ -238,7 +246,7 @@ export default class extends Phaser.State {
         //level up?
         if(player.exp > playerLevels[player.level].maxExp){
             player.levelUp();
-            this.errorText.text += 'Level Up!';
+            this.errorText.text += '\nLevel Up!';
         }
 
         player.battling = false;
@@ -315,7 +323,9 @@ export default class extends Phaser.State {
     }
 
     render (){
-
+        if(this.dungeon.enemies[0].hp < 1){
+            console.log('--dungeon.currentEnemies corrupted!', this.dungeon);
+        }
     }
 
 }

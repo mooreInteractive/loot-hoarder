@@ -129,6 +129,7 @@ class Player {
         case 1: this.baseStats.dexterity += 1;
             break;
         case 2: this.baseStats.vitality += 1;
+            this.baseStats.health += 10;
             break;
         case 3: this.baseStats.wisdom += 1;
             break;
