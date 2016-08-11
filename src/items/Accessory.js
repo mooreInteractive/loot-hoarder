@@ -18,8 +18,7 @@ export function build() {
         'shapeWidth': 1,
         'shapeHeight': 1,
         'inventorySlot': {x:0, y:0},
-        'value': 0,
-        'sprite': 'redRing'
+        'value': 0
     };
 
     let strength = this.rand(1,5);
@@ -27,6 +26,7 @@ export function build() {
     accessory.magic.effect = this.getMagicEffect(strength);
     accessory.name = 'Ring of '+accessory.magic.effect.attribute;
     accessory.value += 175*strength;
+    accessory.sprite = accessory.magic.effect.sprite;
 
     //return the accessory
     return accessory;
@@ -41,12 +41,16 @@ export function getMagicEffect(lvl) {
 
     switch(this.rand(0,4)){
     case 0: effect.attribute = 'strength';
+        effect.sprite = 'redRing';
         break;
     case 1: effect.attribute = 'dexterity';
+        effect.sprite = 'blueRing';
         break;
     case 2: effect.attribute = 'wisdom';
+        effect.sprite = 'purpleRing';
         break;
     case 3: effect.attribute = 'vitality';
+        effect.sprite = 'pinkRing';
         break;
     }
 

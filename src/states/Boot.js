@@ -44,6 +44,9 @@ export default class extends Phaser.State {
         this.load.image('axe0', './assets/images/items/axe.png');
         this.load.image('bow0', './assets/images/items/bow.png');
         this.load.image('redRing', './assets/images/items/ring.png');
+        this.load.image('blueRing', './assets/images/items/blue_ring.png');
+        this.load.image('purpleRing', './assets/images/items/purple_ring.png');
+        this.load.image('pinkRing', './assets/images/items/pink_ring.png');
 
         //terrain
         this.load.spritesheet('water', './assets/images/terrain/water.png', 32, 32);
