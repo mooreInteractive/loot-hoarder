@@ -77,9 +77,10 @@ export default class LootList{
                 this.lootText.text += `\n`;
             }
 
-
             //add a couple buttons for this item
-            let addBtn = new Phaser.Button(this.game, this.game.world.centerX - 250, 225*(index+1), 'blueButton', () => {
+            let buttonsY = 230 + (110*(index));
+
+            let addBtn = new Phaser.Button(this.game, this.game.world.centerX - 310, buttonsY, 'blueButton', () => {
                 console.log('--clicked keep, loot, item', loot, item);
                 let placed = this.tryToPlaceItemInInventory(item);
                 if(placed){
@@ -87,30 +88,31 @@ export default class LootList{
                     this.updateLootTextAndButtons(loot);
                 }
             }, this);
-            addBtn.scale.x = 0.2;
+            addBtn.scale.x = 0.4;
             addBtn.anchor.setTo(0.5);
             this.gameState.add.existing(addBtn);
             this.lootKeepBtns.push(addBtn);
 
-            let addBtnText = this.gameState.add.text(this.game, this.game.world.centerX - 250, 225*(index+1), '+');
+            let addBtnText = this.gameState.add.text(this.game, 100, 100, '+');
             addBtnText.font = 'Oswald';
             addBtnText.fontSize = 24;
             addBtnText.fill = '#111111';
             addBtnText.anchor.setTo(0.5);
+            addBtnText.visible = true;
 
-            let sellBtn = new Phaser.Button(this.game, this.game.world.centerX - 200, 225*(index+1), 'yellowButton', () => {
+            let sellBtn = new Phaser.Button(this.game, this.game.world.centerX - 210, buttonsY, 'yellowButton', () => {
                 console.log('Sell Item!');
                 this.game.player.gold += item.value;
                 loot.splice(loot.indexOf(item), 1);
                 this.updateLootTextAndButtons(loot);
             }, this);
 
-            sellBtn.scale.x = 0.2;
+            sellBtn.scale.x = 0.4;
             sellBtn.anchor.setTo(0.5);
             this.game.add.existing(sellBtn);
             this.lootSellBtns.push(sellBtn);
 
-            let sellBtnText = this.gameState.add.text(this.game, this.game.world.centerX - 200, 225*(index+1), '$');
+            let sellBtnText = this.gameState.add.text(this.game, this.game.world.centerX - 210, buttonsY, '$');
             sellBtnText.font = 'Oswald';
             sellBtnText.fontSize = 24;
             sellBtnText.fill = '#111111';

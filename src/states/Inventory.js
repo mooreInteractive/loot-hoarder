@@ -27,6 +27,7 @@ export default class extends Phaser.State {
 
         let Oswald14White = {font: 'Oswald', fontSize: 14, fill: '#FFFFFF' };
         let Oswald24Black = {font: 'Oswald', fontSize: 24, fill: '#000000' };
+        let Oswald24BlackCenter = {font: 'Oswald', fontSize: 24, fill: '#000000', align: 'center' };
         //item hover text
         this.inventoryItem = this.add.text(this.hoverItemBG.position.x+5, this.hoverItemBG.position.y+5, '', Oswald14White);
 
@@ -35,14 +36,18 @@ export default class extends Phaser.State {
         this.playerInfo2 = this.add.text(450, 320, '', Oswald24Black);
 
         //skillPoint + Buttons
-        let Oswald24Blue = {font: 'Oswald', fontSize: 36, fill: '#1313DE'};
+        let Oswald36Blue = {font: 'Oswald', fontSize: 36, fill: '#1313DE'};
 
         this.plusBtns = [
-            this.add.text(75, 248, '+', Oswald24Blue),
-            this.add.text(75, 285, '+', Oswald24Blue),
-            this.add.text(75, 322, '+', Oswald24Blue),
-            this.add.text(75, 359, '+', Oswald24Blue)
+            this.add.text(75, 248, '+', Oswald36Blue),
+            this.add.text(75, 285, '+', Oswald36Blue),
+            this.add.text(75, 322, '+', Oswald36Blue),
+            this.add.text(75, 359, '+', Oswald36Blue)
         ];
+
+        this.add.text(this.game.world.width - 230, this.game.world.height - 160, 'drop items in shop\nto sell them', Oswald24BlackCenter);
+
+
 
         this.plusBtns.forEach((btn, index) => {
             console.log('player:', this.game.player);
@@ -329,6 +334,8 @@ export default class extends Phaser.State {
         let mouseCollidesInvSlot = false;
         let slot = {x:0,y:0};
 
+        let shop = {x:this.game.world.width - 150, y:this.game.world.height - 50, width: 228, height: 73.5};
+
         //Dropping Item inside Inventory Grid
         if(
             mouse.x >= gridPos.x &&
@@ -351,6 +358,17 @@ export default class extends Phaser.State {
             currentSprite.position.y = gridPos.y + (65*spriteTile.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2);
             mouseCollidesInvSlot = true;
             slot = spriteTile;
+        } else if(
+            mouse.x >= (shop.x - shop.width * 0.5) &&
+            mouse.x <= ((shop.x - shop.width * 0.5) + shop.width) &&
+            mouse.y >= (shop.y - shop.height * 0.5) &&
+            mouse.y <= ((shop.y - shop.height * 0.5) + shop.height)
+        ){
+            //check if dropped on town shop button - temporary
+            this.game.player.gold += item.value;
+            currentSprite.destroy();
+            this.game.player.savePlayerData();
+            return;
         }
 
         let equipSlot = this.mouseOverEquipmentSlot(mouse, item);

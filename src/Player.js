@@ -95,7 +95,8 @@ class Player {
             'shapeWidth': 1,
             'shapeHeight': 2,
             'inventorySlot': {x:0, y:0},
-            'sprite': 'shank0'
+            'sprite': 'shank0',
+            'value': 1
         };
 
         placeItemInSlot(this, item, {x:0,y:0});
