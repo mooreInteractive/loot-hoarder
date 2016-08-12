@@ -178,8 +178,8 @@ export default class extends Phaser.State {
             let lootChance = Forge.rand(0,100);
             let lootThreshold = 50;
             let lootMin = 1;
-            let lootMax = 3;
-            if(enemy.boss){lootThreshold = 20; lootMin = 2;}
+            let lootMax = this.dungeon.level;
+            if(enemy.boss){lootThreshold = 20; lootMin = this.dungeon.level - 1 > 1 ? this.dungeon.level - 1 : this.dungeon.level;}
             if( lootChance > lootThreshold){
                 this.game.loot.push(Forge.getRandomItem(lootMin,lootMax));
                 this.errorText.text += `\nDropped item!`;

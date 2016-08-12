@@ -11,6 +11,7 @@ import Inventory from './states/Inventory';
 import Raid from './states/Raid';
 import DungeonMap from './states/DungeonMap';
 import LootView from './states/LootView';
+import Tools from './tools';
 
 import Player from './Player';
 
@@ -25,8 +26,8 @@ class Game extends Phaser.Game {
         this.baseWidth = baseWidth;
         this.baseHeight = baseHeight;
 
-        // let scalor = new ScaleManager(this, 100, 100);
-        // console.log("scalor:", scalor);
+        //Set up Dev Tools - Maybe remove before publishing
+        new Tools(this);
 
         let field = document.getElementById('content');
         //Init Utilities

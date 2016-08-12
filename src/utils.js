@@ -13,8 +13,9 @@ export const setResponsiveWidth = (sprite, percent, parent) => {
 export const placeItemInSlot = (player, item, slot, placeNow = true) => {
     let invSlots = player.backpack;
     let itemInvIndex = player.inventory.indexOf(item);
-
-    if(invSlots[slot.y][slot.x].invItem === -1){
+    let validSlot = slot != null && slot.x > -1 && slot.y > -1;
+    console.log('--place Item slot:', slot, validSlot);
+    if(validSlot && invSlots[slot.y][slot.x].invItem === -1){
         let itemFits = true;
         //Empty Slot in backpack found...
         item.shape.forEach((irow, iy) => {
@@ -59,6 +60,8 @@ export const placeItemInSlot = (player, item, slot, placeNow = true) => {
             return itemFits;
         }
     }
+
+    return false;
 };
 
 export const equipItem = (player, item, slot) => {

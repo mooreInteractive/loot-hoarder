@@ -172,8 +172,10 @@ export default class extends Phaser.State {
                       || (item.inventoryType == 'feet' && slots[i].type == 'feet')
                       || (item.inventoryType == 'accessory' && (['accessory1','accessory2','accessory3','accessory4']).indexOf(slots[i].type) > -1)
                     ){
-                        console.log('-mouseOverEquipmentSlot:', slots[i].type);
-                        hitSlot = slots[i];
+                        console.log('-mouseOverEquipmentSlot:', slots[i], slots[i].type, this.game.player.equipped);
+                        if(this.game.player.equipped[slots[i].type] == null){
+                            hitSlot = slots[i];
+                        }
                     }
                 }
             }
@@ -183,7 +185,6 @@ export default class extends Phaser.State {
     }
 
     inventoryGridBackground(){
-
         let width = 65*10; // example;
         let height = 65*4; // example;
         let bgbmd = this.game.add.bitmapData(width+10, height+10);
@@ -302,7 +303,6 @@ export default class extends Phaser.State {
     }
 
     drawInventoryItems(){
-
         let gridPos = {x: this.inventoryGridSprite.position.x - this.inventoryGridSprite.width/2 + 5, y: this.inventoryGridSprite.position.y - this.inventoryGridSprite.height/2 + 5};
         this.inventoryItemsGroup = this.game.add.group();
         this.equippedItemsGroup = this.game.add.group();
@@ -320,7 +320,7 @@ export default class extends Phaser.State {
     }
 
     startDrag(sprite, item, equipped=false){
-        console.log('-startDrag(sprite, item, equipped)', sprite, item, equipped);
+        //console.log('-startDrag(sprite, item, equipped)', sprite, item, equipped);
         if(equipped){
             utils.unequipItem(this.game.player, item);
         } else {
@@ -329,14 +329,8 @@ export default class extends Phaser.State {
         this.stopHoverItem();
     }
 
-    stopDrag(currentSprite, item, gridPos, mouse){
-        console.log('-stopDrag(sprite, item, gridPos)', currentSprite, item, gridPos);
-        let mouseCollidesInvSlot = false;
-        let slot = {x:0,y:0};
-
-        let shop = {x:this.game.world.width - 150, y:this.game.world.height - 50, width: 228, height: 73.5};
-
-        //Dropping Item inside Inventory Grid
+    mouseOverBackPackGrid(currentSprite, item, gridPos, mouse){
+        let slot = null;
         if(
             mouse.x >= gridPos.x &&
             mouse.x <= (gridPos.x + this.inventoryGridSprite.width) &&
@@ -345,66 +339,121 @@ export default class extends Phaser.State {
         ){
             // let insideX = mouse.x - gridPos.x;
             // let insideY = mouse.y - gridPos.y;
+            let weaponOnGridPos = this.game.player.inventory.filter((item) => {
+                return item.inventorySlot.x == gridPos.x && item.inventorySlot.y == gridPos.y;
+            });
 
-            let spriteX = currentSprite.position.x - gridPos.x;
-            let spriteY = currentSprite.position.y - gridPos.y;
+            if(weaponOnGridPos.length > 0){
+                console.log('_-__Occupado__-__');
+            } else {
 
-            //let mouseTile = {x: Math.floor(insideX/65), y: Math.floor(insideY/65)};
-            let spriteTile = {x: Math.floor(spriteX/65), y: Math.floor(spriteY/65)};
+                let spriteX = currentSprite.position.x - gridPos.x;
+                let spriteY = currentSprite.position.y - gridPos.y;
 
-            //console.log('--inv dropped on mouseTile, spriteTile:', mouseTile, spriteTile);
+                //let mouseTile = {x: Math.floor(insideX/65), y: Math.floor(insideY/65)};
+                let spriteTile = {x: Math.floor(spriteX/65), y: Math.floor(spriteY/65)};
 
-            currentSprite.position.x = gridPos.x + (65*spriteTile.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2);
-            currentSprite.position.y = gridPos.y + (65*spriteTile.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2);
-            mouseCollidesInvSlot = true;
-            slot = spriteTile;
-        } else if(
+                //console.log('--inv dropped on mouseTile, spriteTile:', mouseTile, spriteTile);
+
+                currentSprite.position.x = gridPos.x + (65*spriteTile.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2);
+                currentSprite.position.y = gridPos.y + (65*spriteTile.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2);
+
+                slot = spriteTile;
+            }
+        }
+
+        return slot;
+    }
+
+    mouseOverShop(mouse){
+        let shop = {x:this.game.world.width - 150, y:this.game.world.height - 50, width: 228, height: 73.5};
+
+        if( //Dropping on the Shop
             mouse.x >= (shop.x - shop.width * 0.5) &&
             mouse.x <= ((shop.x - shop.width * 0.5) + shop.width) &&
             mouse.y >= (shop.y - shop.height * 0.5) &&
             mouse.y <= ((shop.y - shop.height * 0.5) + shop.height)
         ){
-            //check if dropped on town shop button - temporary
-            this.game.player.gold += item.value;
-            currentSprite.destroy();
-            this.game.player.savePlayerData();
-            return;
+            return true;
         }
 
+        return false;
+    }
+
+    stopDrag(currentSprite, item, gridPos, mouse){
+        //console.log('-stopDrag(sprite, item, gridPos)', currentSprite, item, gridPos);
+        
+        //Getting Drop Zone
+        let slot = this.mouseOverBackPackGrid(currentSprite, item, gridPos, mouse);
         let equipSlot = this.mouseOverEquipmentSlot(mouse, item);
+        let shopSlot = this.mouseOverShop(mouse);
+
         if(currentSprite.parent == this.equippedItemsGroup){
-            if(mouseCollidesInvSlot){
+            console.log('--dropping equipped Item...');
+            if(slot){
+                console.log('----on inventory slot...');
                 let fits = utils.placeItemInSlot(this.game.player, item, slot);
                 if(fits){
+                    console.log('------fits.');
                     //utils.unequipItem(this.game.player, item);
-                    currentSprite.kill();
                     this.addBackPackSprite(item, gridPos);
+                    currentSprite.destroy();
                 } else {
+                    console.log('------doesnt fit, return to origin');
                     currentSprite.position.copyFrom(currentSprite.originalPosition);
                     utils.equipItem(this.game.player, item, {type: item.inventorySlot});
-                    currentSprite.kill();
                 }
             } else if(equipSlot != undefined && equipSlot != false && this.game.player.equipped[equipSlot.type] == null){
+                console.log('----on equip slot...');
                 utils.equipItem(this.game.player, item, equipSlot);
                 this.addEquippedSprite(item, gridPos, equipSlot.type);
-                currentSprite.kill();
+            } else if(shopSlot){
+                console.log('----on shop Slot...');
+                this.game.player.gold += item.value;
+                let itemIndex = this.game.player.inventory.indexOf(item);
+                this.game.player.inventory.splice(itemIndex, 1);
+                currentSprite.destroy();
+                this.game.player.savePlayerData();
             } else {
+                console.log('----on nothing, return to origin...');
                 currentSprite.position.copyFrom(currentSprite.originalPosition);
                 utils.equipItem(this.game.player, item, {type: item.inventorySlot});
             }
         } else {
-            if(mouseCollidesInvSlot){
-                utils.placeItemInSlot(this.game.player, item, slot);
+            console.log('--dropping backPack Item...');
+            if(slot){
+                console.log('----on inventory slot...');
+                let fits = utils.placeItemInSlot(this.game.player, item, slot);
+                if(fits){
+                    console.log('------fits.');
+                    currentSprite.originalPosition = currentSprite.position.clone();
+                } else {
+                    console.log('------doesnt fit, return to origin');
+                    this.returnItemToOrigin(currentSprite, item);
+                }
             } else if(equipSlot != undefined && equipSlot != false){
+                console.log('----on equip slot...');
                 utils.equipItem(this.game.player, item, equipSlot);
                 this.addEquippedSprite(item, gridPos, equipSlot.type);
-                currentSprite.kill();
+                currentSprite.destroy();
+            } else if(shopSlot){
+                console.log('----on shop Slot...');
+                this.game.player.gold += item.value;
+                let itemIndex = this.game.player.inventory.indexOf(item);
+                this.game.player.inventory.splice(itemIndex, 1);
+                currentSprite.destroy();
+                this.game.player.savePlayerData();
             } else {
-                currentSprite.position.copyFrom(currentSprite.originalPosition);
-                utils.placeItemInSlot(this.game.player, item, item.inventorySlot);
+                console.log('----on nothing, return to origin...');
+                this.returnItemToOrigin(currentSprite, item);
             }
         }
-        //console.log('--after stopDrag player.inv, backpack, equipped:', this.game.player.inventory, this.game.player.backpack, this.game.player.equipped);
+        console.log('--after stopDrag player.inv, backpack, equipped:', this.game.player.inventory, this.game.player.backpack, this.game.player.equipped);
+    }
+
+    returnItemToOrigin(sprite, item){
+        sprite.position.copyFrom(sprite.originalPosition);
+        utils.placeItemInSlot(this.game.player, item, item.inventorySlot);
     }
 
     hoverInvItem(sprite, mouse, item){
