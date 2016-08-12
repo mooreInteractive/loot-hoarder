@@ -41,8 +41,9 @@ export default class LootList{
     }
 
     updateLootTextAndButtons(){
+        this.game.saveLootData(this.game);
         this.game.player.savePlayerData();
-        
+
         let loot = this.game.loot;
         this.lootText.text = '';
 

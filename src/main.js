@@ -47,6 +47,8 @@ class Game extends Phaser.Game {
         this.player = new Player(playerData);
         this.loot = [];
 
+        this.saveLootData = this.saveLootData.bind(this);
+
         this.setupDungeons();
         this.lastGameTime = playerClock;
 
@@ -173,8 +175,19 @@ class Game extends Phaser.Game {
             if(dungeonsString != undefined){
                 this.dungeons = JSON.parse(dungeonsString);
             }
+
+            let lootString = localStorage.getItem('loot-hoarder-loot');
+            if(lootString != undefined){
+                this.loot = JSON.parse(lootString);
+            }
         }
 
+    }
+
+    saveLootData(game){
+        if(localStorage){
+            localStorage.setItem('loot-hoarder-loot', JSON.stringify(game.loot));
+        }
     }
 
     OnResizeCalled() {

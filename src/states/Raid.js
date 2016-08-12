@@ -79,14 +79,18 @@ export default class extends Phaser.State {
 
         this.dmgText = this.add.text(this.game.world.centerX - 200, this.game.world.centerY + 80, '');
         this.dmgText.font = 'Oswald';
-        this.dmgText.fontSize = 28;
+        this.dmgText.fontSize = 32;
+        this.dmgText.stroke = '#FFFFFF';
+        this.dmgText.strokeThickness = 2;
         this.dmgText.fill = '#CD1313';
         this.dmgText.visible = false;
 
         this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY + 80, '');
         this.enDmgText.font = 'Oswald';
-        this.enDmgText.fontSize = 28;
-        this.enDmgText.fill = '#CD1313';
+        this.enDmgText.fontSize = 32;
+        this.enDmgText.stroke = '#FFFFFF';
+        this.enDmgText.strokeThickness = 2;
+        this.enDmgText.fill = '#1313CD';
         this.enDmgText.visible = false;
 
         this.animateBattleStart();
@@ -160,9 +164,9 @@ export default class extends Phaser.State {
 
         player.battleStats.currentHealth -= enStrike;
 
-        this.dmgText.text = `- ${enStrike}hp`;
+        this.dmgText.text = enStrike;
         this.dmgText.visible = true;
-        this.enDmgText.text = `- ${strike}hp`;
+        this.enDmgText.text = strike;
         this.enDmgText.visible = true;
 
         console.log(`En: -${strike}hp (${enemy.hp}/${enemy.originalHp}), Pl: -${enStrike}hp (${player.battleStats.currentHealth})`);
