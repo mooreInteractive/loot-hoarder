@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import * as Forge from '../items/Forge';
 import {playerLevels} from '../data/levels';
+import Avatar from '../components/Avatar';
 
 export default class extends Phaser.State {
     init (dungeon) {
@@ -16,27 +17,9 @@ export default class extends Phaser.State {
     }
 
     create () {
-        /* Player Health Bar Graphic and Text */
-        let healthBarBackgroundBitMap = this.game.add.bitmapData(212, 52);
-        let healthBarBitMap = this.game.add.bitmapData(200, 40);
-
-        healthBarBackgroundBitMap.ctx.beginPath();
-        healthBarBackgroundBitMap.ctx.rect(0, 0, 212, 52);
-        healthBarBackgroundBitMap.ctx.fillStyle = '#111111';
-        healthBarBackgroundBitMap.ctx.fill();
-
-        healthBarBitMap.ctx.beginPath();
-        healthBarBitMap.ctx.rect(0, 0, 200, 40);
-        healthBarBitMap.ctx.fillStyle = '#DE1111';
-        healthBarBitMap.ctx.fill();
-
-        this.healthBarBg = this.game.add.sprite(this.game.world.centerX-105, this.game.world.centerY, healthBarBackgroundBitMap);
-        this.healthBar = this.game.add.sprite(this.game.world.centerX-99, this.game.world.centerY+6, healthBarBitMap);
-
-        this.healthText = this.add.text(this.game.world.centerX - 95, this.game.world.centerY+6, 'Hp:');
-        this.healthText.font = 'Oswald';
-        this.healthText.fontSize = 24;
-        this.healthText.fill = '#FFFFFF';
+        let avatarSettings = {x: this.dungeon.sprite.x - 50, y: this.dungeon.sprite.y + 25, scale: 2};
+        let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
+        this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings); //Need to call avatar.update() and avatar.render()
 
         /* Reused Enemy HealthBar Graphic */
         let EnHpBarBg = this.game.add.bitmapData(212, 52);
@@ -62,13 +45,6 @@ export default class extends Phaser.State {
         this.errorText.fontSize = 22;
         this.errorText.fill = '#DE1313';
         this.errorText.anchor.setTo(0.5);
-
-        //walkign man
-        this.dude = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY-200, 'walkingMan');
-        this.dude.anchor.setTo(0.5);
-        this.dude.scale.setTo(6,6);
-        this.dude.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
-        this.dude.animations.play('walk', 15, true);
 
         //enSprite
         this.enSprite = this.game.add.sprite(this.game.world.width + 70, this.game.world.centerY + 25, 'mob1');
@@ -98,44 +74,19 @@ export default class extends Phaser.State {
     }
 
     animateBattleStart(){
-        let animTime = 400;
-        //Move Avater to battle position, then start the battle
-        let tween = this.game.add.tween(this.dude).to( { x: this.game.world.centerX - 200, y: this.game.world.centerY }, animTime, null, true);
-        this.game.add.tween(this.dude.scale).to( { x: 4, y: 4 }, animTime, null, true);
-
-        //hp bar and text
-        this.game.add.tween(this.healthBarBg).to( { x: this.game.world.centerX-305, y: this.game.world.centerY + 140 }, animTime, null, true);
-        this.game.add.tween(this.healthBar).to( { x: this.game.world.centerX-299, y: this.game.world.centerY+146 }, animTime, null, true);
-
-        this.game.add.tween(this.healthText).to( { x: this.game.world.centerX - 295, y: this.game.world.centerY+146 }, animTime, null, true);
-
-
-        tween.onComplete.addOnce(() => {
-            this.queueEnemy();
-        }, this);
-
-        //Move the health bar and text with it
-
+        let avatarSettings = {x: this.game.world.centerX - 200, y: this.game.world.centerY, scale: 4};
+        let hpSettings = {x: this.game.world.centerX - 200, y: this.game.world.centerY + 164};
+        this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, this.queueEnemy);
     }
 
     animateBattleEnd(){
-        this.endAnimStarted = true;
-        let animTime = 600;
-        //Move Avater to battle position, then start the battle
-        let tween = this.game.add.tween(this.dude).to( { x: this.game.world.centerX, y: this.game.world.centerY - 200 }, animTime, null, true);
-        this.game.add.tween(this.dude.scale).to( { x: 6, y: 6 }, animTime, null, true);
-
-        //hp bar and text
-        this.game.add.tween(this.healthBarBg).to( { x: this.game.world.centerX-105, y: this.game.world.centerY }, animTime, null, true);
-        this.game.add.tween(this.healthBar).to( { x: this.game.world.centerX-99, y: this.game.world.centerY+6 }, animTime, null, true);
-
-        this.game.add.tween(this.healthText).to( { x: this.game.world.centerX - 95, y: this.game.world.centerY+6 }, animTime, null, true);
-
-        tween.onComplete.addOnce(() => {
+        let endCB = () => {
+            this.game.player.battling = false;
             this.game.state.start('MainMenu', true, false);
-        }, this);
-
-
+        };
+        let avatarSettings = {x: this.dungeon.sprite.x - 50, y: this.dungeon.sprite.y + 25, scale: 2};
+        let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
+        this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, endCB);
     }
 
     queueEnemy(){
@@ -248,7 +199,6 @@ export default class extends Phaser.State {
             this.errorText.text += '\nLevel Up!';
         }
 
-        player.battling = false;
         this.saveDungeonData();
         this.game.player.savePlayerData();
 
@@ -306,14 +256,7 @@ export default class extends Phaser.State {
         this.dmgText.alpha -= 0.01;
         this.enDmgText.alpha -= 0.01;
 
-        /* Player Health */
-        let currHealth = this.game.player.battleStats.currentHealth;
-        let maxHealth = this.game.player.battleStats.health;
-        let healthPercent = currHealth / maxHealth;
-        if(healthPercent < 0){ healthPercent = 0; }
-
-        this.healthText.text = `Hp: ${currHealth}/${maxHealth}`;
-        this.healthBar.scale.x = healthPercent;
+        this.avatar.update();
 
         /* Enemy Health */
         this.enHealthBar.scale.x = this.currentEnemy ? this.currentEnemy.hp / this.currentEnemy.originalHp : 0;

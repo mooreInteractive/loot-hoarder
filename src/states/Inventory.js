@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import * as utils from '../utils';
 import {playerLevels} from '../data/levels';
 import MainNavigation from '../components/MainNavigation';
+import Avatar from '../components/Avatar';
 
 export default class extends Phaser.State {
     init () {
@@ -10,6 +11,10 @@ export default class extends Phaser.State {
     }
 
     preload () {
+
+        let avatarSettings = {x: 50, y: 115, scale: 2};
+        let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
+        this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true); //Need to call avatar.update()
 
         this.inventoryGridBackground();
         this.equippedGridBackground();
@@ -382,7 +387,7 @@ export default class extends Phaser.State {
 
     stopDrag(currentSprite, item, gridPos, mouse){
         //console.log('-stopDrag(sprite, item, gridPos)', currentSprite, item, gridPos);
-        
+
         //Getting Drop Zone
         let slot = this.mouseOverBackPackGrid(currentSprite, item, gridPos, mouse);
         let equipSlot = this.mouseOverEquipmentSlot(mouse, item);
@@ -488,17 +493,7 @@ export default class extends Phaser.State {
 
     render (){
         this.updateCharacterText();
-        let time = Math.floor((new Date).getTime()/1000);
-        let storedTime = localStorage.getItem('loot-hoarder-clock');
-        if( storedTime != time){
-            let timeDiff = time - storedTime;
-            localStorage.setItem('loot-hoarder-clock', time);
-            if(this.game.player.battleStats.currentHealth < this.game.player.battleStats.health){
-                for(let i = 0; i < timeDiff; i++){
-                    this.game.player.heal();
-                }
-            }
-        }
+        this.avatar.update();
     }
 
 }

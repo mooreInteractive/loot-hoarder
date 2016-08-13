@@ -1,9 +1,10 @@
 import { placeItemInSlot } from './utils';
 
 class Player {
-    constructor(saveData){
+    constructor(saveData, version){
+        this.version = version;
         if(saveData){
-            this.loadPlayerData(saveData);
+            this.loadPlayerData(saveData, version);
         } else {
             this.createNewPlayer();
         }
@@ -17,6 +18,7 @@ class Player {
         this.skillPoints = 0;
         this.battling = false;
         this.latestUnlockedDungeon = 1;
+        this.currentDungeon = 0;
         this.inventory = [];
         this.gold = 0;
         this.baseStats = {
@@ -100,6 +102,7 @@ class Player {
         };
 
         placeItemInSlot(this, item, {x:0,y:0});
+        this.savePlayerData();
     }
 
     heal(){
@@ -207,6 +210,7 @@ class Player {
                 gold: this.gold,
                 baseStats: this.baseStats,
                 latestUnlockedDungeon: this.latestUnlockedDungeon,
+                currentDungeon: this.currentDungeon,
                 currentHealth: this.battleStats.currentHealth
             });
             localStorage.setItem('loot-hoarder-player', playerData);
@@ -216,15 +220,29 @@ class Player {
         }
     }
 
-    loadPlayerData(playerData){
-        console.log('loading player data:', playerData);
+    loadPlayerData(playerData, version){
+        //version wipe
+        if(localStorage && localStorage.getItem('loot-hoarder-ver') != version){
+            console.log(localStorage.getItem('loot-hoarder-ver'), version, 'Player data was for an outdated version, and has been destroyed. :(');
+
+            localStorage.removeItem('loot-hoarder-dungeons');
+            localStorage.removeItem('loot-hoarder-player');
+            localStorage.removeItem('loot-hoarder-clock');
+            localStorage.removeItem('loot-hoarder-loot');
+            localStorage.removeItem('loot-hoarder-ver');
+
+            this.createNewPlayer();
+            return;
+        }
+
+        //console.log('loading player data:', playerData);
         let oldTime = localStorage.getItem('loot-hoarder-clock');
         let newTime = Math.floor((new Date).getTime()/1000);
         let baseHealth = playerData.baseStats.health;
         let timeDiff = (newTime - oldTime) > 0 ? newTime - oldTime : 0 ;
         let healthOverTime = playerData.currentHealth + timeDiff;
         let currHp = healthOverTime > baseHealth ? baseHealth : healthOverTime;
-        console.log('--timeDiff, overtime, currHP', oldTime, newTime, timeDiff, healthOverTime, currHp);
+        //console.log('--timeDiff, overtime, currHP', oldTime, newTime, timeDiff, healthOverTime, currHp);
 
         this.level = playerData.level;
         this.exp = playerData.exp;
@@ -234,6 +252,7 @@ class Player {
         this.equipped = playerData.equipped;
         this.gold = playerData.gold;
         this.baseStats = playerData.baseStats;
+        this.currentDungeon = playerData.currentDungeon;
         this.latestUnlockedDungeon = playerData.latestUnlockedDungeon;
         this.battleStats = {
             strength: playerData.baseStats.strength,

@@ -26,6 +26,13 @@ class Game extends Phaser.Game {
         this.baseWidth = baseWidth;
         this.baseHeight = baseHeight;
 
+        /***** VERSION NUMBER - UPDATING WILL WIPE PLAYER DATA *************
+        /****
+        /**/
+        this.version = 1;
+        /**/
+        /****
+        *******************************************************************/
         //Set up Dev Tools - Maybe remove before publishing
         new Tools(this);
 
@@ -44,8 +51,10 @@ class Game extends Phaser.Game {
             playerClock = Math.floor((new Date).getTime()/1000);
         }
         //Loot Hoarder Variables
-        this.player = new Player(playerData);
+        this.player = new Player(playerData, this.version);
         this.loot = [];
+
+        if(localStorage){localStorage.setItem('loot-hoarder-ver', this.version);}
 
         this.saveLootData = this.saveLootData.bind(this);
 
@@ -78,8 +87,8 @@ class Game extends Phaser.Game {
                 defeated: false,
                 sprite: {
                     image: 'chesslike',
-                    x: 450,
-                    y: 650
+                    x: 519,
+                    y: 678
                 },
                 enemies: [
                     {hp: 15, dps: 1},
@@ -107,8 +116,8 @@ class Game extends Phaser.Game {
                 defeated: false,
                 sprite: {
                     image: 'chesslike',
-                    x: 500,
-                    y: 350
+                    x: 569,
+                    y: 378
                 },
                 enemies: [
                     {hp: 15, dps: 3},
@@ -140,8 +149,8 @@ class Game extends Phaser.Game {
                 defeated: false,
                 sprite: {
                     image: 'chesslike',
-                    x: 150,
-                    y: 500
+                    x: 219,
+                    y: 527
                 },
                 enemies: [
                     {hp: 18, dps: 6},
