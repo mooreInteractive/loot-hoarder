@@ -15,7 +15,7 @@ export default class extends Phaser.State {
         new MainNavigation(this.game, this);
 
         this.currentDungeon = this.game.dungeons[this.game.player.currentDungeon];
-        
+
         let avatarSettings = {x: this.currentDungeon.sprite.x - 50, y: this.currentDungeon.sprite.y + 25, scale: 2};
         let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
         this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings); //Need to call avatar.update() and avatar.render()
@@ -111,7 +111,6 @@ export default class extends Phaser.State {
         if(this.game.player.latestUnlockedDungeon >= dungeon.level){
             if(this.game.player.battleStats.currentHealth > 1){
                 this.errorText.visible = false;
-                this.state.start('DungeonMap');
                 this.state.start('Raid', true, false, dungeon);
             } else {
                 this.errorText.visible = true;

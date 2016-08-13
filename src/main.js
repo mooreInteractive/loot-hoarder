@@ -9,7 +9,6 @@ import MainMenu from './states/MainMenu';
 import Options from './states/Options';
 import Inventory from './states/Inventory';
 import Raid from './states/Raid';
-import DungeonMap from './states/DungeonMap';
 import LootView from './states/LootView';
 import Tools from './tools';
 
@@ -69,7 +68,6 @@ class Game extends Phaser.Game {
         this.state.add('Options', Options, false);
         this.state.add('Inventory', Inventory, false);
         this.state.add('Raid', Raid, false);
-        this.state.add('DungeonMap', DungeonMap, false);
         this.state.add('LootView', LootView, false);
 
         this.state.start('Boot');
