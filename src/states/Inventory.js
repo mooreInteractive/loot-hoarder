@@ -21,12 +21,12 @@ export default class extends Phaser.State {
         this.drawInventoryItems();
 
         //ItemHoverBG
-        let itemHoverBG = this.game.add.bitmapData(200, 350);
+        let itemHoverBG = this.add.bitmapData(200, 350);
         itemHoverBG.ctx.beginPath();
         itemHoverBG.ctx.rect(0, 0, 200, 150);
         itemHoverBG.ctx.fillStyle = '#000000';
         itemHoverBG.ctx.fill();
-        this.hoverItemBG = this.game.add.sprite(0, 0, itemHoverBG);
+        this.hoverItemBG = this.add.sprite(0, 0, itemHoverBG);
         this.hoverItemBG.alpha = 0.8;
         this.hoverItemBG.visible = false;
 

@@ -1,13 +1,13 @@
 {
   "name": "loot-hoarder",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "author": "Adam Moore <amooreinteractive@gmail.com>",
   "repository": "https://github.com/mooreInteractive/loot-hoarder",
   "main": "index.js",
   "scripts": {
     "dev": "webpack",
-    "deploy": "webpack --config webpack.production.config.js",
+    "deploy": "webpack --config webpack.production.config.js && gulp deploy",
     "test": "standard"
   },
   "license": "CC-BY-1.0",
@@ -24,6 +24,7 @@
     "gulp": "^3.9.1",
     "gulp-deploy-ftp": "0.0.2",
     "gulp-sftp": "^0.1.5",
+    "randomcolor": "^0.4.4",
     "standard": "^6.0.5",
     "webfontloader": "^1.6.21",
     "webpack": "^1.12.13"

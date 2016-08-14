@@ -19,7 +19,7 @@ export default class LootList{
     cleanUpLootButtons(){
         let allBtns = this.lootKeepBtns.concat(this.lootSellBtns);
         allBtns.forEach((btn) => {
-            btn.kill();
+            btn.destroy();
         });
     }
 
@@ -96,12 +96,7 @@ export default class LootList{
             this.gameState.add.existing(addBtn);
             this.lootKeepBtns.push(addBtn);
 
-            let addBtnText = this.gameState.add.text(this.game, 100, 100, '+');
-            addBtnText.font = 'Oswald';
-            addBtnText.fontSize = 24;
-            addBtnText.fill = '#111111';
-            addBtnText.anchor.setTo(0.5);
-            addBtnText.visible = true;
+
 
             let sellBtn = new Phaser.Button(this.game, this.game.world.centerX - 210, buttonsY, 'yellowButton', () => {
                 console.log('Sell Item!');
@@ -112,14 +107,25 @@ export default class LootList{
 
             sellBtn.scale.x = 0.4;
             sellBtn.anchor.setTo(0.5);
-            this.game.add.existing(sellBtn);
+            this.gameState.add.existing(sellBtn);
             this.lootSellBtns.push(sellBtn);
 
-            let sellBtnText = this.gameState.add.text(this.game, this.game.world.centerX - 210, buttonsY, '$');
+            let addBtnText = this.gameState.add.text(this.game.world.centerX - 310, buttonsY, 'KEEP');
+            addBtnText.font = 'Oswald';
+            addBtnText.fontSize = 24;
+            addBtnText.fill = '#111111';
+            addBtnText.anchor.setTo(0.5);
+            addBtnText.visible = true;
+            this.lootKeepBtns.push(addBtnText);
+
+            let sellBtnText = this.gameState.add.text(this.game.world.centerX - 210, buttonsY, '$ELL');
             sellBtnText.font = 'Oswald';
             sellBtnText.fontSize = 24;
             sellBtnText.fill = '#111111';
             sellBtnText.anchor.setTo(0.5);
+            addBtnText.visible = true;
+            this.lootSellBtns.push(sellBtnText);
+
         });
     }
 }

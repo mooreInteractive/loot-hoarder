@@ -3,7 +3,7 @@ import 'p2';
 import Phaser from 'phaser';
 
 import BootState from './states/Boot';
-import SplashState from './states/Splash';
+import LoadingState from './states/Loading';
 import GameState from './states/Game';
 import MainMenu from './states/MainMenu';
 import Options from './states/Options';
@@ -28,7 +28,7 @@ class Game extends Phaser.Game {
         /***** VERSION NUMBER - UPDATING WILL WIPE PLAYER DATA *************
         /****
         /**/
-        this.version = 1;
+        this.version = 2; //updated 8/13 5:30pm
         /**/
         /****
         *******************************************************************/
@@ -61,7 +61,7 @@ class Game extends Phaser.Game {
         this.lastGameTime = playerClock;
 
         this.state.add('Boot', BootState, false);
-        this.state.add('Splash', SplashState, false);
+        this.state.add('Loading', LoadingState, false);
         this.state.add('Game', GameState, false);
 
         this.state.add('MainMenu', MainMenu, false);

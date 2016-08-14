@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import MainNavigation from '../components/MainNavigation';
 import Avatar from '../components/Avatar';
+import Dialogue from '../components/Dialogue';
 
 export default class extends Phaser.State {
     init () {
@@ -106,17 +107,31 @@ export default class extends Phaser.State {
     }
 
     raidCurrentDungeon(){
-        let dungeon = this.currentDungeon;
+        let equippedGear = false;
+        let equipment = this.game.player.equipped;
+        Object.keys(equipment).forEach((slot) => {
+            if(equipment[slot] != null){
+                equippedGear = true;
+                return;
+            }
+        });
+        
+        if(!equippedGear){
+            new Dialogue(this.game, this, 'ok', 'You should equip something before raiding...', ()=>{});
+        } else {
+            let dungeon = this.currentDungeon;
 
-        if(this.game.player.latestUnlockedDungeon >= dungeon.level){
-            if(this.game.player.battleStats.currentHealth > 1){
-                this.errorText.visible = false;
-                this.state.start('Raid', true, false, dungeon);
-            } else {
-                this.errorText.visible = true;
-                this.errorText.text = 'You\'re too tired.';
+            if(this.game.player.latestUnlockedDungeon >= dungeon.level){
+                if(this.game.player.battleStats.currentHealth > 1){
+                    this.errorText.visible = false;
+                    this.state.start('Raid', true, false, dungeon);
+                } else {
+                    this.errorText.visible = true;
+                    this.errorText.text = 'You\'re too tired.';
+                }
             }
         }
+
     }
 
     viewLoot(){
