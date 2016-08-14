@@ -38,7 +38,7 @@ export default class extends Phaser.State {
         this.game.load.spritesheet('goo', './assets/images/mobs/goo.png', 96, 144);
         this.game.load.spritesheet('whisper', './assets/images/mobs/whisper.png', 96, 144);
         this.game.load.spritesheet('goon', './assets/images/mobs/goon.png', 144, 192);
-        this.game.load.spritesheet('antler', './assets/images/mobs/antler.png', 96, 192);
+        this.game.load.spritesheet('antler', './assets/images/mobs/antler.png', 144, 192);
         this.game.load.spritesheet('artichoke', './assets/images/mobs/artichoke.png',96, 192);
         this.game.load.spritesheet('blood_skull', './assets/images/mobs/blood_skull.png', 144, 192);
         this.game.load.spritesheet('hand', './assets/images/mobs/hand.png', 192, 192);
