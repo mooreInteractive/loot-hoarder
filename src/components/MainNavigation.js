@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import Dialogue from './Dialogue';
 
 export default class MainNavigation{
     constructor(game, gameState){
@@ -20,7 +21,7 @@ export default class MainNavigation{
         this.inventoryText.anchor.setTo(0.5);
 
         //Shop Button
-        this.shopBtn = new Phaser.Button(this.game, this.game.world.width - 150, this.game.world.height - 50, 'yellowButton', ()=>{console.log('shop');}, this);
+        this.shopBtn = new Phaser.Button(this.game, this.game.world.width - 150, this.game.world.height - 50, 'yellowButton', this.openShop, this);
         this.shopBtn.scale.x = 1.2;
         this.shopBtn.scale.y = 1.5;
         this.shopBtn.anchor.setTo(0.5);
@@ -54,6 +55,10 @@ export default class MainNavigation{
         if(this.gameState.key != 'MainMenu'){
             this.gameState.state.start('MainMenu');
         }
+    }
+
+    openShop(){
+        new Dialogue(this.game, this.gameState, 'ok', 'Back in 5 minutes!', ()=>{});
     }
 
 

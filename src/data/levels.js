@@ -25,5 +25,10 @@ export let playerLevels = [
         level: 5,
         minExp: 601,
         maxExp: 1200
+    },
+    {
+        level: 6,
+        minExp: 1201,
+        maxExp: 2500
     }
 ];

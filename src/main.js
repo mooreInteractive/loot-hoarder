@@ -28,7 +28,7 @@ class Game extends Phaser.Game {
         /***** VERSION NUMBER - UPDATING WILL WIPE PLAYER DATA *************
         /****
         /**/
-        this.version = 2; //updated 8/13 5:30pm
+        this.version = 3; //updated 8/13 5:30pm
         /**/
         /****
         *******************************************************************/
@@ -88,21 +88,14 @@ class Game extends Phaser.Game {
                     x: 519,
                     y: 678
                 },
+                currentEnemies: [],
                 enemies: [
-                    {hp: 15, dps: 1},
-                    {hp: 15, dps: 1},
-                    {hp: 36, dps: 3, boss: true},
-                    {hp: 18, dps: 3},
-                    {hp: 18, dps: 3},
-                    {hp: 60, dps: 5, boss: true}
-                ],
-                currentEnemies: [
-                    {hp: 15, dps: 1},
-                    {hp: 15, dps: 1},
-                    {hp: 36, dps: 3, boss: true},
-                    {hp: 18, dps: 3},
-                    {hp: 18, dps: 3},
-                    {hp: 60, dps: 5, boss: true}
+                    {hp: 15, dps: 1, sprite: 'goo'},
+                    {hp: 15, dps: 1, sprite: 'goo'},
+                    {hp: 36, dps: 3, sprite: 'whisper', boss: true},
+                    {hp: 18, dps: 3, sprite: 'goo'},
+                    {hp: 18, dps: 3, sprite: 'goo'},
+                    {hp: 60, dps: 5, sprite: 'artichoke', boss: true}
                 ]
             },
             {
@@ -117,25 +110,16 @@ class Game extends Phaser.Game {
                     x: 569,
                     y: 378
                 },
+                currentEnemies: [],
                 enemies: [
-                    {hp: 15, dps: 3},
-                    {hp: 18, dps: 6},
-                    {hp: 18, dps: 6},
-                    {hp: 48, dps: 6, boss: true},
-                    {hp: 18, dps: 6},
-                    {hp: 18, dps: 6},
-                    {hp: 15, dps: 12},
-                    {hp: 105, dps: 12, boss: true}
-                ],
-                currentEnemies: [
-                    {hp: 15, dps: 3},
-                    {hp: 18, dps: 6},
-                    {hp: 18, dps: 6},
-                    {hp: 48, dps: 6, boss: true},
-                    {hp: 18, dps: 6},
-                    {hp: 18, dps: 6},
-                    {hp: 15, dps: 12},
-                    {hp: 105, dps: 12, boss: true}
+                    {hp: 15, dps: 3, sprite: 'goo'},
+                    {hp: 18, dps: 6, sprite: 'whisper'},
+                    {hp: 18, dps: 6, sprite: 'whisper'},
+                    {hp: 48, dps: 6, sprite: 'artichoke', boss: true},
+                    {hp: 18, dps: 6, sprite: 'whisper'},
+                    {hp: 18, dps: 6, sprite: 'whisper'},
+                    {hp: 15, dps: 12, sprite: 'artichoke'},
+                    {hp: 105, dps: 12, sprite: 'moss', boss: true}
                 ]
             },
             {
@@ -150,32 +134,56 @@ class Game extends Phaser.Game {
                     x: 219,
                     y: 527
                 },
+                currentEnemies: [],
                 enemies: [
-                    {hp: 18, dps: 6},
-                    {hp: 18, dps: 9},
-                    {hp: 30, dps: 12},
-                    {hp: 30, dps: 12},
-                    {hp: 75, dps: 18, boss: true},
-                    {hp: 18, dps: 12},
-                    {hp: 36, dps: 6},
-                    {hp: 36, dps: 6},
-                    {hp: 45, dps: 15},
-                    {hp: 165, dps: 30, boss: true}
-                ],
-                currentEnemies: [
-                    {hp: 18, dps: 6},
-                    {hp: 18, dps: 9},
-                    {hp: 30, dps: 12},
-                    {hp: 30, dps: 12},
-                    {hp: 75, dps: 18, boss: true},
-                    {hp: 18, dps: 12},
-                    {hp: 36, dps: 6},
-                    {hp: 36, dps: 6},
-                    {hp: 45, dps: 15},
-                    {hp: 165, dps: 30, boss: true}
+                    {hp: 18, dps: 6, sprite: 'whisper'},
+                    {hp: 18, dps: 9, sprite: 'whisper'},
+                    {hp: 30, dps: 12, sprite: 'artichoke'},
+                    {hp: 30, dps: 12, sprite: 'artichoke'},
+                    {hp: 75, dps: 18, sprite: 'moss', boss: true},
+                    {hp: 18, dps: 12, sprite: 'artichoke'},
+                    {hp: 36, dps: 6, sprite: 'antler'},
+                    {hp: 36, dps: 6, sprite: 'antler'},
+                    {hp: 45, dps: 15, sprite: 'artichoke'},
+                    {hp: 165, dps: 30, sprite: 'blood_skull', boss: true}
+                ]
+            },
+            {
+                level: 4,
+                enemiesAmount: 12,
+                enemiesLeft: 12,
+                miniBoss: 4,
+                boss: 9,
+                defeated: false,
+                sprite: {
+                    image: 'chesslike',
+                    x: 360,
+                    y: 275
+                },
+                currentEnemies: [],
+                enemies: [
+                    {hp: 32, dps: 10, sprite: 'artichoke'},
+                    {hp: 32, dps: 10, sprite: 'artichoke'},
+                    {hp: 55, dps: 18, sprite: 'moss'},
+                    {hp: 55, dps: 18, sprite: 'moss'},
+                    {hp: 55, dps: 18, sprite: 'moss'},
+                    {hp: 150, dps: 44, sprite: 'blood_skull', boss: true},
+                    {hp: 85, dps: 20, sprite: 'artichoke'},
+                    {hp: 100, dps: 8, sprite: 'moss'},
+                    {hp: 100, dps: 8, sprite: 'moss'},
+                    {hp: 150, dps: 50, sprite: 'skelly'},
+                    {hp: 150, dps: 50, sprite: 'skelly'},
+                    {hp: 250, dps: 60, sprite: 'wraith', boss: true}
                 ]
             }
         ];
+
+        this.dungeons.forEach((dungeon) => {
+            dungeon.currentEnemies = JSON.parse(JSON.stringify(dungeon.enemies));
+            // dungeon.enemies.forEach((enemy, index)=>{
+            //     dungeon.currentEnemies[index] = JSON.parse(JSON.stringify(enemy));
+            // });
+        });
 
         if(localStorage){
             let dungeonsString = localStorage.getItem('loot-hoarder-dungeons');

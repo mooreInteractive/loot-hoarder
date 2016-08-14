@@ -46,12 +46,22 @@ export default class extends Phaser.State {
         this.errorText.fill = '#DE1313';
         this.errorText.anchor.setTo(0.5);
 
-        //enSprite
-        this.enSprite = this.game.add.sprite(this.game.world.width + 70, this.game.world.centerY + 25, 'mob1');
-        this.enSprite.anchor.setTo(0.5);
-        this.enSprite.scale.setTo(2,2);
-        this.enSprite.animations.add('walk', [0,1,2,3,4], 5);
-        this.enSprite.animations.play('walk', 5, true);
+        this.loadedSprites = [];
+        this.enemySprites = {};
+        this.dungeon.enemies.forEach((enemy)=>{
+            if(this.loadedSprites.indexOf(enemy.sprite) == -1){
+                this.loadedSprites.push(enemy.sprite);
+                console.log('--enemy sprite:', enemy.sprite);
+                let addedSprite = this.game.add.sprite(this.game.world.width + 200, this.game.world.centerY + 100, enemy.sprite);
+                addedSprite.anchor.setTo(0.5, 1);
+                addedSprite.scale.setTo(2,2);
+                addedSprite.animations.add('walk');
+                addedSprite.animations.play('walk', 5, true);
+
+                this.enemySprites[enemy.sprite] = addedSprite;
+            }
+        });
+
 
         this.dmgText = this.add.text(this.game.world.centerX - 200, this.game.world.centerY + 80, '');
         this.dmgText.font = 'Oswald';
@@ -91,8 +101,9 @@ export default class extends Phaser.State {
 
     queueEnemy(){
         if(this.dungeon.currentEnemies.length > 0 && this.currentEnemy == null){
-            this.game.add.tween(this.enSprite).to( { x: this.game.world.centerX + 255 }, 400, null, true);
             this.currentEnemy = this.dungeon.currentEnemies[0];
+            console.log('--current Enmey Sprite:', this.enemySprites[this.currentEnemy.sprite]);
+            this.game.add.tween(this.enemySprites[this.currentEnemy.sprite]).to( { x: this.game.world.centerX + 255 }, 400, null, true);
             this.currentEnemy.originalHp = this.currentEnemy.originalHp ? this.currentEnemy.originalHp : this.currentEnemy.hp;
             this.enHealthBarBg.visible = true;
             this.enHealthBar.visible = true;
@@ -147,7 +158,7 @@ export default class extends Phaser.State {
             player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
             //remove enemy from dungeon
             //this.enSprite.visible = false;
-            this.enSprite.position.x = this.game.world.width + 70;//TODO animate out/explode/die
+            this.enemySprites[enemy.sprite].position.x = this.game.world.width + 70;//TODO animate out/explode/die
             this.dungeon.currentEnemies.splice(0, 1);
             this.dungeon.enemiesLeft = this.dungeon.currentEnemies.length;
             this.enHealthBarBg.visible = false;
@@ -172,10 +183,7 @@ export default class extends Phaser.State {
             }
 
             //remove enemy sprite
-            let tween = this.game.add.tween(this.enSprite).to( { x: this.game.world.width + 135 }, 400, null, true);
-            tween.onComplete.addOnce(() => {
-                this.enSprite.visible = false;
-            }, this);
+            //let tween = this.game.add.tween(this.enemySprites[enemy.sprite]).to( { x: this.game.world.width + 135 }, 400, null, true);
         }
 
         //Dungeon Done
