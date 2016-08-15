@@ -69,10 +69,6 @@ export default class Avatar{
             this.armor.torso.animations.play('walk', 15, true);
             this.armor.feet.animations.play('walk', 15, true);
             this.nakie.animations.play('walk', 15, true);
-            this.armor.torso.frame = 28;
-            this.nakie.frame = 143;
-            // this.nakie.animations.currentAnim.setFrame(143);
-            // this.armor.torso.animations.currentAnim.setFrame(28);
         }
     }
 
@@ -117,16 +113,25 @@ export default class Avatar{
         this.healthBar.scale.x = healthPercent;
     }
 
-    moveToAtScale(settings={x:this.dude.x, y:this.dude.y, scale:this.dude.scale.x}, hpSettings, speed, cb){
+    moveToAtScale(settings={x:this.nakie.x, y:this.nakie.y, scale:this.nakie.scale.x}, hpSettings, speed, cb){
         let animTime = speed;
         let hpWidth = 212;
         let hpHeight = 52;
 
-        //Move Avater to battle position, then start the battle
-        let tween = this.gameState.add.tween(this.dude).to( {x: settings.x, y: settings.y}, animTime, null, true);
-        if(settings.scale != this.dude.scale.x){
-            this.gameState.add.tween(this.dude.scale).to( { x: settings.scale, y: settings.scale }, animTime, null, true);
+
+        let tween = this.gameState.add.tween(this.nakie).to( {x: settings.x, y: settings.y}, animTime, null, true);
+        if(settings.scale != this.nakie.scale.x){
+            this.gameState.add.tween(this.nakie.scale).to( { x: settings.scale, y: settings.scale }, animTime, null, true);
         }
+
+        //Move Avater to battle position, then start the battle
+        Object.keys(this.armor).forEach((key)=>{
+            let armor = this.armor[key];
+            this.gameState.add.tween(armor).to( {x: settings.x, y: settings.y}, animTime, null, true);
+            if(settings.scale != this.nakie.scale.x){
+                this.gameState.add.tween(armor.scale).to( { x: settings.scale, y: settings.scale }, animTime, null, true);
+            }
+        });
 
         if(hpSettings){
             //hp bar and text
