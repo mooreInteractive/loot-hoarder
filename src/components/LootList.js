@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { placeItemInSlot } from '../utils';
+import ItemReadOut from './ItemReadOut';
 
 export default class LootList{
     constructor(game, gameState){
@@ -9,11 +10,7 @@ export default class LootList{
 
         this.lootKeepBtns = [];
         this.lootSellBtns = [];
-
-        this.lootText = this.gameState.add.text(this.game.world.centerX - 150, 200, '');
-        this.lootText.font = 'Oswald';
-        this.lootText.fontSize = 22;
-        this.lootText.fill = '#000000';
+        this.lootReadOuts = [];
     }
 
     cleanUpLootButtons(){
@@ -21,6 +18,15 @@ export default class LootList{
         allBtns.forEach((btn) => {
             btn.destroy();
         });
+
+        this.lootReadOuts.forEach((readOut)=>{
+            readOut.lootText.destroy();
+            readOut = null;
+        });
+
+        this.lootKeepBtns = [];
+        this.lootSellBtns = [];
+        this.lootReadOuts = [];
     }
 
     tryToPlaceItemInInventory(item){
@@ -35,7 +41,10 @@ export default class LootList{
             if(itemPlaced){break;}
         }
         if(itemPlaced === false){
-            this.errorText.visible = true;
+            if(this.gameState.errorText){
+                this.gameState.errorText.text = 'Inventory is Full.';
+                this.gameState.errorText.visible = true;
+            }
         }
         return itemPlaced;
     }
@@ -45,43 +54,20 @@ export default class LootList{
         this.game.player.savePlayerData();
 
         let loot = this.game.loot;
-        this.lootText.text = '';
 
         this.cleanUpLootButtons();
-
-        this.lootKeepBtns = [];
-        this.lootSellBtns = [];
 
         if(loot.length == 0){
             this.game.state.start('Inventory');
         }
 
         loot.forEach((item, index) => {
+            let itemOffsetHeight = (110*index);
 
-            if(item.ac != null){//Armor
-                this.lootText.text += `[${item.level}] ${item.name} \n`;
-                this.lootText.text += `AC: ${item.ac}, Type: ${item.type} \n`;
-                if(item.magic.effect.attribute != null){
-                    this.lootText.text += `${item.magic.effect.attribute} +${item.magic.effect.value}\n`;
-                }
-                this.lootText.text += `\n`;
-            } else if(item.dmg != null){//Weapon
-                this.lootText.text += `[${item.level}] ${item.name} \n`;
-                this.lootText.text += `Dmg: ${item.dmg.min} - ${item.dmg.max} \n`;
-                if(item.magic.effect.attribute != null){
-                    this.lootText.text += `${item.magic.effect.attribute} +${item.magic.effect.value}\n`;
-                }
-                this.lootText.text += `\n`;
-            } else {
-                this.lootText.text += `${item.name} \n`;
-                if(item.magic.effect.attribute != null){
-                    this.lootText.text += `${item.magic.effect.attribute} +${item.magic.effect.value}\n`;
-                }
-                this.lootText.text += `\n`;
-            }
+            this.lootReadOuts.push(new ItemReadOut(this.game, this.gameState, item, {x:this.game.world.centerX - 150, y:200 + itemOffsetHeight}));
 
             //add a couple buttons for this item
-            let buttonsY = 230 + (110*(index));
+            let buttonsY = 230 + itemOffsetHeight;
 
             let addBtn = new Phaser.Button(this.game, this.game.world.centerX - 310, buttonsY, 'blueButton', () => {
                 console.log('--clicked keep, loot, item', loot, item);
@@ -95,8 +81,6 @@ export default class LootList{
             addBtn.anchor.setTo(0.5);
             this.gameState.add.existing(addBtn);
             this.lootKeepBtns.push(addBtn);
-
-
 
             let sellBtn = new Phaser.Button(this.game, this.game.world.centerX - 210, buttonsY, 'yellowButton', () => {
                 console.log('Sell Item!');

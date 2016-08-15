@@ -46,7 +46,16 @@ export default class extends Phaser.State {
         this.game.load.spritesheet('skelly', './assets/images/mobs/skelly.png', 96, 144);
         this.game.load.spritesheet('wraith', './assets/images/mobs/wraith.png', 192, 192);
 
+        //Avatar
         this.game.load.spritesheet('walkingMan', './assets/images/tanned.png', 64, 64);
+        this.game.load.spritesheet('feet_leather', './assets/images/avatar/FEET_leather.png', 64, 64);
+        this.game.load.spritesheet('head_chain', './assets/images/avatar/HEAD_chain.png', 64, 64);
+        this.game.load.spritesheet('torso_leather', './assets/images/avatar/TORSO_leather.png', 64, 64);
+        this.game.load.spritesheet('weapon_dagger', './assets/images/avatar/WEAPON_dagger.png', 64, 64);
+        this.game.load.spritesheet('weapon_shield', './assets/images/avatar/WEAPON_shield.png', 64, 64);
+        this.game.load.spritesheet('weapon_shield', './assets/images/avatar/WEAPON_spear.png', 64, 64);
+        this.game.load.spritesheet('weapon_axe', './assets/images/avatar/WEAPON_axe.png', 64, 64);
+
 
         this.game.load.onFileComplete.add(this.fileComplete, this);
     }

@@ -3,11 +3,13 @@ import * as utils from '../utils';
 import {playerLevels} from '../data/levels';
 import MainNavigation from '../components/MainNavigation';
 import Avatar from '../components/Avatar';
+import ItemReadOut from '../components/itemReadOut';
 
 export default class extends Phaser.State {
     init () {
         this.inventorySprites = [];
         this.inventoryGridSprite;
+        this.selectedSprite = null;
     }
 
     preload () {
@@ -20,25 +22,22 @@ export default class extends Phaser.State {
         this.equippedGridBackground();
         this.drawInventoryItems();
 
-        //ItemHoverBG
-        let itemHoverBG = this.add.bitmapData(200, 350);
-        itemHoverBG.ctx.beginPath();
-        itemHoverBG.ctx.rect(0, 0, 200, 150);
-        itemHoverBG.ctx.fillStyle = '#000000';
-        itemHoverBG.ctx.fill();
-        this.hoverItemBG = this.add.sprite(0, 0, itemHoverBG);
-        this.hoverItemBG.alpha = 0.8;
-        this.hoverItemBG.visible = false;
-
-        let Oswald14White = {font: 'Oswald', fontSize: 14, fill: '#FFFFFF' };
         let Oswald24Black = {font: 'Oswald', fontSize: 24, fill: '#000000' };
         let Oswald24BlackCenter = {font: 'Oswald', fontSize: 24, fill: '#000000', align: 'center' };
-        //item hover text
-        this.inventoryItem = this.add.text(this.hoverItemBG.position.x+5, this.hoverItemBG.position.y+5, '', Oswald14White);
 
         //Player Stats
         this.playerInfo = this.add.text(100, 75, '', Oswald24Black);
-        this.playerInfo2 = this.add.text(450, 320, '', Oswald24Black);
+        this.playerInfo2 = this.add.text(300, 250, '', Oswald24Black);
+
+        //ItemReadOutBG
+        let itemHoverBG = this.add.bitmapData(450, 110);
+        itemHoverBG.ctx.beginPath();
+        itemHoverBG.ctx.rect(0, 0, 450, 110);
+        itemHoverBG.ctx.fillStyle = '#FFFFFF';
+        itemHoverBG.ctx.fill();
+        this.hoverItemBG = this.add.sprite(145, 430, itemHoverBG);
+        //Item Read Out Text
+        this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 150, y: 435});
 
         //skillPoint + Buttons
         let Oswald36Blue = {font: 'Oswald', fontSize: 36, fill: '#1313DE'};
@@ -247,11 +246,11 @@ export default class extends Phaser.State {
         drawnObject.input.enableDrag();
         drawnObject.originalPosition = drawnObject.position.clone();
         //console.log('-- invSprite events:', drawnObject.events);
-        drawnObject.events.onInputOut.add(() => {
-            this.stopHoverItem();
+        drawnObject.events.onInputDown.add((drawnObject) => {
+            this.selectItem(drawnObject, item);
         }, this);
-        drawnObject.events.onInputOver.add((drawnObject, mousePos) => {
-            this.hoverInvItem(drawnObject, mousePos, item);
+        drawnObject.events.onInputOver.add((drawnObject) => {
+            this.selectItem(drawnObject, item);
         }, this);
         drawnObject.events.onDragStop.add((drawnObject, mousePos) => {
             this.stopDrag(drawnObject, item, gridPos, mousePos);
@@ -291,11 +290,13 @@ export default class extends Phaser.State {
         drawnObject.input.enableDrag();
         drawnObject.originalPosition = drawnObject.position.clone();
         //console.log('-- invSprite events:', drawnObject.events);
-        drawnObject.events.onInputOut.add(() => {
-            this.stopHoverItem();
+        drawnObject.events.onInputDown.add(() => {
+            //this.hoverInvItem(drawnObject, mousePos, item);
+            this.selectItem(drawnObject, item);
         }, this);
-        drawnObject.events.onInputOver.add((drawnObject, mousePos) => {
-            this.hoverInvItem(drawnObject, mousePos, item);
+        drawnObject.events.onInputOver.add(() => {
+            //this.hoverInvItem(drawnObject, mousePos, item);
+            this.selectItem(drawnObject, item);
         }, this);
         drawnObject.events.onDragStop.add((drawnObject, mousePos) => {
             this.stopDrag(drawnObject, item, gridPos, mousePos);
@@ -305,6 +306,15 @@ export default class extends Phaser.State {
         }, this);
 
         this.equippedItemsGroup.add(drawnObject);
+    }
+
+    selectItem(sprite, item){
+        if(this.selectedSprite != null){
+            this.selectedSprite.tint = 0xffffff;
+        }
+        this.selectedSprite = sprite;
+        this.selectedSprite.tint = 0xe5e5FF;
+        this.itemReadOut.updateItem(item);
     }
 
     drawInventoryItems(){
