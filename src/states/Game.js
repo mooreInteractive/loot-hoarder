@@ -26,12 +26,12 @@ export default class extends Phaser.State {
         this.game.add.existing(this.playBtn);
 
         //Title Text
-        let titleStyle = {font: 'Bungee Shade', fontSize: 58, fill: '#1313CD'};
+        let titleStyle = {font: 'Press Start 2P', fontSize: 48, fill: '#1313CD'};
         this.title = this.add.text(this.game.world.centerX - 110, 170, 'LOOT\nHOARDER', titleStyle);
         this.title.anchor.setTo(0.5);
 
 
-        let playStyle = {font: 'Oswald', fontSize: 40, fill: '#111111'};
+        let playStyle = {font: 'Press Start 2P', fontSize: 40, fill: '#111111'};
         this.banner = this.add.text(this.game.world.centerX, this.game.world.centerY+300, 'Play', playStyle);
         this.banner.anchor.setTo(0.5);
         this.banner.inputEnabled = true;
