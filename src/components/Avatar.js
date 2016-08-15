@@ -29,9 +29,10 @@ export default class Avatar{
         this.healthText.fontSize = 24;
         this.healthText.fill = '#FFFFFF';
 
+        this.dude = this.gameState.add.group();
+        this.armor = {};
+
         if(render){
-            this.dude = this.gameState.add.group();
-            this.armor = {};
             //walkign man
             this.nakie = this.dude.create(settings.x, settings.y, 'walkingMan');
             this.nakie.anchor.setTo(0.5);
@@ -42,7 +43,7 @@ export default class Avatar{
             this.armor.head = this.dude.create(settings.x, settings.y, 'head_chain');
             this.armor.head.anchor.setTo(0.5);
             this.armor.head.scale.setTo(settings.scale);
-            this.armor.head.animations.add('walk', [28,29,30,31,32,33,34,35,36], 15);
+            this.armor.head.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
             if(this.game.player.equipped.head == null){
                 this.armor.head.visible = false;
             }
@@ -50,7 +51,7 @@ export default class Avatar{
             this.armor.torso = this.dude.create(settings.x, settings.y, 'torso_leather');
             this.armor.torso.anchor.setTo(0.5);
             this.armor.torso.scale.setTo(settings.scale);
-            this.armor.torso.animations.add('walk', [28,29,30,31,32,33,34,35,36], 15);
+            this.armor.torso.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
             if(this.game.player.equipped.body == null){
                 this.armor.torso.visible = false;
             }
@@ -58,14 +59,20 @@ export default class Avatar{
             this.armor.feet = this.dude.create(settings.x, settings.y, 'feet_leather');
             this.armor.feet.anchor.setTo(0.5);
             this.armor.feet.scale.setTo(settings.scale);
-            this.armor.feet.animations.add('walk', [28,29,30,31,32,33,34,35,36], 15);
+            this.armor.feet.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
             if(this.game.player.equipped.feet == null){
                 this.armor.feet.visible = false;
             }
+
+
             this.armor.head.animations.play('walk', 15, true);
             this.armor.torso.animations.play('walk', 15, true);
             this.armor.feet.animations.play('walk', 15, true);
             this.nakie.animations.play('walk', 15, true);
+            this.armor.torso.frame = 28;
+            this.nakie.frame = 143;
+            // this.nakie.animations.currentAnim.setFrame(143);
+            // this.armor.torso.animations.currentAnim.setFrame(28);
         }
     }
 
