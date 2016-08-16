@@ -30,7 +30,8 @@ export default class Avatar{
         this.healthText.fill = '#FFFFFF';
 
         this.dude = this.gameState.add.group();
-        this.armor = {};
+        this.armor = {head: null, torso: null, feet: null};
+        this.weapons = {right: null};
 
         if(render){
             //walkign man
@@ -65,11 +66,34 @@ export default class Avatar{
             }
 
 
+            let weaponSprite = this.getWeaponSprite(this.game.player.equipped.rightHand);
+            this.weapons.right = this.dude.create(settings.x, settings.y, weaponSprite);
+            this.weapons.right.anchor.setTo(0.5);
+            this.weapons.right.scale.setTo(settings.scale);
+            this.weapons.right.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
+            console.log('--sprite:', this.game.player.equipped.rightHand, (this.game.player.equipped.rightHand == null), this.weapons);
+            if(this.game.player.equipped.rightHand == null){
+                this.weapons.right.visible = false;
+            }
+
+            this.weapons.right.animations.play('walk', 15, true);
             this.armor.head.animations.play('walk', 15, true);
             this.armor.torso.animations.play('walk', 15, true);
             this.armor.feet.animations.play('walk', 15, true);
             this.nakie.animations.play('walk', 15, true);
         }
+    }
+
+    getWeaponSprite(weapon){
+        let weaponSprite = 'weapon_dagger';
+        if(weapon){
+            if(weapon.name.search(/knife/ig) > -1){
+                weaponSprite = 'weapon_dagger';
+            } else if(weapon.name.search(/spear/ig) > -1){
+                weaponSprite = 'weapon_spear';
+            }
+        }
+        return weaponSprite;
     }
 
     update(){
@@ -88,6 +112,14 @@ export default class Avatar{
             this.armor.torso.visible = false;
         } else {
             this.armor.torso.visible = true;
+        }
+        if(this.game.player.equipped.rightHand == null){
+            this.weapons.right.visible = false;
+        } else {
+            //this.weapons.right.loadTexture(this.getWeaponSprite(this.game.player.equipped.rightHand), 0);
+            // this.weapons.right.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
+            // this.weapons.right.animations.play('walk', 15, true);
+            this.weapons.right.visible = true;
         }
 
         let time = Math.floor((new Date).getTime()/1000);
@@ -130,6 +162,15 @@ export default class Avatar{
             this.gameState.add.tween(armor).to( {x: settings.x, y: settings.y}, animTime, null, true);
             if(settings.scale != this.nakie.scale.x){
                 this.gameState.add.tween(armor.scale).to( { x: settings.scale, y: settings.scale }, animTime, null, true);
+            }
+        });
+
+        //move avatar weapons
+        Object.keys(this.weapons).forEach((key)=>{
+            let weapon = this.weapons[key];
+            this.gameState.add.tween(weapon).to( {x: settings.x, y: settings.y}, animTime, null, true);
+            if(settings.scale != this.nakie.scale.x){
+                this.gameState.add.tween(weapon.scale).to( { x: settings.scale, y: settings.scale }, animTime, null, true);
             }
         });
 
