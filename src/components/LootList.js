@@ -7,6 +7,7 @@ export default class LootList{
         this.game = game;
         this.loot = game.loot;
         this.gameState = gameState;
+        this.keptLoot = false;
 
         this.lootKeepBtns = [];
         this.lootSellBtns = [];
@@ -57,8 +58,10 @@ export default class LootList{
 
         this.cleanUpLootButtons();
 
-        if(loot.length == 0){
+        if(loot.length == 0 && this.keptLoot){
             this.game.state.start('Inventory');
+        } else if(loot.length == 0){
+            this.game.state.start('MainMenu');
         }
 
         loot.forEach((item, index) => {
@@ -74,6 +77,7 @@ export default class LootList{
                 let placed = this.tryToPlaceItemInInventory(item);
                 if(placed){
                     loot.splice(loot.indexOf(item), 1);
+                    this.keptLoot = true;
                     this.updateLootTextAndButtons(loot);
                 }
             }, this);

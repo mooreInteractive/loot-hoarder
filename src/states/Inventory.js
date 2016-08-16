@@ -443,7 +443,6 @@ export default class extends Phaser.State {
                 if(fits){
                     console.log('------fits.');
                     currentSprite.originalPosition = currentSprite.position.clone();
-                    currentSprite.destroy();
                 } else {
                     console.log('------doesnt fit, return to origin');
                     this.returnItemToOrigin(currentSprite, item);
