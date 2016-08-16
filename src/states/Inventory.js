@@ -422,6 +422,7 @@ export default class extends Phaser.State {
                 console.log('----on equip slot...');
                 utils.equipItem(this.game.player, item, equipSlot);
                 this.addEquippedSprite(item, gridPos, equipSlot.type);
+                currentSprite.destroy();
             } else if(shopSlot){
                 console.log('----on shop Slot...');
                 this.game.player.gold += item.value;
@@ -442,6 +443,7 @@ export default class extends Phaser.State {
                 if(fits){
                     console.log('------fits.');
                     currentSprite.originalPosition = currentSprite.position.clone();
+                    currentSprite.destroy();
                 } else {
                     console.log('------doesnt fit, return to origin');
                     this.returnItemToOrigin(currentSprite, item);

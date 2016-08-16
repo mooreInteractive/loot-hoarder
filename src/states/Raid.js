@@ -143,9 +143,9 @@ export default class extends Phaser.State {
             //get loot
             let lootChance = Forge.rand(0,100);
             let lootThreshold = 50;
-            let lootMin = 1;
+            let lootMin = this.dungeon.level - 1 > 1 ? this.dungeon.level - 1 : this.dungeon.level;
             let lootMax = this.dungeon.level;
-            if(enemy.boss){lootThreshold = 20; lootMin = this.dungeon.level - 1 > 1 ? this.dungeon.level - 1 : this.dungeon.level;}
+            if(enemy.boss){lootThreshold = 20;}
             if( lootChance > lootThreshold){
                 this.game.loot.push(Forge.getRandomItem(lootMin,lootMax));
                 this.errorText.text += `\nDropped item!`;
@@ -158,7 +158,7 @@ export default class extends Phaser.State {
             player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
             //remove enemy from dungeon
             //this.enSprite.visible = false;
-            this.enemySprites[enemy.sprite].position.x = this.game.world.width + 70;//TODO animate out/explode/die
+            this.enemySprites[enemy.sprite].position.x = this.game.world.width + 300;//TODO animate out/explode/die
             this.dungeon.currentEnemies.splice(0, 1);
             this.dungeon.enemiesLeft = this.dungeon.currentEnemies.length;
             this.enHealthBarBg.visible = false;
