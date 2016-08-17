@@ -3,7 +3,7 @@ import * as utils from '../utils';
 import {playerLevels} from '../data/levels';
 import MainNavigation from '../components/MainNavigation';
 import Avatar from '../components/Avatar';
-import ItemReadOut from '../components/itemReadOut';
+import ItemReadOut from '../components/ItemReadOut';
 
 export default class extends Phaser.State {
     init () {
@@ -426,8 +426,16 @@ export default class extends Phaser.State {
             } else if(shopSlot){
                 console.log('----on shop Slot...');
                 this.game.player.gold += item.value;
-                let itemIndex = this.game.player.inventory.indexOf(item);
-                this.game.player.inventory.splice(itemIndex, 1);
+                // let itemIndex = this.game.player.inventory.indexOf(item);
+                // this.game.player.inventory.splice(itemIndex, 1);
+                //TODO - fix inventory slot indexes...
+                console.log('before fix:',this.game.player.backpack, this.game.player.inventory);
+                // this.game.player.backpack.forEach((bpSlot)=>{
+                //     if(bpSlot.invItem != -1 && bpSlot.invItem > itemIndex){
+                //         bpSlot.invItem -= 1;
+                //     }
+                // });
+                console.log('after fix:',this.game.player.backpack, this.game.player.inventory);
                 currentSprite.destroy();
                 this.game.player.savePlayerData();
             } else {
@@ -497,9 +505,7 @@ export default class extends Phaser.State {
     }
 
     stopHoverItem(){
-        this.inventoryItem.text = '';
-        this.hoverItemBG.visible = false;
-        this.inventoryItem.visible = false;
+        console.log('old stopHover');
     }
 
     render (){

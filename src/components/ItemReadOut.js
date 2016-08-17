@@ -23,29 +23,28 @@ export default class ItemReadOut{
     drawItemText(){
         //clear it out
         this.lootText.text = '';
+        if(this.item.magic.effect.attribute != null){
+            this.lootText.fill = '#1313AB';
+        } else {
+            this.lootText.fill = '#000000';
+        }
 
         if(this.item.ac != null){//Armor
             this.lootText.text += `[${this.item.level}] ${this.item.name} \n`;
             this.lootText.text += `AC: ${this.item.ac}, Type: ${this.item.type} \n`;
             if(this.item.magic.effect.attribute != null){
-                this.lootText.fill = '#1313AB';
                 this.lootText.text += `${this.item.magic.effect.attribute} +${this.item.magic.effect.value}\n`;
-                //this.lootText.fill = '#000000';
             }
         } else if(this.item.dmg != null){//Weapon
             this.lootText.text += `[${this.item.level}] ${this.item.name} \n`;
             this.lootText.text += `Dmg: ${this.item.dmg.min} - ${this.item.dmg.max} \n`;
             if(this.item.magic.effect.attribute != null){
-                this.lootText.fill = '#1313AB';
                 this.lootText.text += `${this.item.magic.effect.attribute} +${this.item.magic.effect.value}\n`;
-                //this.lootText.fill = '#000000';
             }
         } else {
             this.lootText.text += `${this.item.name} \n`;
             if(this.item.magic.effect.attribute != null){
-                this.lootText.fill = '#1313AB';
                 this.lootText.text += `${this.item.magic.effect.attribute} +${this.item.magic.effect.value}\n`;
-                //this.lootText.fill = '#000000';
             }
         }
     }

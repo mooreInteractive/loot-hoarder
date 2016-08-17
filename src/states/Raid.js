@@ -52,8 +52,8 @@ export default class extends Phaser.State {
             if(this.loadedSprites.indexOf(enemy.sprite) == -1){
                 this.loadedSprites.push(enemy.sprite);
                 console.log('--enemy sprite:', enemy.sprite);
-                let addedSprite = this.game.add.sprite(this.game.world.width + 200, this.game.world.centerY + 100, enemy.sprite);
-                addedSprite.anchor.setTo(0.5, 1);
+                let addedSprite = this.game.add.sprite(this.game.world.width + 200, this.game.world.centerY + 125, enemy.sprite);
+                addedSprite.anchor.setTo(0.5,1);
                 addedSprite.scale.setTo(2,2);
                 addedSprite.animations.add('walk');
                 addedSprite.animations.play('walk', 5, true);
