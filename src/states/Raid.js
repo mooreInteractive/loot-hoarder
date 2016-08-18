@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import * as Forge from '../items/Forge';
 import {playerLevels} from '../data/levels';
 import Avatar from '../components/Avatar';
+import Dialogue from '../components/Dialogue';
 
 export default class extends Phaser.State {
     init (dungeon) {
@@ -22,8 +23,8 @@ export default class extends Phaser.State {
         this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings); //Need to call avatar.update() and avatar.render()
 
         /* Reused Enemy HealthBar Graphic */
-        let EnHpBarBg = this.game.add.bitmapData(212, 52);
-        let EnHpBar = this.game.add.bitmapData(212, 40);
+        let EnHpBarBg = this.add.bitmapData(212, 52);
+        let EnHpBar = this.add.bitmapData(212, 40);
 
         EnHpBarBg.ctx.beginPath();
         EnHpBarBg.ctx.rect(0, 0, 212, 52);
@@ -35,16 +36,23 @@ export default class extends Phaser.State {
         EnHpBar.ctx.fillStyle = '#DE11CD';
         EnHpBar.ctx.fill();
 
-        this.enHealthBarBg = this.game.add.sprite(this.game.world.centerX+155, this.game.world.centerY+140, EnHpBarBg);
-        this.enHealthBar = this.game.add.sprite(this.game.world.centerX+161, this.game.world.centerY+146, EnHpBar);
+        this.enHealthBarBg = this.add.sprite(this.game.world.centerX+155, this.game.world.centerY+140, EnHpBarBg);
+        this.enHealthBar = this.add.sprite(this.game.world.centerX+161, this.game.world.centerY+146, EnHpBar);
         this.enHealthBarBg.visible = false;
         this.enHealthBar.visible = false;
 
-        this.errorText = this.add.text(this.game.world.centerX, this.game.world.centerY + 275, '');
-        this.errorText.font = 'Oswald';
-        this.errorText.fontSize = 22;
-        this.errorText.fill = '#DE1313';
-        this.errorText.anchor.setTo(0.5);
+        let logBg = this.add.bitmapData(568, 200);
+        logBg.ctx.beginPath();
+        logBg.ctx.rect(0, 0, 568, 200);
+        logBg.ctx.fillStyle = '#FFFFFF';
+        logBg.ctx.fill();
+
+        this.logBackground = this.add.sprite(100, this.game.world.centerY + 265, logBg);
+
+        this.errorText = this.add.text(110, this.game.world.centerY + 275, '');
+        this.errorText.font = 'Press Start 2P';
+        this.errorText.fontSize = 18;
+        this.errorText.fill = '#131389';
 
         this.loadedSprites = [];
         this.enemySprites = {};
@@ -64,7 +72,7 @@ export default class extends Phaser.State {
 
 
         this.dmgText = this.add.text(this.game.world.centerX - 200, this.game.world.centerY + 80, '');
-        this.dmgText.font = 'Oswald';
+        this.dmgText.font = 'Press Start 2P';
         this.dmgText.fontSize = 32;
         this.dmgText.stroke = '#FFFFFF';
         this.dmgText.strokeThickness = 2;
@@ -72,7 +80,7 @@ export default class extends Phaser.State {
         this.dmgText.visible = false;
 
         this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY + 80, '');
-        this.enDmgText.font = 'Oswald';
+        this.enDmgText.font = 'Press Start 2P';
         this.enDmgText.fontSize = 32;
         this.enDmgText.stroke = '#FFFFFF';
         this.enDmgText.strokeThickness = 2;
@@ -99,14 +107,41 @@ export default class extends Phaser.State {
         this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, endCB);
     }
 
+    updateLogText(logText){
+        let currText = this.errorText.text;
+        let lines = currText.split('\n');
+        if(lines.length == 7){
+            lines.splice(6, 1);
+        }
+        lines.reverse();
+        lines.push(logText);
+        lines.reverse();
+        this.errorText.text = lines.join('\n');
+    }
+
     queueEnemy(){
         if(this.dungeon.currentEnemies.length > 0 && this.currentEnemy == null){
+            this.battlePaused = true;
             this.currentEnemy = this.dungeon.currentEnemies[0];
-            console.log('--current Enmey Sprite:', this.enemySprites[this.currentEnemy.sprite]);
-            this.game.add.tween(this.enemySprites[this.currentEnemy.sprite]).to( { x: this.game.world.centerX + 255 }, 400, null, true);
             this.currentEnemy.originalHp = this.currentEnemy.originalHp ? this.currentEnemy.originalHp : this.currentEnemy.hp;
+            this.enHealthBarBg.x = this.game.world.width + 200 - this.enHealthBarBg.width/2;
+            this.enHealthBar.x = this.game.world.width + 200 - 100;
             this.enHealthBarBg.visible = true;
             this.enHealthBar.visible = true;
+
+            let introTween = this.add.tween(this.enemySprites[this.currentEnemy.sprite]).to( { x: this.game.world.centerX + 255 }, 400, null, true);
+            this.add.tween(this.enHealthBarBg).to( { x: this.game.world.centerX + 255 - this.enHealthBarBg.width/2 }, 400, null, true);
+            this.add.tween(this.enHealthBar).to( { x: this.game.world.centerX + 255 - 100 }, 400, null, true);
+
+            introTween.onComplete.add(()=>{
+                if(this.currentEnemy.boss && this.dungeon.enemiesLeft == 1){
+                    new Dialogue(this.game, this, 'ok', 'Surprise Mother Fucker.', ()=>{
+                        this.battlePaused = false;
+                    });
+                } else {
+                    this.battlePaused = false;
+                }
+            }, this);
         } else {
             if(this.currentEnemy == null){
                 console.log('--no enemies left here...');
@@ -115,23 +150,25 @@ export default class extends Phaser.State {
     }
 
     action(){
-        let player = this.game.player;
-        let enemy = this.currentEnemy;
-        let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
+        if(!this.battlePaused){
+            let player = this.game.player;
+            let enemy = this.currentEnemy;
+            let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
 
-        enemy.hp -= strike;
+            enemy.hp -= strike;
 
-        let armorReduction = Math.ceil(enemy.dps*(player.battleStats.armor/100));
-        let enStrike = enemy.dps - armorReduction;
+            let armorReduction = Math.ceil(enemy.dps*(player.battleStats.armor/100));
+            let enStrike = enemy.dps - armorReduction;
 
-        player.battleStats.currentHealth -= enStrike;
+            player.battleStats.currentHealth -= enStrike;
 
-        this.dmgText.text = enStrike;
-        this.dmgText.visible = true;
-        this.enDmgText.text = strike;
-        this.enDmgText.visible = true;
+            this.dmgText.text = enStrike;
+            this.dmgText.visible = true;
+            this.enDmgText.text = strike;
+            this.enDmgText.visible = true;
 
-        console.log(`En: -${strike}hp (${enemy.hp}/${enemy.originalHp}), Pl: -${enStrike}hp (${player.battleStats.currentHealth})`);
+            console.log(`En: -${strike}hp (${enemy.hp}/${enemy.originalHp}), Pl: -${enStrike}hp (${player.battleStats.currentHealth})`);
+        }
     }
 
     assessment(){
@@ -139,20 +176,23 @@ export default class extends Phaser.State {
         let enemy = this.currentEnemy;
 
         if(enemy.hp < 1){//killed an enemey
-            this.errorText.text += `\nDefeated Enemy.`;
+            this.updateLogText('Defeated Enemy.');
             //get loot
             let lootChance = Forge.rand(0,100);
-            let lootThreshold = 50;
+            let lootThreshold = 65;
             let lootMin = this.dungeon.level - 1 > 1 ? this.dungeon.level - 1 : this.dungeon.level;
             let lootMax = this.dungeon.level;
-            if(enemy.boss){lootThreshold = 20;}
+            if(enemy.boss){lootThreshold = 35;}
             if( lootChance > lootThreshold){
                 this.game.loot.push(Forge.getRandomItem(lootMin,lootMax));
-                this.errorText.text += `\nDropped item!`;
-            } else if(lootChance > 10){
-                let goldDrop = Math.floor(lootChance / 10);
-                this.game.player.gold += goldDrop;
-                this.errorText.text += `\nDropped ${goldDrop} gold.`;
+                this.updateLogText('Dropped item!');
+            } else{
+                let goldChance = Forge.rand(0,100);
+                if(goldChance > 65){
+                    let goldDrop = Math.floor(lootChance / 10);
+                    this.game.player.gold += goldDrop;
+                    this.updateLogText(`Dropped ${goldDrop} gold.`);
+                }
             }
             //get exp
             player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
@@ -177,9 +217,9 @@ export default class extends Phaser.State {
         let dungeon = this.dungeon;
         //Done with enemies for loop
         if(player.battleStats.currentHealth < 1){
-            this.errorText.text += '\nYou were knocked out.';
+            this.updateLogText('You were knocked out.');
             if(this.game.loot.length > 0){
-                this.errorText.text += `\n total loot: ${this.game.loot.length}.`;
+                this.updateLogText(`Total loot: ${this.game.loot.length}.`);
             }
 
             //remove enemy sprite
@@ -204,7 +244,7 @@ export default class extends Phaser.State {
         //level up?
         if(player.exp > playerLevels[player.level].maxExp){
             player.levelUp();
-            this.errorText.text += '\nLevel Up!';
+            this.updateLogText('Level Up!');
         }
 
         this.saveDungeonData();
@@ -268,12 +308,6 @@ export default class extends Phaser.State {
 
         /* Enemy Health */
         this.enHealthBar.scale.x = this.currentEnemy ? this.currentEnemy.hp / this.currentEnemy.originalHp : 0;
-    }
-
-    render (){
-        if(this.dungeon.enemies[0].hp < 1){
-            console.log('--dungeon.currentEnemies corrupted!', this.dungeon);
-        }
     }
 
 }

@@ -36,7 +36,7 @@ export default class Dialogue{
             break;
         }
         //OK Button Text
-        let okTextStyle = {font: 'Oswald', fontSize: 28, fill: '#111111', align: 'center'};
+        let okTextStyle = {font: 'Press Start 2P', fontSize: 18, fill: '#111111', align: 'center'};
         this.dialogueText = this.gameState.add.text(this.diaOrigin.x, this.diaOrigin.y - this.diaHeight/2 + 50 + ((this.textLines)*20), diaText, okTextStyle);
         this.dialogueText.anchor.setTo(0.5);
     }
@@ -48,7 +48,7 @@ export default class Dialogue{
         this.okBtn.anchor.setTo(0.5);
         this.gameState.add.existing(this.okBtn);
         //OK Button Text
-        let okTextStyle = {font: 'Oswald', fontSize: 28, fill: '#111111', align: 'center'};
+        let okTextStyle = {font: 'Press Start 2P', fontSize: 28, fill: '#111111', align: 'center'};
         this.okText = this.gameState.add.text(this.diaOrigin.x, this.diaOrigin.y + this.diaHeight/2 - 50, 'OK', okTextStyle);
         this.okText.anchor.setTo(0.5);
     }

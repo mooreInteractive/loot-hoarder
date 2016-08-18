@@ -21,6 +21,7 @@ export default class extends Phaser.State {
         this.load.image('shank0', './assets/images/items/shank.png');
         this.load.image('spear0', './assets/images/items/spear.png');
         this.load.image('shield3', './assets/images/items/shield.png');
+        this.load.image('armor0', './assets/images/items/leather_armor.png');
         this.load.image('sword2', './assets/images/items/sword.png');
         this.load.image('axe0', './assets/images/items/axe.png');
         this.load.image('bow0', './assets/images/items/bow.png');

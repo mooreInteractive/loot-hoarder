@@ -115,9 +115,9 @@ export default class extends Phaser.State {
                 return;
             }
         });
-        
+
         if(!equippedGear){
-            new Dialogue(this.game, this, 'ok', 'You should equip something before raiding...', ()=>{});
+            new Dialogue(this.game, this, 'ok', 'You should equip\nsomething before raiding...', ()=>{});
         } else {
             let dungeon = this.currentDungeon;
 

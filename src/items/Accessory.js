@@ -1,7 +1,7 @@
 //Accessory.js
 import * as Constants from './constants';
 
-export function build() {
+export function build(levelMin, levelMax) {
     let accessory = {
         'name': 'null',
         'type': 'accessory',
@@ -21,7 +21,7 @@ export function build() {
         'value': 0
     };
 
-    let strength = this.rand(1,5);
+    let strength = Math.ceil(this.rand(levelMin, levelMax)/2);
     accessory.level = strength;
     accessory.magic.effect = this.getMagicEffect(strength);
     accessory.name = 'Ring of '+accessory.magic.effect.attribute;

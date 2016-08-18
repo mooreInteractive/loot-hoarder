@@ -45,6 +45,7 @@ export function build(levelMin, levelMax) {
         break;
     case 'body':
         armor.name = 'Armor';
+        armor.sprite = 'armor0';
         armor.shape = Constants.shapes.shape2x3;
         armor.shapeWidth = 2;
         armor.shapeHeight = 3;
@@ -109,7 +110,7 @@ export function build(levelMin, levelMax) {
     armor.value += armor.ac;
     armor.value += armor.durability - 10;
 
-    switch(this.rand(0,6)){
+    switch(this.rand(0,10)){
     case 0:
         armor.magic.effect = this.getMagicEffect(armor.level);
         armor.name += ' of '+armor.magic.effect.attribute;
