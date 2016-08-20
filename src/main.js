@@ -11,6 +11,8 @@ import Inventory from './states/Inventory';
 import Raid from './states/Raid';
 import LootView from './states/LootView';
 import Tools from './tools';
+import * as Story from './data/story';
+import * as DungeonData from './data/dungeons';
 
 import Player from './Player';
 
@@ -28,7 +30,7 @@ class Game extends Phaser.Game {
         /***** VERSION NUMBER - UPDATING WILL WIPE PLAYER DATA *************
         /****
         /**/
-        this.version = 4; //updated 8/17 11:30pm
+        this.version = 5; //updated 8/17 11:30pm
         /**/
         /****
         *******************************************************************/
@@ -43,17 +45,26 @@ class Game extends Phaser.Game {
 
         let playerData = null;
         let playerClock = 0;
+        let playerStory = Story.Story;
         if(localStorage){
             playerData = JSON.parse(localStorage.getItem('loot-hoarder-player'));
             playerClock = JSON.parse(localStorage.getItem('loot-hoarder-clock'));
+            let story = localStorage.getItem('loot-hoarder-story');
+            if(story != null){
+                playerStory = JSON.parse(story);
+            }
         } else {
             playerClock = Math.floor((new Date).getTime()/1000);
         }
         //Loot Hoarder Variables
-        this.player = new Player(playerData, this.version);
+        this.player = new Player(playerData, this.version, playerStory);
         this.loot = [];
 
-        if(localStorage){localStorage.setItem('loot-hoarder-ver', this.version);}
+        //save new game data
+        if(localStorage){
+            localStorage.setItem('loot-hoarder-ver', this.version);
+            localStorage.setItem('loot-hoarder-story', JSON.stringify(this.player.story));
+        }
 
         this.saveLootData = this.saveLootData.bind(this);
 
@@ -75,114 +86,10 @@ class Game extends Phaser.Game {
 
     setupDungeons(){
         //set default
-        this.dungeons = [
-            {
-                level: 1,
-                enemiesAmount: 6,
-                enemiesLeft: 6,
-                miniBoss: 2,
-                boss: 5,
-                defeated: false,
-                sprite: {
-                    image: 'chesslike',
-                    x: 519,
-                    y: 678
-                },
-                currentEnemies: [],
-                enemies: [
-                    {hp: 15, dps: 1, sprite: 'goo'},
-                    {hp: 15, dps: 1, sprite: 'goo'},
-                    {hp: 36, dps: 3, sprite: 'whisper', boss: true},
-                    {hp: 18, dps: 3, sprite: 'goo'},
-                    {hp: 18, dps: 3, sprite: 'goo'},
-                    {hp: 60, dps: 5, sprite: 'artichoke', boss: true}
-                ]
-            },
-            {
-                level: 2,
-                enemiesAmount: 8,
-                enemiesLeft: 8,
-                miniBoss: 3,
-                boss: 7,
-                defeated: false,
-                sprite: {
-                    image: 'chesslike',
-                    x: 569,
-                    y: 378
-                },
-                currentEnemies: [],
-                enemies: [
-                    {hp: 15, dps: 3, sprite: 'goo'},
-                    {hp: 18, dps: 6, sprite: 'whisper'},
-                    {hp: 18, dps: 6, sprite: 'whisper'},
-                    {hp: 48, dps: 6, sprite: 'artichoke', boss: true},
-                    {hp: 18, dps: 6, sprite: 'whisper'},
-                    {hp: 18, dps: 6, sprite: 'whisper'},
-                    {hp: 15, dps: 12, sprite: 'artichoke'},
-                    {hp: 105, dps: 12, sprite: 'moss', boss: true}
-                ]
-            },
-            {
-                level: 3,
-                enemiesAmount: 10,
-                enemiesLeft: 10,
-                miniBoss: 4,
-                boss: 9,
-                defeated: false,
-                sprite: {
-                    image: 'chesslike',
-                    x: 219,
-                    y: 527
-                },
-                currentEnemies: [],
-                enemies: [
-                    {hp: 18, dps: 6, sprite: 'whisper'},
-                    {hp: 18, dps: 9, sprite: 'whisper'},
-                    {hp: 30, dps: 12, sprite: 'artichoke'},
-                    {hp: 30, dps: 12, sprite: 'artichoke'},
-                    {hp: 75, dps: 18, sprite: 'moss', boss: true},
-                    {hp: 18, dps: 12, sprite: 'artichoke'},
-                    {hp: 36, dps: 6, sprite: 'antler'},
-                    {hp: 36, dps: 6, sprite: 'antler'},
-                    {hp: 45, dps: 15, sprite: 'artichoke'},
-                    {hp: 165, dps: 30, sprite: 'blood_skull', boss: true}
-                ]
-            },
-            {
-                level: 4,
-                enemiesAmount: 12,
-                enemiesLeft: 12,
-                miniBoss: 4,
-                boss: 9,
-                defeated: false,
-                sprite: {
-                    image: 'chesslike',
-                    x: 360,
-                    y: 275
-                },
-                currentEnemies: [],
-                enemies: [
-                    {hp: 32, dps: 10, sprite: 'artichoke'},
-                    {hp: 32, dps: 10, sprite: 'artichoke'},
-                    {hp: 55, dps: 18, sprite: 'moss'},
-                    {hp: 55, dps: 18, sprite: 'moss'},
-                    {hp: 55, dps: 18, sprite: 'moss'},
-                    {hp: 150, dps: 44, sprite: 'blood_skull', boss: true},
-                    {hp: 85, dps: 20, sprite: 'artichoke'},
-                    {hp: 100, dps: 8, sprite: 'moss'},
-                    {hp: 100, dps: 8, sprite: 'moss'},
-                    {hp: 150, dps: 50, sprite: 'skelly'},
-                    {hp: 150, dps: 50, sprite: 'skelly'},
-                    {hp: 250, dps: 60, sprite: 'wraith', boss: true}
-                ]
-            }
-        ];
+        this.dungeons = DungeonData.dungeons;
 
         this.dungeons.forEach((dungeon) => {
             dungeon.currentEnemies = JSON.parse(JSON.stringify(dungeon.enemies));
-            // dungeon.enemies.forEach((enemy, index)=>{
-            //     dungeon.currentEnemies[index] = JSON.parse(JSON.stringify(enemy));
-            // });
         });
 
         if(localStorage){

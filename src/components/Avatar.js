@@ -71,7 +71,7 @@ export default class Avatar{
             this.weapons.right.anchor.setTo(0.5);
             this.weapons.right.scale.setTo(settings.scale);
             this.weapons.right.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
-            console.log('--sprite:', this.game.player.equipped.rightHand, (this.game.player.equipped.rightHand == null), this.weapons);
+            //console.log('--sprite:', this.game.player.equipped.rightHand, (this.game.player.equipped.rightHand == null), this.weapons);
             if(this.game.player.equipped.rightHand == null){
                 this.weapons.right.visible = false;
             }

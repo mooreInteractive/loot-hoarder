@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import Dialogue from './Dialogue';
+import * as StoryFunctions from './StoryFunctions';
 
 export default class MainNavigation{
     constructor(game, gameState){
@@ -58,7 +58,11 @@ export default class MainNavigation{
     }
 
     openShop(){
-        new Dialogue(this.game, this.gameState, 'ok', 'Back in 5 minutes!', ()=>{});
+        if(!this.game.player.story.chapter1.rescuedShopKeep){
+            StoryFunctions.chapter1.shopNote(this.game, this.gameState);
+        } else {
+            console.log('Open The Shop ALREADY!');
+        }
     }
 
 

@@ -32,8 +32,19 @@ export default class extends Phaser.State {
 
         //terrain
         this.load.spritesheet('water', './assets/images/terrain/water.png', 32, 32);
-        this.load.spritesheet('chesslike', './assets/images/terrain/chesslike.png', 138, 156);
-        this.load.image('island', './assets/images/terrain/island.png');
+        this.load.image('chesslike', './assets/images/terrain/wide_castle.png', 48, 32);
+        this.load.image('lair', './assets/images/terrain/large_cave.png', 48, 32);
+        this.load.image('cave', './assets/images/terrain/small_cave.png', 48, 32);
+        this.load.image('yellow_town', './assets/images/terrain/yellow_town.png', 32, 32);
+        this.load.image('brown_town', './assets/images/terrain/brown_town.png', 32, 32);
+        this.load.image('tall_tower', './assets/images/terrain/tall_tower.png', 32, 32);
+        this.load.image('small_tower', './assets/images/terrain/small_tower.png', 32, 32);
+        this.load.image('clay_town', './assets/images/terrain/clay_town.png', 32, 32);
+        this.load.image('yellow_ranch', './assets/images/terrain/yellow_ranch.png', 32, 32);
+        this.load.image('red_ranch', './assets/images/terrain/red_ranch.png', 32, 32);
+        this.load.image('castle_courtyard', './assets/images/terrain/castle_courtyard.png', 48, 48);
+
+        this.load.image('island', './assets/images/terrain/island_bare.png');
 
         //Mobs
         this.game.load.spritesheet('goo', './assets/images/mobs/goo.png', 77, 72);

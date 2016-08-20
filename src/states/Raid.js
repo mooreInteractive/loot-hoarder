@@ -3,6 +3,7 @@ import * as Forge from '../items/Forge';
 import {playerLevels} from '../data/levels';
 import Avatar from '../components/Avatar';
 import Dialogue from '../components/Dialogue';
+import * as StoryFunctions from '../components/StoryFunctions';
 
 export default class extends Phaser.State {
     init (dungeon) {
@@ -102,7 +103,7 @@ export default class extends Phaser.State {
             this.game.player.battling = false;
             this.game.state.start('MainMenu', true, false);
         };
-        let avatarSettings = {x: this.dungeon.sprite.x - 50, y: this.dungeon.sprite.y + 25, scale: 2};
+        let avatarSettings = {x: this.dungeon.sprite.x, y: this.dungeon.sprite.y, scale: 1};
         let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
         this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, endCB);
     }
@@ -174,6 +175,7 @@ export default class extends Phaser.State {
     assessment(){
         let player = this.game.player;
         let enemy = this.currentEnemy;
+        let story = this.game.player.story;
 
         if(enemy.hp < 1){//killed an enemey
             this.updateLogText('Defeated Enemy.');
@@ -182,10 +184,25 @@ export default class extends Phaser.State {
             let lootThreshold = 65;
             let lootMin = this.dungeon.level - 1 > 1 ? this.dungeon.level - 1 : this.dungeon.level;
             let lootMax = this.dungeon.level;
+            if(this.dungeon.defeated){
+                lootThreshold = 85;
+            }
             if(enemy.boss){lootThreshold = 35;}
-            if( lootChance > lootThreshold){
-                this.game.loot.push(Forge.getRandomItem(lootMin,lootMax));
-                this.updateLogText('Dropped item!');
+            if( lootChance > lootThreshold || !story.chapter1.firstLootDrop){
+                //Story Junk - TODO offload somewhere? This will get bad
+                if(this.dungeon.level == 2 && !story.chapter1.foundSecondNote && story.chapter1.timesCheckedShop > 1){
+                    StoryFunctions.chapter1.dropNote(this.game, this, story);
+                } else {
+                    if(!story.chapter1.firstLootDrop){
+                        story.chapter1.firstLootDrop = true;
+                        StoryFunctions.saveStory(story);
+                    }
+
+                    //Generate Loot
+                    this.game.loot.push(Forge.getRandomItem(lootMin,lootMax));
+                    this.updateLogText('Dropped item!');
+                }
+
             } else{
                 let goldChance = Forge.rand(0,100);
                 if(goldChance > 65){

@@ -19,20 +19,22 @@ export default class extends Phaser.State {
         this.avatar.healthText.visible = false;
 
         //Play Button
-        this.playBtn = new Phaser.Button(this.game, this.game.world.centerX, this.game.world.centerY+300, 'blueButton', this.playClicked, this);
+        this.playBtn = new Phaser.Button(this.game, this.game.world.centerX, this.game.world.centerY+350, 'redButton', this.playClicked, this);
         this.playBtn.scale.setTo(2);
         this.playBtn.anchor.setTo(0.5);
 
         this.game.add.existing(this.playBtn);
 
         //Title Text
-        let titleStyle = {font: 'Press Start 2P', fontSize: 48, fill: '#1313CD'};
-        this.title = this.add.text(this.game.world.centerX - 110, 170, 'LOOT\nHOARDER', titleStyle);
+        let titleStyle = {font: 'Press Start 2P', fontSize: 64, fill: '#1313CD', align: 'center'};
+        this.title = this.add.text(this.game.world.centerX, 250, 'LOOT\nHOARDER', titleStyle);
         this.title.anchor.setTo(0.5);
+        this.title.stroke = '#000000';
+        this.title.strokeThickness = 12;
 
 
         let playStyle = {font: 'Press Start 2P', fontSize: 40, fill: '#111111'};
-        this.banner = this.add.text(this.game.world.centerX, this.game.world.centerY+300, 'Play', playStyle);
+        this.banner = this.add.text(this.game.world.centerX, this.game.world.centerY+350, 'Play', playStyle);
         this.banner.anchor.setTo(0.5);
         this.banner.inputEnabled = true;
         this.banner.events.onInputDown.add(this.playClicked, this);
@@ -43,12 +45,13 @@ export default class extends Phaser.State {
     createMap(){
         //MAP
         //this.waterBg = this.game.add.sprite(0, 0, 'water');
-        this.water = this.add.tileSprite(0, 0, 32 * 6, 32 * 9, 'water');
-        this.water.scale.setTo(4,4);
-        this.water.animations.add('flow', null, 4, true);
-        this.water.animations.play('flow');
+        // this.water = this.add.tileSprite(0, 0, 32 * 6, 32 * 9, 'water');
+        // this.water.scale.setTo(4,4);
+        // this.water.animations.add('flow', null, 4, true);
+        // this.water.animations.play('flow');
 
         this.island = this.game.add.image(0,0,'island');
+        this.island.scale.setTo(2,2);
 
     }
 

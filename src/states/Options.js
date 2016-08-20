@@ -24,6 +24,8 @@ export default class extends Phaser.State {
             localStorage.removeItem('loot-hoarder-player');
             localStorage.removeItem('loot-hoarder-clock');
             localStorage.removeItem('loot-hoarder-loot');
+            localStorage.removeItem('loot-hoarder-story');
+            localStorage.removeItem('loot-hoarder-ver');
             window.location.reload();
         }
     }

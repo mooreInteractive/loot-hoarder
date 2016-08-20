@@ -17,7 +17,7 @@ export default class extends Phaser.State {
 
         this.currentDungeon = this.game.dungeons[this.game.player.currentDungeon];
 
-        let avatarSettings = {x: this.currentDungeon.sprite.x - 50, y: this.currentDungeon.sprite.y + 25, scale: 2};
+        let avatarSettings = {x: this.currentDungeon.sprite.x, y: this.currentDungeon.sprite.y, scale: 1};
         let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
         this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings); //Need to call avatar.update() and avatar.render()
 
@@ -60,12 +60,13 @@ export default class extends Phaser.State {
     createMap(){
         //MAP
         //this.waterBg = this.game.add.sprite(0, 0, 'water');
-        this.water = this.add.tileSprite(0, 0, 32 * 6, 32 * 9, 'water');
-        this.water.scale.setTo(4,4);
-        this.water.animations.add('flow', null, 4, true);
-        this.water.animations.play('flow');
+        // this.water = this.add.tileSprite(0, 0, 32 * 6, 32 * 9, 'water');
+        // this.water.scale.setTo(4,4);
+        // this.water.animations.add('flow', null, 4, true);
+        // this.water.animations.play('flow');
 
         this.island = this.game.add.image(0,0,'island');
+        this.island.scale.setTo(2,2);
 
         //Raid Dungeons
         this.raidBtns = [];
@@ -75,27 +76,18 @@ export default class extends Phaser.State {
 
             let btn = this.add.sprite(dungeon.sprite.x, dungeon.sprite.y, dungeon.sprite.image);
             btn.anchor.setTo(0.5);
-            btn.animations.add('idle', [0,1,2], 4, true);
-            btn.animations.play('idle');
+            btn.scale.setTo(2);
 
             btn.inputEnabled = true;
             btn.events.onInputDown.add(this.switchDungeon.bind(this, dungeon), this);
             btn.input.useHandCursor = true;
             this.raidBtns.push(btn);
-
-            if(this.game.player.latestUnlockedDungeon >= (index+1)){
-                btn.alpha = 1;
-            } else {
-                btn.alpha = 0.5;
-            }
-
-
         });
     }
 
     switchDungeon(dungeon){
         let player = this.game.player;
-        let avatarSettings = {x: dungeon.sprite.x - 50, y: dungeon.sprite.y + 25};
+        let avatarSettings = {x: dungeon.sprite.x, y: dungeon.sprite.y};
         this.avatar.moveToAtScale(avatarSettings, null, 300, () => {});
         this.currentDungeon = dungeon;
         this.game.player.currentDungeon = dungeon.level-1;
@@ -109,6 +101,8 @@ export default class extends Phaser.State {
     raidCurrentDungeon(){
         let equippedGear = false;
         let equipment = this.game.player.equipped;
+        let dungeon = this.currentDungeon;
+
         Object.keys(equipment).forEach((slot) => {
             if(equipment[slot] != null){
                 equippedGear = true;
@@ -119,8 +113,6 @@ export default class extends Phaser.State {
         if(!equippedGear){
             new Dialogue(this.game, this, 'ok', 'You should equip\nsomething before raiding...', ()=>{});
         } else {
-            let dungeon = this.currentDungeon;
-
             if(this.game.player.latestUnlockedDungeon >= dungeon.level){
                 if(this.game.player.battleStats.currentHealth > 1){
                     this.errorText.visible = false;
@@ -129,6 +121,8 @@ export default class extends Phaser.State {
                     this.errorText.visible = true;
                     this.errorText.text = 'You\'re too tired.';
                 }
+            } else {
+                new Dialogue(this.game, this, 'ok', 'Your shit\'s too weak son.', ()=>{});
             }
         }
 

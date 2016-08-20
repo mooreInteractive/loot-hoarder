@@ -11,9 +11,9 @@ export default class Dialogue{
         this.textLines = ((diaText.match(/\n/g) || []).length);
 
         this.diaWidth = 568; //(full width - 100 on each side)
-        this.diaHeight = 200 + this.textLines*30;
+        this.diaHeight = 200 + this.textLines*20;
 
-        this.diaOrigin = {x: this.game.world.centerX, y: this.game.world.centerY - (this.diaHeight-100)};
+        this.diaOrigin = {x: this.game.world.centerX, y: this.game.world.centerY - (this.diaHeight)};
 
         //Dialogue Background
         let diaBG = this.gameState.add.bitmapData(this.diaWidth, this.diaHeight);

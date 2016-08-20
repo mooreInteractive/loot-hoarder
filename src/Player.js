@@ -1,10 +1,12 @@
 import { placeItemInSlot } from './utils';
+import * as Story from './data/story';
 
 class Player {
-    constructor(saveData, version){
+    constructor(saveData, version, story){
         this.version = version;
+        this.story = story;
         if(saveData){
-            this.loadPlayerData(saveData, version);
+            this.loadPlayerData(saveData, version, story);
         } else {
             this.createNewPlayer();
         }
@@ -61,6 +63,7 @@ class Player {
             accessory4: null
         };
 
+        this.story = Story.Story;
         this.generateStarterWeapon();
 
     }
@@ -215,12 +218,13 @@ class Player {
             });
             localStorage.setItem('loot-hoarder-player', playerData);
             localStorage.setItem('loot-hoarder-clock', (new Date).getTime());
+            localStorage.setItem('loot-hoarder-story', JSON.stringify(this.story));
         } else {
             console.warn('localStorage doesn\'t exist');
         }
     }
 
-    loadPlayerData(playerData, version){
+    loadPlayerData(playerData, version, story){
         //version wipe
         if(localStorage && localStorage.getItem('loot-hoarder-ver') != version){
             console.log(localStorage.getItem('loot-hoarder-ver'), version, 'Player data was for an outdated version, and has been destroyed. :(');
@@ -230,6 +234,7 @@ class Player {
             localStorage.removeItem('loot-hoarder-clock');
             localStorage.removeItem('loot-hoarder-loot');
             localStorage.removeItem('loot-hoarder-ver');
+            localStorage.removeItem('loot-hoarder-story');
 
             this.createNewPlayer();
             return;
@@ -244,6 +249,7 @@ class Player {
         let currHp = healthOverTime > baseHealth ? baseHealth : healthOverTime;
         //console.log('--timeDiff, overtime, currHP', oldTime, newTime, timeDiff, healthOverTime, currHp);
 
+        this.story = story;
         this.level = playerData.level;
         this.exp = playerData.exp;
         this.skillPoints = playerData.skillPoints;
