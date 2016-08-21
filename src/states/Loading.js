@@ -58,15 +58,27 @@ export default class extends Phaser.State {
         this.game.load.spritesheet('skelly', './assets/images/mobs/skelly.png', 96, 144);
         this.game.load.spritesheet('wraith', './assets/images/mobs/wraith.png', 192, 192);
 
-        //Avatar
-        this.game.load.spritesheet('walkingMan', './assets/images/tanned.png', 64, 64);
-        this.game.load.spritesheet('feet_leather', './assets/images/avatar/FEET_leather.png', 64, 64);
-        this.game.load.spritesheet('head_chain', './assets/images/avatar/HEAD_chain.png', 64, 64);
-        this.game.load.spritesheet('torso_leather', './assets/images/avatar/TORSO_leather.png', 64, 64);
-        this.game.load.spritesheet('weapon_dagger', './assets/images/avatar/WEAPON_dagger.png', 64, 64);
-        this.game.load.spritesheet('weapon_shield', './assets/images/avatar/WEAPON_shield.png', 64, 64);
-        this.game.load.spritesheet('weapon_spear', './assets/images/avatar/WEAPON_spear.png', 64, 64);
-        this.game.load.spritesheet('weapon_axe', './assets/images/avatar/WEAPON_axe.png', 64, 64);
+        this.game.load.spritesheet('strong_man', './assets/images/avatar/man_full_hp.png', 96, 144);
+        this.game.load.spritesheet('tired_man', './assets/images/avatar/man_half_hp.png', 96, 144);
+        this.game.load.spritesheet('hair', './assets/images/avatar/hair.png', 96, 144);
+
+        this.game.load.spritesheet('helm_leather', './assets/images/avatar/helm_leather.png', 96, 144);
+        this.game.load.spritesheet('armor_leather', './assets/images/avatar/armor_leather.png', 96, 144);
+        this.game.load.spritesheet('boots_leather', './assets/images/avatar/boots_leather.png', 96, 144);
+
+        this.game.load.spritesheet('helm_stone', './assets/images/avatar/helm_stone.png', 96, 144);
+        this.game.load.spritesheet('armor_stone', './assets/images/avatar/armor_stone.png', 96, 144);
+        this.game.load.spritesheet('boots_stone', './assets/images/avatar/boots_stone.png', 96, 144);
+
+        this.game.load.spritesheet('helm_iron', './assets/images/avatar/helm_iron.png', 96, 144);
+        this.game.load.spritesheet('armor_iron', './assets/images/avatar/armor_iron.png', 96, 144);
+        this.game.load.spritesheet('boots_iron', './assets/images/avatar/boots_iron.png', 96, 144);
+
+        this.game.load.spritesheet('axe', './assets/images/avatar/axe.png', 96, 144);
+        this.game.load.spritesheet('sword', './assets/images/avatar/sword.png', 96, 144);
+        this.game.load.spritesheet('dagger', './assets/images/avatar/dagger.png', 96, 144);
+        this.game.load.spritesheet('bow', './assets/images/avatar/bow.png', 96, 144);
+
 
 
         this.game.load.onFileComplete.add(this.fileComplete, this);

@@ -6,16 +6,17 @@ import Avatar from '../components/Avatar';
 import ItemReadOut from '../components/ItemReadOut';
 
 export default class extends Phaser.State {
-    init () {
+    init (currDungeon) {
         this.inventorySprites = [];
         this.inventoryGridSprite;
         this.selectedSprite = null;
+        this.currentDungeon = currDungeon;
     }
 
     preload () {
 
-        let avatarSettings = {x: 50, y: 115, scale: 2};
-        let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
+        let avatarSettings = {x: 50, y: 115, scale: 1};
+        let hpSettings = {x: 200, y: this.game.world.height - 220 };
         this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true); //Need to call avatar.update()
 
         this.inventoryGridBackground();
@@ -63,7 +64,7 @@ export default class extends Phaser.State {
     }
 
     create () {
-        new MainNavigation(this.game, this);
+        this.mainNav = new MainNavigation(this.game, this);
     }
 
     plusClicked(index){
@@ -496,6 +497,10 @@ export default class extends Phaser.State {
     render (){
         this.updateCharacterText();
         this.avatar.update();
+    }
+
+    update(){
+        this.mainNav.update(this.currentDungeon);
     }
 
 }

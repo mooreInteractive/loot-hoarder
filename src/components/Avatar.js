@@ -5,10 +5,13 @@ export default class Avatar{
         this.game = game;
         this.gameState = gameState;
         this.update = this.update.bind(this);
+        let animSpeed = 6;
         let hpWidth = 212;
         let hpHeight = 52;
         let healthBarBackgroundBitMap = this.gameState.add.bitmapData(hpWidth, hpHeight);
         let healthBarBitMap = this.gameState.add.bitmapData(hpWidth-10, hpHeight-12);
+
+        this.animSpeed = animSpeed;
 
         /* Player Health Bar Graphic and Text */
         healthBarBackgroundBitMap.ctx.beginPath();
@@ -35,62 +38,70 @@ export default class Avatar{
 
         if(render){
             //walkign man
-            this.nakie = this.dude.create(settings.x, settings.y, 'walkingMan');
+            this.nakie = this.dude.create(settings.x, settings.y, 'strong_man');
             this.nakie.anchor.setTo(0.5);
             this.nakie.scale.setTo(settings.scale);
-            this.nakie.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
+            this.nakie.animations.add('walk', [0,1,2,3], animSpeed);
+
+            let equipped = this.game.player.equipped;
+            let headSprite = equipped.head ? equipped.head.avatarSprite : 'hair';
+            let torsoSprite = equipped.torso ? equipped.torso.avatarSprite : 'armor_leather';
+            let feetSprite = equipped.torso ? equipped.torso.avatarSprite : 'boots_leather';
 
 
-            this.armor.head = this.dude.create(settings.x, settings.y, 'head_chain');
+            this.armor.head = this.dude.create(settings.x, settings.y, headSprite);
             this.armor.head.anchor.setTo(0.5);
             this.armor.head.scale.setTo(settings.scale);
-            this.armor.head.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
-            if(this.game.player.equipped.head == null){
-                this.armor.head.visible = false;
-            }
+            this.armor.head.animations.add('walk', [0,1,2,3], animSpeed);
 
-            this.armor.torso = this.dude.create(settings.x, settings.y, 'torso_leather');
+            this.armor.torso = this.dude.create(settings.x, settings.y, torsoSprite);
             this.armor.torso.anchor.setTo(0.5);
             this.armor.torso.scale.setTo(settings.scale);
-            this.armor.torso.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
+            this.armor.torso.animations.add('walk', [0,1,2,3], animSpeed);
             if(this.game.player.equipped.body == null){
                 this.armor.torso.visible = false;
             }
             //[28,29,30,31,32,33,34,35,36]
-            this.armor.feet = this.dude.create(settings.x, settings.y, 'feet_leather');
+            this.armor.feet = this.dude.create(settings.x, settings.y, feetSprite);
             this.armor.feet.anchor.setTo(0.5);
             this.armor.feet.scale.setTo(settings.scale);
-            this.armor.feet.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
+            this.armor.feet.animations.add('walk', [0,1,2,3], animSpeed);
             if(this.game.player.equipped.feet == null){
                 this.armor.feet.visible = false;
             }
 
-
-            let weaponSprite = this.getWeaponSprite(this.game.player.equipped.rightHand);
+            let weaponSprite = this.getWeaponSprite(this.game.player.equipped.leftHand);
             this.weapons.right = this.dude.create(settings.x, settings.y, weaponSprite);
             this.weapons.right.anchor.setTo(0.5);
             this.weapons.right.scale.setTo(settings.scale);
-            this.weapons.right.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
+            this.weapons.right.animations.add('walk', [0,1,2,3], animSpeed);
             //console.log('--sprite:', this.game.player.equipped.rightHand, (this.game.player.equipped.rightHand == null), this.weapons);
-            if(this.game.player.equipped.rightHand == null){
+            if(this.game.player.equipped.leftHand == null){
                 this.weapons.right.visible = false;
             }
 
-            this.weapons.right.animations.play('walk', 15, true);
-            this.armor.head.animations.play('walk', 15, true);
-            this.armor.torso.animations.play('walk', 15, true);
-            this.armor.feet.animations.play('walk', 15, true);
-            this.nakie.animations.play('walk', 15, true);
+            this.weapons.right.animations.play('walk', animSpeed, true);
+            this.armor.head.animations.play('walk', animSpeed, true);
+            this.armor.torso.animations.play('walk', animSpeed, true);
+            this.armor.feet.animations.play('walk', animSpeed, true);
+            this.nakie.animations.play('walk', animSpeed, true);
         }
+        console.log('this.armor:', this.armor);
     }
 
     getWeaponSprite(weapon){
-        let weaponSprite = 'weapon_dagger';
+        let weaponSprite = 'dagger';
         if(weapon){
             if(weapon.name.search(/knife/ig) > -1){
-                weaponSprite = 'weapon_dagger';
+                weaponSprite = 'dagger';
+            } else if(weapon.name.search(/axe/ig) > -1){
+                weaponSprite = 'axe';
+            } else if(weapon.name.search(/sword/ig) > -1){
+                weaponSprite = 'sword';
+            } else if(weapon.name.search(/bow/ig) > -1){
+                weaponSprite = 'bow';
             } else if(weapon.name.search(/spear/ig) > -1){
-                weaponSprite = 'weapon_spear';
+                weaponSprite = 'sword';
             }
         }
         return weaponSprite;
@@ -98,28 +109,68 @@ export default class Avatar{
 
     update(){
         //avatar armor equipped
-        if(this.game.player.equipped.head == null){
-            this.armor.head.visible = false;
-        } else {
+        let equipmentChanged = false;
+
+        if(this.game.player.equipped.head != null){
+            if(this.game.player.equipped.head.avatarSprite != this.armor.head.key){
+                this.armor.head.loadTexture(this.game.player.equipped.head.avatarSprite, 0);
+                this.armor.head.animations.add('walk');
+                equipmentChanged = true;
+            }
             this.armor.head.visible = true;
+        } else {
+            if(this.armor.head.key != 'hair'){
+                this.armor.head.loadTexture('hair', 0);
+                this.armor.head.animations.add('walk');
+                equipmentChanged = true;
+            }
         }
+
         if(this.game.player.equipped.feet == null){
             this.armor.feet.visible = false;
         } else {
+            if(this.game.player.equipped.feet.avatarSprite != this.armor.feet.key){
+                this.armor.feet.loadTexture(this.game.player.equipped.feet.avatarSprite, 0);
+                this.armor.feet.animations.add('walk');
+                equipmentChanged = true;
+            }
             this.armor.feet.visible = true;
         }
+
         if(this.game.player.equipped.body == null){
             this.armor.torso.visible = false;
         } else {
+            if(this.game.player.equipped.body.avatarSprite != this.armor.torso.key){
+                this.armor.torso.loadTexture(this.game.player.equipped.body.avatarSprite, 0);
+                this.armor.torso.animations.add('walk');
+                equipmentChanged = true;
+            }
             this.armor.torso.visible = true;
         }
-        if(this.game.player.equipped.rightHand == null){
+
+        if(this.game.player.equipped.leftHand == null){
             this.weapons.right.visible = false;
         } else {
-            //this.weapons.right.loadTexture(this.getWeaponSprite(this.game.player.equipped.rightHand), 0);
-            // this.weapons.right.animations.add('walk', [143,144,145,146,147,148,149,150,151], 15);
-            // this.weapons.right.animations.play('walk', 15, true);
+            let weaponSprite = this.getWeaponSprite(this.game.player.equipped.leftHand);
+            if(weaponSprite != this.weapons.right.key){
+                this.weapons.right.loadTexture(weaponSprite, 0);
+                this.weapons.right.animations.add('walk');
+                equipmentChanged = true;
+            }
             this.weapons.right.visible = true;
+        }
+
+        if(equipmentChanged == true){
+            this.weapons.right.animations.stop(null, true);
+            this.armor.head.animations.stop(null, true);
+            this.armor.torso.animations.stop(null, true);
+            this.armor.feet.animations.stop(null, true);
+            this.nakie.animations.stop(null, true);
+            this.weapons.right.animations.play('walk', this.animSpeed, true);
+            this.armor.head.animations.play('walk', this.animSpeed, true);
+            this.armor.torso.animations.play('walk', this.animSpeed, true);
+            this.armor.feet.animations.play('walk', this.animSpeed, true);
+            this.nakie.animations.play('walk', this.animSpeed, true);
         }
 
         let time = Math.floor((new Date).getTime()/1000);

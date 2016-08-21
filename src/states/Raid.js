@@ -93,7 +93,7 @@ export default class extends Phaser.State {
     }
 
     animateBattleStart(){
-        let avatarSettings = {x: this.game.world.centerX - 200, y: this.game.world.centerY, scale: 4};
+        let avatarSettings = {x: this.game.world.centerX - 200, y: this.game.world.centerY, scale: 2};
         let hpSettings = {x: this.game.world.centerX - 200, y: this.game.world.centerY + 164};
         this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, this.queueEnemy);
     }

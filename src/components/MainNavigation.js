@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import * as StoryFunctions from './StoryFunctions';
+import Dialogue from '../components/Dialogue';
 
 export default class MainNavigation{
     constructor(game, gameState){
@@ -7,47 +8,90 @@ export default class MainNavigation{
         this.loot = game.loot;
         this.gameState = gameState;
 
-        //Inv Button
-        this.inventoryBtn = new Phaser.Button(this.game, 150, this.game.world.height - 50, 'blueButton', this.openInventory, this);
-        this.inventoryBtn.scale.x = 1.2;
-        this.inventoryBtn.scale.y = 1.5;
-        this.inventoryBtn.anchor.setTo(0.5);
-        this.game.add.existing(this.inventoryBtn);
+        let bigBtnStyle = {fontSize: 48, font: 'Press Start 2P', fill: '#000000', align: 'center'};
+        let invBtnStyle = {fontSize: 48, font: 'Press Start 2P', fill: '#000000', align: 'center'};
+        let smallBtnStyle = {fontSize: 36, font: 'Press Start 2P', fill: '#000000', align: 'center'};
 
-        this.inventoryText = this.gameState.add.text(150, this.game.world.height - 50, 'Inventory');
-        this.inventoryText.font = 'Oswald';
-        this.inventoryText.fontSize = 28;
-        this.inventoryText.fill = '#111111';
-        this.inventoryText.anchor.setTo(0.5);
+        this.lootBtn = new Phaser.Button(this.game, this.game.world.width - 200, this.game.world.height - 210, 'greenButton', this.viewLoot, this);
+        this.lootBtn.scale.setTo(1.8,1.5);
+        this.lootBtn.anchor.setTo(0.5);
+        this.lootBtn.alpha = 0.5;
+        this.gameState.add.existing(this.lootBtn);
+
+        this.lootBtnText = this.gameState.add.text(this.game.world.width - 200, this.game.world.height - 210, 'LOOT', smallBtnStyle);
+        this.lootBtnText.anchor.setTo(0.5);
+        this.lootBtnText.alpha = 0.5;
+
+        //Inv Button
+        this.inventoryBtn = new Phaser.Button(this.game, 200, this.game.world.height - 90, 'blueButton', this.openInventory, this);
+        this.inventoryBtn.scale.x = 1.8;
+        this.inventoryBtn.scale.y = 3;
+        this.inventoryBtn.anchor.setTo(0.5);
+
+        //Main Left
+        this.overworldLeftBtn = new Phaser.Button(this.game, 200, this.game.world.height - 90, 'greyButton', this.openMain, this);
+        this.overworldLeftBtn.scale.x = 1.8;
+        this.overworldLeftBtn.scale.y = 3;
+        this.overworldLeftBtn.anchor.setTo(0.5);
+
+        //Main Right
+        this.overworldRightBtn = new Phaser.Button(this.game, this.game.world.width - 200, this.game.world.height - 90, 'greyButton', this.openMain, this);
+        this.overworldRightBtn.scale.x = 1.8;
+        this.overworldRightBtn.scale.y = 3;
+        this.overworldRightBtn.anchor.setTo(0.5);
 
         //Shop Button
-        this.shopBtn = new Phaser.Button(this.game, this.game.world.width - 150, this.game.world.height - 50, 'yellowButton', this.openShop, this);
-        this.shopBtn.scale.x = 1.2;
-        this.shopBtn.scale.y = 1.5;
+        this.shopBtn = new Phaser.Button(this.game, this.game.world.width - 120, this.game.world.height - 90, 'yellowButton', this.openShop, this);
+        this.shopBtn.scale.x = 1.8;
+        this.shopBtn.scale.y = 3;
         this.shopBtn.anchor.setTo(0.5);
-        this.game.add.existing(this.shopBtn);
 
-        this.shopText = this.gameState.add.text(this.game.world.width - 150, this.game.world.height - 50, 'Town Shop');
-        this.shopText.font = 'Oswald';
-        this.shopText.fontSize = 28;
-        this.shopText.fill = '#111111';
-        this.shopText.anchor.setTo(0.5);
+        //Shop Button
+        this.raidBtn = new Phaser.Button(this.game, this.game.world.width - 200, this.game.world.height - 90, 'redButton', this.raidCurrentDungeon, this);
+        this.raidBtn.scale.x = 1.8;
+        this.raidBtn.scale.y = 3;
+        this.raidBtn.anchor.setTo(0.5);
 
-        //Main Button
-        this.mainBtn = new Phaser.Button(this.game, this.game.world.centerX, this.game.world.height - 87, 'redButton', this.openMain, this);
-        this.mainBtn.scale.x = 1;
-        this.mainBtn.scale.y = 3;
-        this.mainBtn.anchor.setTo(0.5);
-        this.game.add.existing(this.mainBtn);
 
-        let mainTextStyle = {font: 'bold 28px Oswald', fill: '#111111'};
-        this.mainText = this.gameState.add.text(this.game.world.centerX, this.game.world.height - 90, 'Main\nMenu', mainTextStyle);
-        this.mainText.anchor.setTo(0.5);
+
+        switch(this.gameState.key){
+        case 'Inventory':
+            this.game.add.existing(this.overworldLeftBtn);
+            this.game.add.existing(this.raidBtn);
+
+            this.overworldLeftText = this.gameState.add.text(200, this.game.world.height - 90, 'WORLD\nMAP', bigBtnStyle);
+            this.overworldLeftText.anchor.setTo(0.5);
+
+            this.raidText = this.gameState.add.text(this.game.world.width - 200, this.game.world.height - 90, 'RAID', bigBtnStyle);
+            this.raidText.anchor.setTo(0.5);
+            break;
+        case 'MainMenu':
+            this.game.add.existing(this.inventoryBtn);
+            this.game.add.existing(this.raidBtn);
+
+            this.inventoryText = this.gameState.add.text(200, this.game.world.height - 90, 'GEAR', invBtnStyle);
+            this.inventoryText.anchor.setTo(0.5);
+
+            this.raidText = this.gameState.add.text(this.game.world.width - 200, this.game.world.height - 90, 'RAID', bigBtnStyle);
+            this.raidText.anchor.setTo(0.5);
+            break;
+        case 'Options':
+        case 'LootView':
+            this.game.add.existing(this.inventoryBtn);
+            this.game.add.existing(this.overworldRightBtn);
+
+            this.inventoryText = this.gameState.add.text(200, this.game.world.height - 90, 'GEAR', invBtnStyle);
+            this.inventoryText.anchor.setTo(0.5);
+
+            this.overworldRightText = this.gameState.add.text(this.game.world.width - 200, this.game.world.height - 90, 'WORLD\nMAP', bigBtnStyle);
+            this.overworldRightText.anchor.setTo(0.5);
+            break;
+        }
     }
 
     openInventory(){
         if(this.gameState.key != 'Inventory'){
-            this.gameState.state.start('Inventory');
+            this.gameState.state.start('Inventory', this.currentDungeon);
         }
     }
 
@@ -62,6 +106,63 @@ export default class MainNavigation{
             StoryFunctions.chapter1.shopNote(this.game, this.gameState);
         } else {
             console.log('Open The Shop ALREADY!');
+        }
+    }
+
+    raidCurrentDungeon(){
+        let equippedGear = false;
+        let equipment = this.game.player.equipped;
+        let dungeon = this.currentDungeon;
+
+        Object.keys(equipment).forEach((slot) => {
+            if(equipment[slot] != null){
+                equippedGear = true;
+                return;
+            }
+        });
+
+        if(!equippedGear){
+            new Dialogue(this.game, this.gameState, 'ok', 'You should equip\nsomething before raiding...', ()=>{});
+        } else {
+            if(this.game.player.latestUnlockedDungeon >= dungeon.level){
+                if(this.game.player.battleStats.currentHealth > 1){
+                    this.game.state.start('Raid', true, false, dungeon);
+                }
+            } else {
+                new Dialogue(this.game, this.gameState, 'ok', 'Your shit\'s too weak son.', ()=>{});
+            }
+        }
+
+    }
+
+    viewLoot(){
+        if(this.game.loot.length > 0){
+            this.game.state.start('LootView');
+        }
+    }
+
+    update(currDungeon=null){
+        if(currDungeon != null){
+            this.currentDungeon = currDungeon;
+        }
+        let currHealth = this.game.player.battleStats.currentHealth;
+
+        if(currDungeon && this.raidBtn && this.raidText){
+            if(currHealth > 1 && currDungeon.level <= this.game.player.latestUnlockedDungeon){
+                this.raidBtn.alpha = 1;
+                this.raidText.alpha = 1;
+            } else {
+                this.raidBtn.alpha = 0.5;
+                this.raidText.alpha = 0.5;
+            }
+        }
+
+        if(this.game.loot.length > 0){
+            this.lootBtn.alpha = 1;
+            this.lootBtnText.alpha = 1;
+        } else {
+            this.lootBtn.alpha = 0.5;
+            this.lootBtnText.alpha = 0.5;
         }
     }
 

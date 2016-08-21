@@ -37,6 +37,7 @@ export function build(levelMin, levelMax) {
     switch(armor.type){
     case 'head':
         armor.name = 'Helm';
+        armor.avatarSprite = 'helm_';
         armor.shape = Constants.shapes.shape2x2;
         armor.shapeWidth = 2;
         armor.shapeHeight = 2;
@@ -46,6 +47,7 @@ export function build(levelMin, levelMax) {
     case 'body':
         armor.name = 'Armor';
         armor.sprite = 'armor0';
+        armor.avatarSprite = 'armor_';
         armor.shape = Constants.shapes.shape2x3;
         armor.shapeWidth = 2;
         armor.shapeHeight = 3;
@@ -54,6 +56,7 @@ export function build(levelMin, levelMax) {
         break;
     case 'feet':
         armor.name = 'Boots';
+        armor.avatarSprite = 'boots_';
         armor.shape = Constants.shapes.shape2x2;
         armor.shapeWidth = 2;
         armor.shapeHeight = 2;
@@ -77,29 +80,34 @@ export function build(levelMin, levelMax) {
     //add level modifier to name
     switch(armor.level){
     case 1: armor.name = 'Leather '+armor.name;
+        armor.avatarSprite += 'leather';
         armor.weight = 4;
         if(armor.type == 'body'){ armor.weight = 7; }
         armor.durability = this.rand(8,12);
         break;
     case 2: armor.name = 'Stone '+armor.name;
+        armor.avatarSprite += 'stone';
         armor.weight = 5;
         if(armor.type == 'body'){ armor.weight = 9; }
         armor.durability = this.rand(10,15);
         armor.ac = armor.ac * 1.5;
         break;
     case 3: armor.name = 'Iron '+armor.name;
+        armor.avatarSprite += 'iron';
         armor.weight = 7;
         if(armor.type == 'body'){ armor.weight = 12; }
         armor.durability = this.rand(12,16);
         armor.ac = armor.ac * 2;
         break;
     case 4: armor.name = 'Steel '+armor.name;
+        armor.avatarSprite += 'iron';
         armor.weight = 9;
         if(armor.type == 'body'){ armor.weight = 18; }
         armor.durability = this.rand(15,18);
         armor.ac = armor.ac * 2.5;
         break;
     case 5: armor.name = 'Mythril '+armor.name;
+        armor.avatarSprite += 'iron';
         armor.weight = 2;
         if(armor.type == 'body'){ armor.weight = 4; }
         armor.durability = this.rand(18,22);
