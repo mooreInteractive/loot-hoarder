@@ -2,11 +2,13 @@ import Phaser from 'phaser';
 import MainNavigation from '../components/MainNavigation';
 import Avatar from '../components/Avatar';
 import Dialogue from '../components/Dialogue';
+import * as StoryFunctions from '../components/StoryFunctions';
 
 export default class extends Phaser.State {
-    init () {
+    init (passedEvent) {
         this.inventoryOpen = false;
         this.game.player.savePlayerData();
+        this.passedEvent = passedEvent;
     }
 
     create () {
@@ -54,6 +56,10 @@ export default class extends Phaser.State {
         this.errorText.anchor.setTo(0.5);
         this.errorText.visible = false;
 
+        if(this.passedEvent){
+            StoryFunctions.chapter1[this.passedEvent.name](this.game, this);
+        }
+
 
     }
 
@@ -72,7 +78,7 @@ export default class extends Phaser.State {
         this.raidBtns = [];
         this.raidTexts = [];
         this.dungeonTexts = [];
-        this.game.dungeons.forEach((dungeon, index)=> {
+        this.game.dungeons.forEach((dungeon)=> {
 
             let btn = this.add.sprite(dungeon.sprite.x, dungeon.sprite.y, dungeon.sprite.image);
             btn.anchor.setTo(0.5);

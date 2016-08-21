@@ -118,11 +118,9 @@ export default class LootList{
             } else {
                 let game = this.game;
                 let gameState = this.gameState;
-                let checkBtn = new Phaser.Button(game, game.world.centerX - 260, buttonsY, 'greenButton', () => {
-                    StoryFunctions.chapter1[item.task](game, gameState);
-                    loot.splice(loot.indexOf(item), 1);
-                    this.updateLootTextAndButtons(loot);
-                }, this);
+                let checkBtn = new Phaser.Button(game, game.world.centerX - 260, buttonsY, 'greenButton',
+                    StoryFunctions.chapter1[item.task].bind(this, game, gameState, this.resolveStoryFunction.bind(this, loot, item)),
+                    this);
 
                 checkBtn.scale.x = 0.7;
                 checkBtn.anchor.setTo(0.5);
@@ -139,5 +137,10 @@ export default class LootList{
             }
 
         });
+    }
+
+    resolveStoryFunction(loot, item){
+        loot.splice(loot.indexOf(item), 1);
+        this.updateLootTextAndButtons(loot);
     }
 }

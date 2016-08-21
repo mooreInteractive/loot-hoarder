@@ -14,7 +14,7 @@ export let chapter1 = {
         case 1: new Dialogue(game, gameState, 'ok', 'Maybe 20 minutes...', ()=>{});
             break;
         case 2:
-        default: new Dialogue(game, gameState, 'ok', 'Actually, I might need some help\nat the southern-most ranch', ()=>{});
+        default: new Dialogue(game, gameState, 'ok', 'Actually, I might need some\nhelp at the southern-most\nranch.', ()=>{});
             break;
         }
         game.player.story.chapter1.timesCheckedShop += 1;
@@ -29,10 +29,19 @@ export let chapter1 = {
         });
     },
 
-    readNote: (game, gameState) => {
-        let story = game.story;
+    readNote: (game, gameState, cb) => {
+        let story = game.player.story;
         new Dialogue(game, gameState, 'ok', 'What I need is in the\ntown on the dirt cliffs.\nCome find me.', ()=>{
             story.chapter1.foundSecondNote = true;
+            saveStory(story);
+            cb();
+        });
+    },
+
+    RescuedShopKeep: (game, gameState) => {
+        let story = game.player.story;
+        new Dialogue(game, gameState, 'ok', 'Thanks for rescuing me!\nIt seems the towns folk are\nreturning to their shops!', ()=>{
+            story.chapter1.RescuedShopKeep = true;
             saveStory(story);
         });
     }

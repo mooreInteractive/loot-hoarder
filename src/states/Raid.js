@@ -101,7 +101,7 @@ export default class extends Phaser.State {
     animateBattleEnd(){
         let endCB = () => {
             this.game.player.battling = false;
-            this.game.state.start('MainMenu', true, false);
+            this.game.state.start('MainMenu', true, false, this.passedEvent);
         };
         let avatarSettings = {x: this.dungeon.sprite.x, y: this.dungeon.sprite.y, scale: 1};
         let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
@@ -130,13 +130,14 @@ export default class extends Phaser.State {
             this.enHealthBarBg.visible = true;
             this.enHealthBar.visible = true;
 
-            let introTween = this.add.tween(this.enemySprites[this.currentEnemy.sprite]).to( { x: this.game.world.centerX + 255 }, 400, null, true);
-            this.add.tween(this.enHealthBarBg).to( { x: this.game.world.centerX + 255 - this.enHealthBarBg.width/2 }, 400, null, true);
-            this.add.tween(this.enHealthBar).to( { x: this.game.world.centerX + 255 - 100 }, 400, null, true);
+            let introTween = this.add.tween(this.enemySprites[this.currentEnemy.sprite]).to( { x: this.game.world.centerX + 195 }, 400, null, true);
+            this.add.tween(this.enHealthBarBg).to( { x: this.game.world.centerX + 195 - this.enHealthBarBg.width/2 }, 400, null, true);
+            this.add.tween(this.enHealthBar).to( { x: this.game.world.centerX + 195 - 100 }, 400, null, true);
 
             introTween.onComplete.add(()=>{
-                if(this.currentEnemy.boss && this.dungeon.enemiesLeft == 1){
-                    new Dialogue(this.game, this, 'ok', 'Surprise Mother Fucker.', ()=>{
+                if(this.currentEnemy.boss && this.dungeon.enemiesLeft == 1 && this.currentEnemy.message && !this.dungeon.heardMessage){
+                    new Dialogue(this.game, this, 'ok', this.currentEnemy.message, ()=>{
+                        this.dungeon.heardMessage = true;
                         this.battlePaused = false;
                     });
                 } else {
@@ -250,11 +251,16 @@ export default class extends Phaser.State {
                 dungeon.currentEnemies[index] = JSON.parse(JSON.stringify(enemy));
             });
             dungeon.beaten = true;
-            //TODO - bestowe dungeon ring
             dungeon.enemiesLeft = dungeon.currentEnemies.length;
             let latest = this.game.player.latestUnlockedDungeon;
             if(latest < dungeon.level + 1){
                 this.game.player.latestUnlockedDungeon += 1;
+                //TODO story stuff
+                if(dungeon.level == 5){
+                    this.passedEvent = {
+                        name: 'RescuedShopKeep'
+                    };
+                }
             }
         }
 

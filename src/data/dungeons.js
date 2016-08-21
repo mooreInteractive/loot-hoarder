@@ -11,6 +11,7 @@ export let dungeons = [
             x: 576,
             y: 672
         },
+        heardMessage: false,
         currentEnemies: [],
         enemies: [
             {hp: 15, dps: 1, sprite: 'goo'},
@@ -18,7 +19,7 @@ export let dungeons = [
             {hp: 36, dps: 3, sprite: 'whisper', boss: true},
             {hp: 18, dps: 3, sprite: 'goo'},
             {hp: 18, dps: 3, sprite: 'goo'},
-            {hp: 60, dps: 5, sprite: 'artichoke', boss: true}
+            {hp: 60, dps: 5, sprite: 'artichoke', boss: true, message: 'There\'s nothing good left\nin this town anyway.'}
         ]
     },
     {
@@ -33,6 +34,7 @@ export let dungeons = [
             x: 352,
             y: 766
         },
+        heardMessage: false,
         currentEnemies: [],
         enemies: [
             {hp: 15, dps: 3, sprite: 'goo'},
@@ -42,7 +44,7 @@ export let dungeons = [
             {hp: 18, dps: 6, sprite: 'whisper'},
             {hp: 18, dps: 6, sprite: 'whisper'},
             {hp: 15, dps: 12, sprite: 'artichoke'},
-            {hp: 105, dps: 12, sprite: 'moss', boss: true}
+            {hp: 105, dps: 12, sprite: 'moss', boss: true, message: 'Your friend isn\'t here chump.'}
         ]
     },
     {
@@ -57,6 +59,7 @@ export let dungeons = [
             x: 160,
             y: 608
         },
+        heardMessage: false,
         currentEnemies: [],
         enemies: [
             {hp: 18, dps: 6, sprite: 'whisper'},
@@ -68,7 +71,7 @@ export let dungeons = [
             {hp: 36, dps: 6, sprite: 'antler'},
             {hp: 36, dps: 6, sprite: 'antler'},
             {hp: 45, dps: 15, sprite: 'artichoke'},
-            {hp: 165, dps: 30, sprite: 'blood_skull', boss: true}
+            {hp: 165, dps: 30, sprite: 'blood_skull', boss: true, message: 'Who are you anyways kid?'}
         ]
     },
     {
@@ -83,6 +86,7 @@ export let dungeons = [
             x: 320,
             y: 480
         },
+        heardMessage: false,
         currentEnemies: [],
         enemies: [
             {hp: 32, dps: 10, sprite: 'artichoke'},
@@ -111,6 +115,7 @@ export let dungeons = [
             x: 128,
             y: 384
         },
+        heardMessage: false,
         currentEnemies: [],
         enemies: [
             {hp: 32, dps: 10, sprite: 'artichoke'},
@@ -124,7 +129,7 @@ export let dungeons = [
             {hp: 100, dps: 8, sprite: 'moss'},
             {hp: 150, dps: 50, sprite: 'skelly'},
             {hp: 150, dps: 50, sprite: 'skelly'},
-            {hp: 250, dps: 60, sprite: 'wraith', boss: true}
+            {hp: 250, dps: 60, sprite: 'wraith', boss: true, message: 'Come to save your\nfriend have you?'}
         ]
     },
     {
@@ -139,6 +144,7 @@ export let dungeons = [
             x: 336,
             y: 352
         },
+        heardMessage: false,
         currentEnemies: [],
         enemies: [
             {hp: 32, dps: 10, sprite: 'artichoke'},
@@ -167,6 +173,7 @@ export let dungeons = [
             x: 576,
             y: 382
         },
+        heardMessage: false,
         currentEnemies: [],
         enemies: [
             {hp: 32, dps: 10, sprite: 'artichoke'},
@@ -195,6 +202,7 @@ export let dungeons = [
             x: 496,
             y: 176
         },
+        heardMessage: false,
         currentEnemies: [],
         enemies: [
             {hp: 32, dps: 10, sprite: 'artichoke'},
@@ -223,6 +231,7 @@ export let dungeons = [
             x: 192,
             y: 128
         },
+        heardMessage: false,
         currentEnemies: [],
         enemies: [
             {hp: 32, dps: 10, sprite: 'artichoke'},
@@ -251,6 +260,7 @@ export let dungeons = [
             x: 176,
             y: 256
         },
+        heardMessage: false,
         currentEnemies: [],
         enemies: [
             {hp: 32, dps: 10, sprite: 'artichoke'},
