@@ -6,11 +6,11 @@ import Avatar from '../components/Avatar';
 import ItemReadOut from '../components/ItemReadOut';
 
 export default class extends Phaser.State {
-    init (currDungeon) {
+    init () {
         this.inventorySprites = [];
         this.inventoryGridSprite;
         this.selectedSprite = null;
-        this.currentDungeon = currDungeon;
+        this.currentDungeon = this.game.dungeons[this.game.player.currentDungeon];
     }
 
     preload () {
@@ -64,7 +64,7 @@ export default class extends Phaser.State {
     }
 
     create () {
-        this.mainNav = new MainNavigation(this.game, this);
+        this.mainNav = new MainNavigation(this.game, this, this.currentDungeon);
     }
 
     plusClicked(index){
@@ -380,15 +380,17 @@ export default class extends Phaser.State {
     }
 
     mouseOverShop(mouse){
-        let shop = {x:this.game.world.width - 150, y:this.game.world.height - 50, width: 228, height: 73.5};
+        if(this.game.dungeons[this.game.player.currentDungeon].level == 1){
+            let shop = {x:this.game.world.width - 200, y:this.game.world.height - 90, width: 190*1.8, height: 49*3};
 
-        if( //Dropping on the Shop
-            mouse.x >= (shop.x - shop.width * 0.5) &&
-            mouse.x <= ((shop.x - shop.width * 0.5) + shop.width) &&
-            mouse.y >= (shop.y - shop.height * 0.5) &&
-            mouse.y <= ((shop.y - shop.height * 0.5) + shop.height)
-        ){
-            return true;
+            if( //Dropping on the Shop
+                mouse.x >= (shop.x - shop.width * 0.5) &&
+                mouse.x <= ((shop.x - shop.width * 0.5) + shop.width) &&
+                mouse.y >= (shop.y - shop.height * 0.5) &&
+                mouse.y <= ((shop.y - shop.height * 0.5) + shop.height)
+            ){
+                return true;
+            }
         }
 
         return false;

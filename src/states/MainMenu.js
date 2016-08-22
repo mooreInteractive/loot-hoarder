@@ -36,7 +36,7 @@ export default class extends Phaser.State {
         this.errorText.anchor.setTo(0.5);
         this.errorText.visible = false;
 
-        if(this.passedEvent){
+        if(this.passedEvent != null){
             StoryFunctions.chapter1[this.passedEvent.name](this.game, this);
         }
 
@@ -44,13 +44,6 @@ export default class extends Phaser.State {
     }
 
     createMap(){
-        //MAP
-        //this.waterBg = this.game.add.sprite(0, 0, 'water');
-        // this.water = this.add.tileSprite(0, 0, 32 * 6, 32 * 9, 'water');
-        // this.water.scale.setTo(4,4);
-        // this.water.animations.add('flow', null, 4, true);
-        // this.water.animations.play('flow');
-
         this.island = this.game.add.image(0,0,'island');
         this.island.scale.setTo(2,2);
 

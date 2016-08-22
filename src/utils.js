@@ -61,7 +61,7 @@ export const placeItemInSlot = (player, item, slot, placeNow = true) => {
 export const equipItem = (player, item, slot) => {
     player.equipped[slot.type] = item;
     item.inventorySlot = slot.type;
-    console.log('--equipped item:', item, slot);
+    // console.log('--equipped item:', item, slot);
     player.inventory.splice(player.inventory.indexOf(item), 1);
     player.updateBattleStats();
 };
@@ -69,7 +69,7 @@ export const equipItem = (player, item, slot) => {
 export const unequipItem = (player, item) => {
     player.equipped[item.inventorySlot] = null;
     player.updateBattleStats();
-    console.log('--item unequipped...', item);
+    // console.log('--item unequipped...', item);
 };
 
 export const removeItemFromBackpack = (backpack, item) => {

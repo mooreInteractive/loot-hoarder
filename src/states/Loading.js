@@ -74,10 +74,15 @@ export default class extends Phaser.State {
         this.game.load.spritesheet('armor_iron', './assets/images/avatar/armor_iron.png', 96, 144);
         this.game.load.spritesheet('boots_iron', './assets/images/avatar/boots_iron.png', 96, 144);
 
+        this.game.load.spritesheet('helm_steel', './assets/images/avatar/helm_steel.png', 96, 144);
+        this.game.load.spritesheet('armor_steel', './assets/images/avatar/armor_steel.png', 96, 144);
+        this.game.load.spritesheet('boots_steel', './assets/images/avatar/boots_steel.png', 96, 144);
+
         this.game.load.spritesheet('axe', './assets/images/avatar/axe.png', 96, 144);
         this.game.load.spritesheet('sword', './assets/images/avatar/sword.png', 96, 144);
         this.game.load.spritesheet('dagger', './assets/images/avatar/dagger.png', 96, 144);
         this.game.load.spritesheet('bow', './assets/images/avatar/bow.png', 96, 144);
+        this.game.load.spritesheet('spear', './assets/images/avatar/spear.png', 96, 144);
 
 
 

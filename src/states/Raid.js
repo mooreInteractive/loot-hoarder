@@ -188,7 +188,7 @@ export default class extends Phaser.State {
             if(this.dungeon.defeated){
                 lootThreshold = 85;
             }
-            if(enemy.boss){lootThreshold = 35;}
+            if(enemy.boss){lootThreshold = 35; lootMax = this.dungeon.level + 1;}
             if( lootChance > lootThreshold || !story.chapter1.firstLootDrop){
                 //Story Junk - TODO offload somewhere? This will get bad
                 if(this.dungeon.level == 2 && !story.chapter1.foundSecondNote && story.chapter1.timesCheckedShop > 1){
@@ -255,10 +255,16 @@ export default class extends Phaser.State {
             let latest = this.game.player.latestUnlockedDungeon;
             if(latest < dungeon.level + 1){
                 this.game.player.latestUnlockedDungeon += 1;
+                this.passedEvent = null;
                 //TODO story stuff
                 if(dungeon.level == 5){
                     this.passedEvent = {
                         name: 'RescuedShopKeep'
+                    };
+                }
+                if(dungeon.level == 1){
+                    this.passedEvent = {
+                        name: 'FirstDungeonBeat'
                     };
                 }
             }

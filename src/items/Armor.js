@@ -100,14 +100,14 @@ export function build(levelMin, levelMax) {
         armor.ac = armor.ac * 2;
         break;
     case 4: armor.name = 'Steel '+armor.name;
-        armor.avatarSprite += 'iron';
+        armor.avatarSprite += 'steel';
         armor.weight = 9;
         if(armor.type == 'body'){ armor.weight = 18; }
         armor.durability = this.rand(15,18);
         armor.ac = armor.ac * 2.5;
         break;
     case 5: armor.name = 'Mythril '+armor.name;
-        armor.avatarSprite += 'iron';
+        armor.avatarSprite += 'steel';
         armor.weight = 2;
         if(armor.type == 'body'){ armor.weight = 4; }
         armor.durability = this.rand(18,22);

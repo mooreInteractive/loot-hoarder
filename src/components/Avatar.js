@@ -86,7 +86,6 @@ export default class Avatar{
             this.armor.feet.animations.play('walk', animSpeed, true);
             this.nakie.animations.play('walk', animSpeed, true);
         }
-        console.log('this.armor:', this.armor);
     }
 
     getWeaponSprite(weapon){
@@ -101,7 +100,7 @@ export default class Avatar{
             } else if(weapon.name.search(/bow/ig) > -1){
                 weaponSprite = 'bow';
             } else if(weapon.name.search(/spear/ig) > -1){
-                weaponSprite = 'sword';
+                weaponSprite = 'spear';
             }
         }
         return weaponSprite;
@@ -117,6 +116,7 @@ export default class Avatar{
                 this.armor.head.animations.add('walk');
                 equipmentChanged = true;
             }
+            if(this.armor.head.visible == false){ equipmentChanged = true; }
             this.armor.head.visible = true;
         } else {
             if(this.armor.head.key != 'hair'){
@@ -134,6 +134,7 @@ export default class Avatar{
                 this.armor.feet.animations.add('walk');
                 equipmentChanged = true;
             }
+            if(this.armor.feet.visible == false){ equipmentChanged = true; }
             this.armor.feet.visible = true;
         }
 
@@ -145,6 +146,7 @@ export default class Avatar{
                 this.armor.torso.animations.add('walk');
                 equipmentChanged = true;
             }
+            if(this.armor.torso.visible == false){ equipmentChanged = true; }
             this.armor.torso.visible = true;
         }
 
@@ -157,6 +159,7 @@ export default class Avatar{
                 this.weapons.right.animations.add('walk');
                 equipmentChanged = true;
             }
+            if(this.weapons.right.visible == false){ equipmentChanged = true; }
             this.weapons.right.visible = true;
         }
 
