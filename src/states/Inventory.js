@@ -50,10 +50,6 @@ export default class extends Phaser.State {
             this.add.text(75, 359, '+', Oswald36Blue)
         ];
 
-        this.add.text(this.game.world.width - 230, this.game.world.height - 160, 'drop items in shop\nto sell them', Oswald24BlackCenter);
-
-
-
         this.plusBtns.forEach((btn, index) => {
             btn.visible = this.game.player.skillPoints > 0;
             btn.inputEnabled = true;
@@ -380,7 +376,7 @@ export default class extends Phaser.State {
     }
 
     mouseOverShop(mouse){
-        if(this.game.dungeons[this.game.player.currentDungeon].level == 1){
+        if(this.game.player.currentDungeon == 0 && this.game.player.latestUnlockedDungeon > 1){
             let shop = {x:this.game.world.width - 200, y:this.game.world.height - 90, width: 190*1.8, height: 49*3};
 
             if( //Dropping on the Shop
@@ -397,8 +393,6 @@ export default class extends Phaser.State {
     }
 
     stopDrag(currentSprite, item, gridPos, mouse){
-        //console.log('-stopDrag(sprite, item, gridPos)', currentSprite, item, gridPos);
-
         //Getting Drop Zone
         let slot = this.mouseOverBackPackGrid(currentSprite, item, gridPos, mouse);
         let equipSlot = this.mouseOverEquipmentSlot(mouse, item);

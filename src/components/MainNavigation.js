@@ -43,15 +43,13 @@ export default class MainNavigation{
         this.shopBtn.anchor.setTo(0.5);
 
         //Shop Button
-        let townFunc = this.raidCurrentDungeon;
         this.townText = 'RAID';
         let townBtnColor = 'redButton';
         if(this.game.player.latestUnlockedDungeon > 1 && this.currentDungeon.level == 1){
-            townFunc = this.openShop;
             this.townText = 'SHOP';
             townBtnColor = 'yellowButton';
         }
-        this.raidBtn = new Phaser.Button(this.game, this.game.world.width - 200, this.game.world.height - 90, townBtnColor, townFunc, this);
+        this.raidBtn = new Phaser.Button(this.game, this.game.world.width - 200, this.game.world.height - 90, townBtnColor, this.raidCurrentDungeon, this);
         this.raidBtn.scale.x = 1.8;
         this.raidBtn.scale.y = 3;
         this.raidBtn.anchor.setTo(0.5);
