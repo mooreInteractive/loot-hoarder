@@ -193,6 +193,7 @@ export default class extends Phaser.State {
                 //Story Junk - TODO offload somewhere? This will get bad
                 if(this.dungeon.level == 2 && !story.chapter1.foundSecondNote && story.chapter1.timesCheckedShop > 1){
                     StoryFunctions.chapter1.dropNote(this.game, this, story);
+                    story.chapter1.foundSecondNote = true;
                 } else {
                     if(!story.chapter1.firstLootDrop){
                         story.chapter1.firstLootDrop = true;
@@ -245,6 +246,7 @@ export default class extends Phaser.State {
         }
 
         //Dungeon Done
+        this.passedEvent = null;
         if(dungeon.enemiesLeft < 1){
             dungeon.currentEnemies = dungeon.enemies.slice();
             dungeon.enemies.forEach((enemy, index)=>{
@@ -255,8 +257,8 @@ export default class extends Phaser.State {
             let latest = this.game.player.latestUnlockedDungeon;
             if(latest < dungeon.level + 1){
                 this.game.player.latestUnlockedDungeon += 1;
-                this.passedEvent = null;
                 //TODO story stuff
+                console.log('end dungeon level:', dungeon.level);
                 if(dungeon.level == 5){
                     this.passedEvent = {
                         name: 'RescuedShopKeep'

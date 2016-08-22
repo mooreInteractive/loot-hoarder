@@ -37,6 +37,7 @@ export function build(levelMin, levelMax) {
     switch(armor.type){
     case 'head':
         armor.name = 'Helm';
+        armor.sprite = 'helm1';
         armor.avatarSprite = 'helm_';
         armor.shape = Constants.shapes.shape2x2;
         armor.shapeWidth = 2;
@@ -56,6 +57,7 @@ export function build(levelMin, levelMax) {
         break;
     case 'feet':
         armor.name = 'Boots';
+        armor.sprite = 'boots1';
         armor.avatarSprite = 'boots_';
         armor.shape = Constants.shapes.shape2x2;
         armor.shapeWidth = 2;

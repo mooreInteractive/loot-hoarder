@@ -23,12 +23,11 @@ export default class extends Phaser.State {
         this.equippedGridBackground();
         this.drawInventoryItems();
 
-        let Oswald24Black = {font: 'Oswald', fontSize: 24, fill: '#000000' };
-        let Oswald24BlackCenter = {font: 'Oswald', fontSize: 24, fill: '#000000', align: 'center' };
+        let Oswald24Black = {font: 'Press Start 2P', fontSize: 16, fill: '#000000' };
 
         //Player Stats
         this.playerInfo = this.add.text(100, 75, '', Oswald24Black);
-        this.playerInfo2 = this.add.text(300, 250, '', Oswald24Black);
+        this.playerInfo2 = this.add.text(100, 300, '', Oswald24Black);
 
         //ItemReadOutBG
         let itemHoverBG = this.add.bitmapData(450, 110);
@@ -41,13 +40,13 @@ export default class extends Phaser.State {
         this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 150, y: 435});
 
         //skillPoint + Buttons
-        let Oswald36Blue = {font: 'Oswald', fontSize: 36, fill: '#1313DE'};
+        let Oswald36Blue = {font: 'Press Start 2P', fontSize: 18, fill: '#1313DE'};
 
         this.plusBtns = [
-            this.add.text(75, 248, '+', Oswald36Blue),
-            this.add.text(75, 285, '+', Oswald36Blue),
-            this.add.text(75, 322, '+', Oswald36Blue),
-            this.add.text(75, 359, '+', Oswald36Blue)
+            this.add.text(75, 185, '+', Oswald36Blue),
+            this.add.text(75, 207, '+', Oswald36Blue),
+            this.add.text(75, 229, '+', Oswald36Blue),
+            this.add.text(75, 251, '+', Oswald36Blue)
         ];
 
         this.plusBtns.forEach((btn, index) => {
@@ -76,7 +75,7 @@ export default class extends Phaser.State {
 
         this.playerInfo.text = `Level: ${this.game.player.level} \n`;
         this.playerInfo.text += `Health: ${this.game.player.battleStats.currentHealth}/${this.game.player.battleStats.health} \n`;
-        this.playerInfo.text += `Exp: ${this.game.player.exp}, Next Level: ${playerLevels[this.game.player.level].maxExp - this.game.player.exp} \n\n`;
+        this.playerInfo.text += `Exp: ${this.game.player.exp}, Next: ${playerLevels[this.game.player.level].maxExp - this.game.player.exp} \n\n`;
         this.playerInfo.text += `Main Attributes: \n`;
         this.playerInfo.text += `Strength: ${this.game.player.battleStats.strength} \n`;
         this.playerInfo.text += `Dexterity: ${this.game.player.battleStats.dexterity} \n`;

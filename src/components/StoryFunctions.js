@@ -8,8 +8,8 @@ export let saveStory = (story) => {
 
 export let chapter1 = {
     shopNote: (game, gameState) => {
-        if(game.player.story.chapter1.foudnSecondNote){
-            new Dialogue(game, gameState, 'ok', 'Don\'t forget you can sell loot\nfrom your inventory screen\nhere until I get back', ()=>{});
+        if(game.player.story.chapter1.foundSecondNote){
+            new Dialogue(game, gameState, 'ok', 'Don\'t forget you can sell\nloot from your inventory\nscreen here until I get back', ()=>{});
         } else {
             switch(game.player.story.chapter1.timesCheckedShop){
             case 0: new Dialogue(game, gameState, 'ok', 'Back in 5 minutes!', ()=>{});
@@ -51,7 +51,7 @@ export let chapter1 = {
     },
 
     FirstDungeonBeat: (game, gameState) => {
-        new Dialogue(game, gameState, 'ok', 'Thanks for clearing my town!\nI\'m going to charge ahead, and\ntry to help some others.', ()=>{
+        new Dialogue(game, gameState, 'ok', 'Thanks for clearing my town!\nI\'m going to charge ahead,\nand try to help some others.', ()=>{
             new Dialogue(game, gameState, 'ok', 'Feel Free to drop items you\ndon\'t want anymore in my\nshop for what they\'re\nworth. I trust you.', ()=>{});
         });
     }
