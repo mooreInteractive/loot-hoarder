@@ -17,6 +17,9 @@ export default class extends Phaser.State {
         this.avatar.healthBarBg.visible = false;
         this.avatar.healthBar.visible = false;
         this.avatar.healthText.visible = false;
+        this.avatar.expBar.visible = false;
+        this.avatar.levelIconBg.visible = false;
+        this.avatar.levelText.visible = false;
 
         //Play Button
         this.playBtn = new Phaser.Button(this.game, this.game.world.centerX, this.game.world.centerY+350, 'redButton', this.playClicked, this);

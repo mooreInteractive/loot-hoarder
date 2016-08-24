@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import * as utils from '../utils';
-import {playerLevels} from '../data/levels';
 import MainNavigation from '../components/MainNavigation';
 import Avatar from '../components/Avatar';
 import ItemReadOut from '../components/ItemReadOut';
@@ -15,19 +14,21 @@ export default class extends Phaser.State {
 
     preload () {
 
-        let avatarSettings = {x: 50, y: 115, scale: 1};
-        let hpSettings = {x: 200, y: this.game.world.height - 220 };
-        this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true); //Need to call avatar.update()
+        let avatarSettings = {x: 90, y: 85, scale: 1};
+        let hpSettings = {x: 325, y: 100 };
+        this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, true); //Need to call avatar.update()
 
         this.inventoryGridBackground();
         this.equippedGridBackground();
         this.drawInventoryItems();
 
-        let Oswald24Black = {font: 'Press Start 2P', fontSize: 16, fill: '#000000' };
+        let Pixel24Black = {font: 'Press Start 2P', fontSize: 28, fill: '#000000' };
+        let Pixel36Blue = {font: 'Press Start 2P', fontSize: 36, fill: '#1313CD' };
+        let Pixel16Black = {font: 'Press Start 2P', fontSize: 16, fill: '#000000' };
 
         //Player Stats
-        this.playerInfo = this.add.text(100, 75, '', Oswald24Black);
-        this.playerInfo2 = this.add.text(100, 300, '', Oswald24Black);
+        this.playerInfo = this.add.text(200, 200, '', Pixel24Black);
+        this.playerInfo2 = this.add.text(465, 325, '', Pixel16Black);
 
         //ItemReadOutBG
         let itemHoverBG = this.add.bitmapData(450, 110);
@@ -40,13 +41,11 @@ export default class extends Phaser.State {
         this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 150, y: 435});
 
         //skillPoint + Buttons
-        let Oswald36Blue = {font: 'Press Start 2P', fontSize: 18, fill: '#1313DE'};
-
         this.plusBtns = [
-            this.add.text(75, 185, '+', Oswald36Blue),
-            this.add.text(75, 207, '+', Oswald36Blue),
-            this.add.text(75, 229, '+', Oswald36Blue),
-            this.add.text(75, 251, '+', Oswald36Blue)
+            this.add.text(150, 195, '+', Pixel36Blue),
+            this.add.text(150, 230, '+', Pixel36Blue),
+            this.add.text(150, 265, '+', Pixel36Blue),
+            this.add.text(150, 300, '+', Pixel36Blue)
         ];
 
         this.plusBtns.forEach((btn, index) => {
@@ -73,19 +72,15 @@ export default class extends Phaser.State {
 
     updateCharacterText(){
 
-        this.playerInfo.text = `Level: ${this.game.player.level} \n`;
-        this.playerInfo.text += `Health: ${this.game.player.battleStats.currentHealth}/${this.game.player.battleStats.health} \n`;
-        this.playerInfo.text += `Exp: ${this.game.player.exp}, Next: ${playerLevels[this.game.player.level].maxExp - this.game.player.exp} \n\n`;
-        this.playerInfo.text += `Main Attributes: \n`;
-        this.playerInfo.text += `Strength: ${this.game.player.battleStats.strength} \n`;
-        this.playerInfo.text += `Dexterity: ${this.game.player.battleStats.dexterity} \n`;
-        this.playerInfo.text += `Vitality: ${this.game.player.battleStats.vitality} \n`;
-        this.playerInfo.text += `Wisdom: ${this.game.player.battleStats.wisdom} \n`;
+        this.playerInfo.text = `Str: ${this.game.player.battleStats.strength} \n`;
+        this.playerInfo.text += `Dex: ${this.game.player.battleStats.dexterity} \n`;
+        this.playerInfo.text += `Vit: ${this.game.player.battleStats.vitality} \n`;
+        this.playerInfo.text += `Wis: ${this.game.player.battleStats.wisdom} \n`;
 
         this.playerInfo2.text = `Dmg: ${this.game.player.battleStats.dmg.min} - ${this.game.player.battleStats.dmg.max} \n`;
         this.playerInfo2.text += `Armor: ${this.game.player.battleStats.armor} \n`;
         this.playerInfo2.text += `Gold: ${this.game.player.gold} \n`;
-        this.playerInfo2.text += `Carried Weight: ${this.game.player.battleStats.totalWeight}`;
+        this.playerInfo2.text += `Weight: ${this.game.player.battleStats.totalWeight}`;
     }
 
     equippedGridBackground(){
@@ -398,9 +393,7 @@ export default class extends Phaser.State {
         let shopSlot = this.mouseOverShop(mouse);
 
         if(currentSprite.parent == this.equippedItemsGroup){
-            //console.log('--dropping equipped Item...');
             if(slot){
-                //console.log('----on inventory slot...');
                 let fits = utils.placeItemInSlot(this.game.player, item, slot);
                 if(fits){
                     //console.log('------fits.');
@@ -408,7 +401,6 @@ export default class extends Phaser.State {
                     this.addBackPackSprite(item, gridPos);
                     currentSprite.destroy();
                 } else {
-                    // console.log('------doesnt fit, return to origin');
                     currentSprite.position.copyFrom(currentSprite.originalPosition);
                     utils.equipItem(this.game.player, item, {type: item.inventorySlot});
                 }
@@ -424,7 +416,6 @@ export default class extends Phaser.State {
                 currentSprite.destroy();
                 this.game.player.savePlayerData();
             } else {
-                // console.log('----on nothing, return to origin...');
                 currentSprite.position.copyFrom(currentSprite.originalPosition);
                 utils.equipItem(this.game.player, item, {type: item.inventorySlot});
             }
@@ -463,30 +454,6 @@ export default class extends Phaser.State {
     returnItemToOrigin(sprite, item){
         sprite.position.copyFrom(sprite.originalPosition);
         utils.placeItemInSlot(this.game.player, item, item.inventorySlot);
-    }
-
-    hoverInvItem(sprite, mouse, item){
-        this.hoverItemBG.position.x = mouse.x;
-        this.hoverItemBG.position.y = mouse.y - 75;
-        this.inventoryItem.position.x = mouse.x + 5;
-        this.inventoryItem.position.y = mouse.y - 75 + 5;
-
-        this.inventoryItem.text = `[${item.level}] ${item.name} \n`;
-        if(item.ac != null){//armor
-            this.inventoryItem.text += `AC: ${item.ac} \n`;
-        } else if(item.dmg != null){//weapon
-            this.inventoryItem.text += `Dmg: ${item.dmg.min} - ${item.dmg.max} \n`;
-        }
-        this.inventoryItem.text += `Durability: ${item.durability} \n`;
-        this.inventoryItem.text += `Weight: ${item.weight} \n`;
-        this.inventoryItem.text += `\n`;
-        if(item.magic.effect.attribute != null){
-            this.inventoryItem.text += `Magical Properties: \n`;
-            this.inventoryItem.text += `${item.magic.effect.attribute} +${item.magic.effect.value}\n`;
-        }
-
-        this.hoverItemBG.visible = true;
-        this.inventoryItem.visible = true;
     }
 
     render (){

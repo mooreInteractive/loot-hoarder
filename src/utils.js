@@ -62,7 +62,10 @@ export const equipItem = (player, item, slot) => {
     player.equipped[slot.type] = item;
     item.inventorySlot = slot.type;
     // console.log('--equipped item:', item, slot);
-    player.inventory.splice(player.inventory.indexOf(item), 1);
+    let itemInInv = player.inventory.indexOf(item);
+    if(itemInInv > -1){
+        player.inventory.splice(itemInInv, 1);
+    }
     player.updateBattleStats();
 };
 

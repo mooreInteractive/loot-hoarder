@@ -17,6 +17,7 @@ class Player {
     createNewPlayer(){
         this.level = 0;
         this.exp = 0;
+        this.nextLevel = {level: 1, minExp: 25, maxExp: 50};
         this.skillPoints = 0;
         this.battling = false;
         this.latestUnlockedDungeon = 1;
@@ -127,6 +128,14 @@ class Player {
     levelUp(){
         this.level += 1;
         this.skillPoints += 1;
+        this.nextLevel = this.nextPlayerLevel();
+        this.savePlayerData();
+    }
+
+    nextPlayerLevel(){
+        let minExp = this.nextLevel.minExp*2;
+        let maxExp = minExp*2;
+        return {level: this.level, minExp, maxExp};
     }
 
     skillUp(skill){
@@ -189,6 +198,9 @@ class Player {
 
         this.battleStats.totalWeight = weight;
         this.battleStats.health = health;
+        if(this.battleStats.currentHealth > this.battleStats.health){
+            this.battleStats.currentHealth = this.battleStats.health;
+        }
         this.battleStats.dmg = dmg;
         this.battleStats.armor = armor;
     }
@@ -206,6 +218,7 @@ class Player {
             let playerData = JSON.stringify({
                 level:this.level,
                 exp: this.exp,
+                nextLevel: this.nextLevel,
                 skillPoints: this.skillPoints,
                 inventory: this.inventory,
                 backpack: backpackImage,
@@ -252,6 +265,7 @@ class Player {
         this.story = story;
         this.level = playerData.level;
         this.exp = playerData.exp;
+        this.nextLevel = playerData.nextLevel;
         this.skillPoints = playerData.skillPoints;
         this.battling = false;
         this.inventory = playerData.inventory;

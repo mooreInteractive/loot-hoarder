@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import * as Forge from '../items/Forge';
-import {playerLevels} from '../data/levels';
 import Avatar from '../components/Avatar';
 import Dialogue from '../components/Dialogue';
 import * as StoryFunctions from '../components/StoryFunctions';
@@ -27,7 +26,7 @@ export default class extends Phaser.State {
     create () {
         let avatarSettings = {x: this.dungeon.sprite.x - 50, y: this.dungeon.sprite.y + 25, scale: 2};
         let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
-        this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings); //Need to call avatar.update() and avatar.render()
+        this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, false); //Need to call avatar.update() and avatar.render()
 
         /* Reused Enemy HealthBar Graphic */
         let EnHpBarBg = this.add.bitmapData(212, 52);
@@ -279,7 +278,7 @@ export default class extends Phaser.State {
         }
 
         //level up?
-        if(player.exp > playerLevels[player.level].maxExp){
+        if(player.exp > player.nextLevel.minExp){
             player.levelUp();
             this.updateLogText('Level Up!');
         }

@@ -1,18 +1,32 @@
 
 export default class Avatar{
 
-    constructor(game, gameState, settings, hpSettings={x: settings.x-105, y: settings.y}, render=true){
+    constructor(game, gameState, settings, hpSettings={x: settings.x-105, y: settings.y}, render=true, renderLevel=false){
         this.game = game;
         this.gameState = gameState;
         this.update = this.update.bind(this);
         let animSpeed = 6;
         let hpWidth = 212;
-        let hpHeight = 52;
+        let hpHeight = 62;
         let healthBarBackgroundBitMap = this.gameState.add.bitmapData(hpWidth, hpHeight);
-        let healthBarBitMap = this.gameState.add.bitmapData(hpWidth-10, hpHeight-12);
+        let healthBarBitMap = this.gameState.add.bitmapData(hpWidth-10, hpHeight-22);
+        let expBarBitMap = this.gameState.add.bitmapData(hpWidth-10, 5);
+        let levelIconBitMap = this.gameState.add.bitmapData(100,100);
 
         this.animSpeed = animSpeed;
 
+        //Level Icon
+        levelIconBitMap.circle(50,50,50, '#111111');
+        //levelIconBitMap.circle(50,50,40, '#FFFFFF');
+
+        this.levelIconBg = this.gameState.add.sprite(hpSettings.x - (hpWidth/2) - 70, hpSettings.y - hpHeight + 5, levelIconBitMap);
+        let Pixel28Black = {font: 'Press Start 2P', fontSize: 36, fill: '#FFFFFF', align: 'center' };
+        this.levelText = this.gameState.add.text(hpSettings.x - (hpWidth/2) - 45, hpSettings.y - hpHeight + 35, this.game.player.level, Pixel28Black);
+
+        if(!renderLevel){
+            this.levelIconBg.visible = false;
+            this.levelText.visible = false;
+        }
         /* Player Health Bar Graphic and Text */
         healthBarBackgroundBitMap.ctx.beginPath();
         healthBarBackgroundBitMap.ctx.rect(0, 0, hpWidth, hpHeight);
@@ -20,17 +34,23 @@ export default class Avatar{
         healthBarBackgroundBitMap.ctx.fill();
 
         healthBarBitMap.ctx.beginPath();
-        healthBarBitMap.ctx.rect(0, 0, hpWidth-10, hpHeight-12);
+        healthBarBitMap.ctx.rect(0, 0, hpWidth-10, hpHeight-22);
         healthBarBitMap.ctx.fillStyle = '#DE1111';
         healthBarBitMap.ctx.fill();
 
         this.healthBarBg = this.gameState.add.sprite(hpSettings.x - (hpWidth/2), hpSettings.y - (hpHeight/2), healthBarBackgroundBitMap);
         this.healthBar = this.gameState.add.sprite(hpSettings.x - (hpWidth/2) + 6, hpSettings.y - (hpHeight/2) + 6, healthBarBitMap);
 
-        this.healthText = this.gameState.add.text(hpSettings.x - (hpWidth/2) + 12, hpSettings.y - (hpHeight/2) + 6, 'Hp:');
-        this.healthText.font = 'Oswald';
-        this.healthText.fontSize = 24;
-        this.healthText.fill = '#FFFFFF';
+        let Pixel12White = {font: 'Press Start 2P', fontSize: 16, fill: '#FFFFFF' };
+        this.healthText = this.gameState.add.text(hpSettings.x - (hpWidth/2) + 12, hpSettings.y - (hpHeight/2) + 18, 'Hp:', Pixel12White);
+
+        //Experience Bar
+        expBarBitMap.ctx.beginPath();
+        expBarBitMap.ctx.rect(0, 0, hpWidth-10, 5);
+        expBarBitMap.ctx.fillStyle = '#7EC0EE';
+        expBarBitMap.ctx.fill();
+
+        this.expBar = this.gameState.add.sprite(hpSettings.x - (hpWidth/2) + 6, hpSettings.y + (hpHeight/2) - 10, expBarBitMap);
 
         this.dude = this.gameState.add.group();
         this.armor = {head: null, torso: null, feet: null};
@@ -195,8 +215,19 @@ export default class Avatar{
         let healthPercent = currHealth/maxHealth;
         if(healthPercent < 0){ healthPercent = 0; }
 
+        let currExp = player.exp;
+        let nextExp = player.nextLevel.minExp;
+        let expPercent = (currExp - (nextExp/2))/nextExp;
+        if (expPercent < 0) {
+            expPercent = 0;
+        } else if (expPercent > 1){
+            expPercent = 1;
+        }
+
         this.healthText.text = `Hp: ${currHealth}/${maxHealth}`;
         this.healthBar.scale.x = healthPercent;
+
+        this.expBar.scale.x = expPercent;
     }
 
     moveToAtScale(settings={x:this.nakie.x, y:this.nakie.y, scale:this.nakie.scale.x}, hpSettings, speed, cb){
@@ -232,8 +263,9 @@ export default class Avatar{
             //hp bar and text
             this.gameState.add.tween(this.healthBarBg).to( { x: hpSettings.x - (hpWidth/2), y: hpSettings.y - (hpHeight/2) }, animTime, null, true);
             this.gameState.add.tween(this.healthBar).to( { x: hpSettings.x - (hpWidth/2) + 6, y: hpSettings.y - (hpHeight/2) + 6 }, animTime, null, true);
+            this.gameState.add.tween(this.expBar).to( { x: hpSettings.x - (hpWidth/2) + 6, y: hpSettings.y + (hpHeight/2) }, animTime, null, true);
 
-            this.gameState.add.tween(this.healthText).to( { x: hpSettings.x - (hpWidth/2) + 12 , y: hpSettings.y - (hpHeight/2) + 6 }, animTime, null, true);
+            this.gameState.add.tween(this.healthText).to( { x: hpSettings.x - (hpWidth/2) + 12 , y: hpSettings.y - (hpHeight/2) + 18 }, animTime, null, true);
         }
 
 
