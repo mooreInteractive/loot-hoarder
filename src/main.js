@@ -114,8 +114,10 @@ class Game extends Phaser.Game {
 
     OnResizeCalled() {
         let gameWidth = window.innerWidth;
-        let gameHeight = window.innerHeight;
         let scaleToFitX = gameWidth / this.baseWidth;
+        let scaleAd = (window.innerWidth*0.15625);
+        let scaleDownForAd = this.device.desktop ? 0 : scaleAd;
+        let gameHeight = window.innerHeight - scaleDownForAd;
         let scaleToFitY = gameHeight / this.baseHeight;
         let optimalRatio = Math.min(scaleToFitX, scaleToFitY);
 

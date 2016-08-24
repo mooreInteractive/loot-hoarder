@@ -16,6 +16,12 @@ export default class extends Phaser.State {
         this.raidStarted = false;
         this.raidEnded = false;
         this.endAnimStarted = false;
+
+        /* Restart Ads */
+        let rand = Forge.rand(0,1000);
+        console.log('before:', document.querySelector('#lb').data);
+        document.querySelector('#lb').data = 'lb.html?rand='+rand;
+        console.log('after:', document.querySelector('#lb').data);
     }
 
     create () {
