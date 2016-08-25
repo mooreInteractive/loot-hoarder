@@ -162,6 +162,14 @@ export default class MainNavigation{
         }
     }
 
+    startedDraggingItem(){
+        this.draggingItem = true;
+    }
+
+    stoppedDraggingItem(){
+        this.draggingItem = false;
+    }
+
     update(currDungeon=null){
         if(currDungeon != null){
             this.currentDungeon = currDungeon;
@@ -173,10 +181,17 @@ export default class MainNavigation{
             let townBtnColor = 'redButton';
             if(this.game.player.latestUnlockedDungeon > 1 && this.currentDungeon.level == 1){
                 this.townText = 'SHOP';
-                townBtnColor = 'yellowButton';
                 this.raidBtn.alpha = 1;
                 this.raidText.alpha = 1;
-                this.raidText.text = this.townText;
+                if(this.draggingItem){
+                    townBtnColor = 'yellow_dotted';
+                    this.raidText.text = 'SELL';
+                    this.raidText.fill = '#ffd948';
+                } else {
+                    townBtnColor = 'yellowButton';
+                    this.raidText.text = this.townText;
+                    this.raidText.fill = '#000000';
+                }
                 this.raidBtn.loadTexture(townBtnColor);
             } else{
                 this.townText = 'RAID';

@@ -2,13 +2,16 @@
 import * as Weapon from './Weapon';
 import * as Armor from './Armor';
 import * as Accessory from './Accessory';
+import * as Misc from './Misc';
 
 export function getRandomItem(levelMin, levelMax){
     let type = rand(0,100);
-    if(type < 45){
-        return Weapon.build(levelMin, levelMax);
-    } else if(type < 95){
+    if(type < 30){
+        return Misc.build();
+    } else if(type < 63){
         return Armor.build(levelMin, levelMax);
+    } else if(type < 96){
+        return Weapon.build(levelMin, levelMax);
     } else {
         return Accessory.build(levelMin, levelMax);
     }

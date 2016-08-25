@@ -91,16 +91,27 @@ export default class Avatar{
             }
 
             let weaponSprite = this.getWeaponSprite(this.game.player.equipped.leftHand);
-            this.weapons.right = this.dude.create(settings.x, settings.y, weaponSprite);
+            this.weapons.left = this.dude.create(settings.x, settings.y, weaponSprite);
+            this.weapons.left.anchor.setTo(0.5);
+            this.weapons.left.scale.setTo(settings.scale);
+            this.weapons.left.animations.add('walk', [0,1,2,3], animSpeed);
+            //console.log('--sprite:', this.game.player.equipped.rightHand, (this.game.player.equipped.rightHand == null), this.weapons);
+            if(this.game.player.equipped.leftHand == null){
+                this.weapons.left.visible = false;
+            }
+
+            let weaponSpriteRight = this.getWeaponSprite(this.game.player.equipped.rightHand) + '_off';
+            this.weapons.right = this.dude.create(settings.x, settings.y, weaponSpriteRight);
             this.weapons.right.anchor.setTo(0.5);
             this.weapons.right.scale.setTo(settings.scale);
             this.weapons.right.animations.add('walk', [0,1,2,3], animSpeed);
             //console.log('--sprite:', this.game.player.equipped.rightHand, (this.game.player.equipped.rightHand == null), this.weapons);
-            if(this.game.player.equipped.leftHand == null){
+            if(this.game.player.equipped.rightHand == null){
                 this.weapons.right.visible = false;
             }
 
             this.weapons.right.animations.play('walk', animSpeed, true);
+            this.weapons.left.animations.play('walk', animSpeed, true);
             this.armor.head.animations.play('walk', animSpeed, true);
             this.armor.torso.animations.play('walk', animSpeed, true);
             this.armor.feet.animations.play('walk', animSpeed, true);
@@ -171,11 +182,24 @@ export default class Avatar{
         }
 
         if(this.game.player.equipped.leftHand == null){
-            this.weapons.right.visible = false;
+            this.weapons.left.visible = false;
         } else {
             let weaponSprite = this.getWeaponSprite(this.game.player.equipped.leftHand);
-            if(weaponSprite != this.weapons.right.key){
-                this.weapons.right.loadTexture(weaponSprite, 0);
+            if(weaponSprite != this.weapons.left.key){
+                this.weapons.left.loadTexture(weaponSprite, 0);
+                this.weapons.left.animations.add('walk');
+                equipmentChanged = true;
+            }
+            if(this.weapons.left.visible == false){ equipmentChanged = true; }
+            this.weapons.left.visible = true;
+        }
+
+        if(this.game.player.equipped.rightHand == null){
+            this.weapons.right.visible = false;
+        } else {
+            let weaponSpriteRight = this.getWeaponSprite(this.game.player.equipped.rightHand) + '_off';
+            if(weaponSpriteRight != this.weapons.right.key){
+                this.weapons.right.loadTexture(weaponSpriteRight, 0);
                 this.weapons.right.animations.add('walk');
                 equipmentChanged = true;
             }
@@ -185,11 +209,13 @@ export default class Avatar{
 
         if(equipmentChanged == true){
             this.weapons.right.animations.stop(null, true);
+            this.weapons.left.animations.stop(null, true);
             this.armor.head.animations.stop(null, true);
             this.armor.torso.animations.stop(null, true);
             this.armor.feet.animations.stop(null, true);
             this.nakie.animations.stop(null, true);
             this.weapons.right.animations.play('walk', this.animSpeed, true);
+            this.weapons.left.animations.play('walk', this.animSpeed, true);
             this.armor.head.animations.play('walk', this.animSpeed, true);
             this.armor.torso.animations.play('walk', this.animSpeed, true);
             this.armor.feet.animations.play('walk', this.animSpeed, true);

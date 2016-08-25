@@ -30,7 +30,7 @@ export function build(levelMin, levelMax) {
         break;
     case 2: armor.type = 'feet'; armor.inventoryType = 'feet';
         break;
-    case 3: armor.type = 'hand'; armor.inventoryType = 'head';
+    case 3: armor.type = 'hand'; armor.inventoryType = 'hand';
         break;
     }
 
@@ -77,7 +77,7 @@ export function build(levelMin, levelMax) {
     }
 
     //armor level
-    armor.level = this.rand(levelMin, levelMax);
+    armor.level = this.rand(levelMin, levelMax+1);
     armor.value += 20*armor.level;
     //add level modifier to name
     switch(armor.level){
@@ -120,7 +120,7 @@ export function build(levelMin, levelMax) {
     armor.value += armor.ac;
     armor.value += armor.durability - 10;
 
-    switch(this.rand(0,10)){
+    switch(this.rand(0,20)){
     case 0:
         armor.magic.effect = this.getMagicEffect(armor.level);
         armor.name += ' of '+armor.magic.effect.attribute;

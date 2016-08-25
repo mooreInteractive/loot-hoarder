@@ -64,7 +64,7 @@ export function build(levelMin, levelMax) {
     }
 
     //weapon level
-    weapon.level = this.rand(levelMin, levelMax);
+    weapon.level = this.rand(levelMin, levelMax+1);
     weapon.value = 20*weapon.level;
     //add level modifier to name
     switch(weapon.level){
@@ -107,7 +107,7 @@ export function build(levelMin, levelMax) {
     weapon.value += weapon.dmg.max - weapon.dmg.min;
     weapon.value += weapon.durability - 10;
 
-    switch(this.rand(0,6)){
+    switch(this.rand(0,12)){
     case 0:
         weapon.magic.effect = this.getMagicEffect(weapon.level);
         weapon.name += ' of '+weapon.magic.effect.attribute;

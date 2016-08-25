@@ -326,6 +326,7 @@ export default class extends Phaser.State {
 
     startDrag(sprite, item, equipped=false){
         //console.log('-startDrag(sprite, item, equipped)', sprite, item, equipped);
+        this.mainNav.startedDraggingItem();
         if(equipped){
             utils.unequipItem(this.game.player, item);
         } else {
@@ -387,6 +388,7 @@ export default class extends Phaser.State {
     }
 
     stopDrag(currentSprite, item, gridPos, mouse){
+        this.mainNav.stoppedDraggingItem();
         //Getting Drop Zone
         let slot = this.mouseOverBackPackGrid(currentSprite, item, gridPos, mouse);
         let equipSlot = this.mouseOverEquipmentSlot(mouse, item);

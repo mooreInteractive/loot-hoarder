@@ -16,6 +16,7 @@ export default class extends Phaser.State {
         this.load.image('yellowButton', './assets/images/yellow_button00.png');
         this.load.image('redButton', './assets/images/red_button00.png');
         this.load.image('optionsBanner', './assets/images/options_banner.png');
+        this.load.image('yellow_dotted', './assets/images/yellow_dotted.png');
 
         //weapons
         this.load.image('shank0', './assets/images/items/shank.png');
@@ -31,6 +32,8 @@ export default class extends Phaser.State {
         this.load.image('blueRing', './assets/images/items/blue_ring.png');
         this.load.image('purpleRing', './assets/images/items/purple_ring.png');
         this.load.image('pinkRing', './assets/images/items/pink_ring.png');
+        this.load.image('potion', './assets/images/items/potion.png');
+        this.load.image('scroll', './assets/images/items/scroll.png');
 
         //terrain
         this.load.spritesheet('water', './assets/images/terrain/water.png', 32, 32);
@@ -85,6 +88,12 @@ export default class extends Phaser.State {
         this.game.load.spritesheet('dagger', './assets/images/avatar/dagger.png', 96, 144);
         this.game.load.spritesheet('bow', './assets/images/avatar/bow.png', 96, 144);
         this.game.load.spritesheet('spear', './assets/images/avatar/spear.png', 96, 144);
+
+        this.game.load.spritesheet('axe_off', './assets/images/avatar/axe_off.png', 96, 144);
+        this.game.load.spritesheet('sword_off', './assets/images/avatar/dagger_off.png', 96, 144);
+        this.game.load.spritesheet('dagger_off', './assets/images/avatar/dagger_off.png', 96, 144);
+        this.game.load.spritesheet('bow_off', './assets/images/avatar/bow_off.png', 96, 144);
+        this.game.load.spritesheet('spear_off', './assets/images/avatar/spear_off.png', 96, 144);
 
 
 
