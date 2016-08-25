@@ -9,5 +9,5 @@ Generating random weapons to be managed as a user raids dungeons. Health refills
 # To Run locally:
 * Clone/Download repo
 * run ```npm install```
-* run ```webpack```
+* run ```npm run dev```
 * goto ```http://localhost:3000```
