@@ -95,7 +95,8 @@ export function build(levelMin, levelMax) {
         weapon.dmg.min = this.rand(5,6);
         weapon.dmg.max = this.rand(10,12);
         break;
-    case 5: weapon.name = 'Superior '+weapon.name;
+    case 5:
+    default: weapon.name = 'Superior '+weapon.name;
         weapon.range = 5;
         weapon.weight = 6;
         weapon.durability = this.rand(18,22);

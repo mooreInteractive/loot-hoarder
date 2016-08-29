@@ -90,7 +90,7 @@ export default class extends Phaser.State {
         this.game.load.spritesheet('spear', './assets/images/avatar/spear.png', 96, 144);
 
         this.game.load.spritesheet('axe_off', './assets/images/avatar/axe_off.png', 96, 144);
-        this.game.load.spritesheet('sword_off', './assets/images/avatar/dagger_off.png', 96, 144);
+        this.game.load.spritesheet('sword_off', './assets/images/avatar/sword_off.png', 96, 144);
         this.game.load.spritesheet('dagger_off', './assets/images/avatar/dagger_off.png', 96, 144);
         this.game.load.spritesheet('bow_off', './assets/images/avatar/bow_off.png', 96, 144);
         this.game.load.spritesheet('spear_off', './assets/images/avatar/spear_off.png', 96, 144);

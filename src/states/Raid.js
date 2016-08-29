@@ -184,7 +184,6 @@ export default class extends Phaser.State {
         let story = this.game.player.story;
 
         if(enemy.hp < 1){//killed an enemey
-            this.updateLogText('Defeated Enemy.');
             //get loot
             let lootChance = Forge.rand(0,100);
             let lootThreshold = 65;
@@ -219,7 +218,10 @@ export default class extends Phaser.State {
                 }
             }
             //get exp
-            player.exp += Math.floor((enemy.dps + enemy.originalHp) / 3);
+            let newExp = Math.floor((enemy.dps + enemy.originalHp) / 3);
+            player.exp += newExp;
+
+            this.updateLogText(`Defeated ${enemy.sprite}. +${newExp} XP`);
             //remove enemy from dungeon
             //this.enSprite.visible = false;
             this.enemySprites[enemy.sprite].position.x = this.game.world.width + 300;//TODO animate out/explode/die
@@ -241,7 +243,7 @@ export default class extends Phaser.State {
         let dungeon = this.dungeon;
         //Done with enemies for loop
         if(player.battleStats.currentHealth < 1){
-            this.updateLogText('You were knocked out.');
+            this.updateLogText('You can\'t raid any longer.');
             if(this.game.loot.length > 0){
                 this.updateLogText(`Total loot: ${this.game.loot.length}.`);
             }
