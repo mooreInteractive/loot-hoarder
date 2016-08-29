@@ -244,7 +244,9 @@ export default class Avatar{
 
         let currExp = player.exp;
         let nextExp = player.nextLevel.minExp;
-        let expPercent = (currExp - (nextExp/2))/nextExp;
+        let nextExpAdjust = player.level == 0 ? 0 : (nextExp/2);
+        let expPercent = (currExp - nextExpAdjust)/nextExp;
+        
         if (expPercent < 0) {
             expPercent = 0;
         } else if (expPercent > 1){
