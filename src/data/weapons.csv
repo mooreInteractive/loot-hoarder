@@ -1,0 +1,15 @@
+level,name,dmg,weight,durability,value,twoHanded,spriteType
+1,Broken Short Sword,1d6,2,10,2,FALSE,sword
+1,Worn Short Sword,1d6+1,2,12,4,FALSE,sword
+2,Short Sword,1d6+2,2,15,8,FALSE,sword
+1,Dull Sword,1d6+3,2,15,6,FALSE,sword
+1,Broken Machete,1d6+1,3,10,3,FALSE,sword
+2,Machete,1d6+3,3,15,4,FALSE,sword
+3,Long Sword,1d8,6,16,6,FALSE,sword
+4,Scimitar,1d8+1,4,18,8,FALSE,sword
+5,Flachion,1d8+2,5,18,12,FALSE,sword
+6,Great Sword,1d12,10,22,18,TRUE,sword
+7,Bastard Sword,1d10+2,12,22,24,TRUE,sword
+8,Cleaver,2d6+1,8,28,30,FALSE,sword
+9,Rapier,2d6+2,6,24,45,FALSE,sword
+10,Mountain Death Blade,2d8+1,8,64,80,FALSE,sword

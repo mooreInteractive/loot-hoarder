@@ -1,3 +1,4 @@
+import * as Forge from '../items/Forge';
 
 export default class Avatar{
 
@@ -297,6 +298,53 @@ export default class Avatar{
 
 
         tween.onComplete.addOnce(cb.bind(this.gameState));
+    }
+
+    fakeUpdate(){
+
+        let headSprites = ['helm_leather','helm_stone','helm_iron','helm_steel','hair'];
+        let headSprite = headSprites[Forge.rand(0, headSprites.length)];
+        this.armor.head.loadTexture(headSprite, 0);
+        this.armor.head.animations.add('walk');
+        this.armor.head.visible = true;
+
+        let feetSprites = ['boots_leather','boots_stone','boots_iron','boots_steel'];
+        let feetSprite = feetSprites[Forge.rand(0, feetSprites.length)];
+        this.armor.feet.loadTexture(feetSprite, 0);
+        this.armor.feet.animations.add('walk');
+        this.armor.feet.visible = true;
+
+        let bodySprites = ['armor_leather','armor_stone','armor_iron','armor_steel'];
+        let random = Forge.rand(0, bodySprites.length);
+        let bodySprite = bodySprites[random];
+        this.armor.torso.loadTexture(bodySprite, 0);
+        this.armor.torso.animations.add('walk');
+        this.armor.torso.visible = true;
+
+        let weaponSprites = ['axe', 'sword', 'dagger', 'bow', 'spear'];
+        let weaponSprite = weaponSprites[Forge.rand(0, weaponSprites.length)];
+        this.weapons.left.loadTexture(weaponSprite, 0);
+        this.weapons.left.animations.add('walk');
+        this.weapons.left.visible = true;
+
+        let weaponSpritesR = ['axe_off', 'sword_off', 'dagger_off', 'bow_off', 'spear_off'];
+        let weaponSpriteR = weaponSpritesR[Forge.rand(0, weaponSpritesR.length)];
+        this.weapons.right.loadTexture(weaponSpriteR, 0);
+        this.weapons.right.animations.add('walk');
+        this.weapons.right.visible = true;
+
+        this.weapons.right.animations.stop(null, true);
+        this.weapons.left.animations.stop(null, true);
+        this.armor.head.animations.stop(null, true);
+        this.armor.torso.animations.stop(null, true);
+        this.armor.feet.animations.stop(null, true);
+        this.nakie.animations.stop(null, true);
+        this.weapons.right.animations.play('walk', this.animSpeed, true);
+        this.weapons.left.animations.play('walk', this.animSpeed, true);
+        this.armor.head.animations.play('walk', this.animSpeed, true);
+        this.armor.torso.animations.play('walk', this.animSpeed, true);
+        this.armor.feet.animations.play('walk', this.animSpeed, true);
+        this.nakie.animations.play('walk', this.animSpeed, true);
     }
 
 }

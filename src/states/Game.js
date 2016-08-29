@@ -30,7 +30,7 @@ export default class extends Phaser.State {
 
         //Title Text
         let titleStyle = {font: 'Press Start 2P', fontSize: 64, fill: '#1313CD', align: 'center'};
-        this.title = this.add.text(this.game.world.centerX, 250, 'LOOT\nHOARDER', titleStyle);
+        this.title = this.add.text(this.game.world.centerX, 250, 'MOORE\'S\nLEWT', titleStyle);
         this.title.anchor.setTo(0.5);
         this.title.stroke = '#000000';
         this.title.strokeThickness = 12;
@@ -59,11 +59,18 @@ export default class extends Phaser.State {
     }
 
     update(){
-        this.avatar.update();
 
         this.frameCount += 1;
         if(this.frameCount%5 == 0){
             this.title.fill = randomColor({luminosity: 'dark', hue: 'yellow'});
+        }
+
+        if(this.frameCount%36 == 0){
+            if(this.game.player.exp > 0){
+                this.avatar.update();
+            } else {
+                this.avatar.fakeUpdate();
+            }
         }
     }
 

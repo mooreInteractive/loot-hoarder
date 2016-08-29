@@ -5,7 +5,7 @@ export function build() {
     let accessory = {
         'name': 'null',
         'type': 'misc',
-        'inventoryType': 'belt',
+        'inventoryType': 'accessory',
         'weight': 1,
         'durability': 100,
         'magic': {
@@ -31,6 +31,11 @@ export function build() {
         break;
     case 1:accessory.name = 'Unknown Scroll';
         accessory.sprite = 'scroll';
+        accessory.hiddenStats = {
+            name: 'Scroll of Fireball',
+            battleAction: 'fireball',
+            battleDamage: 'wisdom-5'
+        };
         accessory.value += 500;
         accessory.battleAction = {
             name: 'unknown'

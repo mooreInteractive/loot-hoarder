@@ -1,5 +1,6 @@
 //Weapon.js
 import * as Constants from './constants';
+import * as Weapons from '../data/weapons';
 
 export function build(levelMin, levelMax) {
     let weapon = {
@@ -67,42 +68,56 @@ export function build(levelMin, levelMax) {
     weapon.level = this.rand(levelMin, levelMax+1);
     weapon.value = 20*weapon.level;
     //add level modifier to name
-    switch(weapon.level){
-    case 1: weapon.name = 'Broken '+weapon.name;
-        weapon.range = 2;
-        weapon.weight = 4;
-        weapon.durability = this.rand(8,12);
-        weapon.dmg.min = this.rand(1,2);
-        weapon.dmg.max = this.rand(5,6);
-        break;
-    case 2: weapon.name = 'Worn '+weapon.name;
-        weapon.range = 3;
-        weapon.weight = 5;
-        weapon.durability = this.rand(10,15);
-        weapon.dmg.min = this.rand(2,3);
-        weapon.dmg.max = this.rand(7,8);
-        break;
-    case 3: weapon.range = 4;
-        weapon.weight = 7;
-        weapon.durability = this.rand(12,16);
-        weapon.dmg.min = this.rand(3,4);
-        weapon.dmg.max = this.rand(9,10);
-        break;
-    case 4: weapon.name = 'Sharp '+weapon.name;
-        weapon.range = 4;
-        weapon.weight = 6;
-        weapon.durability = this.rand(15,18);
-        weapon.dmg.min = this.rand(5,6);
-        weapon.dmg.max = this.rand(10,12);
-        break;
-    case 5: weapon.name = 'Superior '+weapon.name;
-        weapon.range = 5;
-        weapon.weight = 6;
-        weapon.durability = this.rand(18,22);
-        weapon.dmg.min = this.rand(8,10);
-        weapon.dmg.max = this.rand(15,18);
-        break;
+    if(weapon.name == 'Sword'){
+        let weaponSet = Weapons.swords.filter((sword)=>{
+            return sword.level == weapon.level;
+        });
+        let sword = weaponSet[this.rand(0,weaponSet.length-1)];
+        let dmgSplit = sword.dmg.split('+');
+        let modifier = parseInt(dmgSplit[1]) || 0;
+        let dmgMinMax = dmgSplit[0].split('d');
+        let dmgMin = parseInt(dmgMinMax[0])+modifier;
+        let dmgMax = (parseInt(dmgMinMax[0])*parseInt(dmgMinMax[1]))+modifier;
+
+        weapon.name = sword.name;
+        weapon.weight = parseInt(sword.weight);
+        weapon.dmg.min = dmgMin;
+        weapon.dmg.max = dmgMax;
+    } else {
+        switch(weapon.level){
+        case 1: weapon.name = 'Broken '+weapon.name;
+            weapon.weight = 4;
+            weapon.durability = this.rand(8,12);
+            weapon.dmg.min = this.rand(1,2);
+            weapon.dmg.max = this.rand(5,6);
+            break;
+        case 2: weapon.name = 'Worn '+weapon.name;
+            weapon.weight = 5;
+            weapon.durability = this.rand(10,15);
+            weapon.dmg.min = this.rand(2,3);
+            weapon.dmg.max = this.rand(7,8);
+            break;
+        case 3: weapon.weight = 7;
+            weapon.durability = this.rand(12,16);
+            weapon.dmg.min = this.rand(3,4);
+            weapon.dmg.max = this.rand(9,10);
+            break;
+        case 4: weapon.name = 'Sharp '+weapon.name;
+            weapon.weight = 6;
+            weapon.durability = this.rand(15,18);
+            weapon.dmg.min = this.rand(5,6);
+            weapon.dmg.max = this.rand(10,12);
+            break;
+        case 5: weapon.name = 'Superior '+weapon.name;
+            weapon.weight = 6;
+            weapon.durability = this.rand(18,22);
+            weapon.dmg.min = this.rand(8,10);
+            weapon.dmg.max = this.rand(15,18);
+            break;
+        }
     }
+
+
 
     weapon.value += weapon.dmg.max - weapon.dmg.min;
     weapon.value += weapon.durability - 10;

@@ -18,9 +18,7 @@ export default class extends Phaser.State {
 
         /* Restart Ads */
         let rand = Forge.rand(0,1000);
-        console.log('before:', document.querySelector('#lb').data);
         document.querySelector('#lb').data = 'lb.html?rand='+rand;
-        console.log('after:', document.querySelector('#lb').data);
     }
 
     create () {
@@ -42,8 +40,8 @@ export default class extends Phaser.State {
         EnHpBar.ctx.fillStyle = '#DE11CD';
         EnHpBar.ctx.fill();
 
-        this.enHealthBarBg = this.add.sprite(this.game.world.centerX+155, this.game.world.centerY+140, EnHpBarBg);
-        this.enHealthBar = this.add.sprite(this.game.world.centerX+161, this.game.world.centerY+146, EnHpBar);
+        this.enHealthBarBg = this.add.sprite(this.game.world.centerX+155, this.game.world.centerY-10, EnHpBarBg);
+        this.enHealthBar = this.add.sprite(this.game.world.centerX+161, this.game.world.centerY-4, EnHpBar);
         this.enHealthBarBg.visible = false;
         this.enHealthBar.visible = false;
 
@@ -65,8 +63,7 @@ export default class extends Phaser.State {
         this.dungeon.enemies.forEach((enemy)=>{
             if(this.loadedSprites.indexOf(enemy.sprite) == -1){
                 this.loadedSprites.push(enemy.sprite);
-                console.log('--enemy sprite:', enemy.sprite);
-                let addedSprite = this.game.add.sprite(this.game.world.width + 200, this.game.world.centerY + 125, enemy.sprite);
+                let addedSprite = this.game.add.sprite(this.game.world.width + 200, this.game.world.centerY -25, enemy.sprite);
                 addedSprite.anchor.setTo(0.5,1);
                 addedSprite.scale.setTo(2,2);
                 addedSprite.animations.add('walk');
@@ -76,8 +73,25 @@ export default class extends Phaser.State {
             }
         });
 
+        //Load action items from inventory...
+        let equipment = this.game.player.equipped;
+        this.accessories = [equipment.accessory1, equipment.accessory2, equipment.accessory3, equipment.accessory4];
+        let battleItems = this.accessories.filter((item)=>{
+            return item != null && item.type == 'misc' && !(item.name.search(/unknown/ig) > -1);
+        });
+        this.battleButtons = [];
+        if(battleItems.length > 0){
+            battleItems.forEach((item, index)=>{
+                let btn = new Phaser.Button(this.game, 200+(120*index), this.game.world.centerY + 150, item.sprite, this.useItem.bind(this, item, index), this);
+                btn.anchor.setTo(0.5);
+                btn.visible = true;
 
-        this.dmgText = this.add.text(this.game.world.centerX - 200, this.game.world.centerY + 80, '');
+                this.add.existing(btn);
+                this.battleButtons.push(btn);
+            });
+        }
+
+        this.dmgText = this.add.text(this.game.world.centerX - 200, this.game.world.centerY -70, '');
         this.dmgText.font = 'Press Start 2P';
         this.dmgText.fontSize = 32;
         this.dmgText.stroke = '#FFFFFF';
@@ -85,7 +99,7 @@ export default class extends Phaser.State {
         this.dmgText.fill = '#CD1313';
         this.dmgText.visible = false;
 
-        this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY + 80, '');
+        this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY -70, '');
         this.enDmgText.font = 'Press Start 2P';
         this.enDmgText.fontSize = 32;
         this.enDmgText.stroke = '#FFFFFF';
@@ -98,8 +112,8 @@ export default class extends Phaser.State {
     }
 
     animateBattleStart(){
-        let avatarSettings = {x: this.game.world.centerX - 200, y: this.game.world.centerY, scale: 2};
-        let hpSettings = {x: this.game.world.centerX - 200, y: this.game.world.centerY + 164};
+        let avatarSettings = {x: this.game.world.centerX - 200, y: this.game.world.centerY - 160, scale: 2};
+        let hpSettings = {x: this.game.world.centerX - 200, y: this.game.world.centerY + 14};
         this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, this.queueEnemy);
     }
 
@@ -111,6 +125,19 @@ export default class extends Phaser.State {
         let avatarSettings = {x: this.dungeon.sprite.x, y: this.dungeon.sprite.y, scale: 1};
         let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
         this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, endCB);
+    }
+
+    useItem(item, btnIndex){
+        this.updateLogText('used item:'+item.name);
+        switch(item.name){
+        case 'Health Potion': this.game.player.battleStats.currentHealth = this.game.player.battleStats.health;
+            break;
+        case 'Scroll of Fireball': console.log('using a fireball...');
+            break;
+        }
+        this.game.player.equipped[item.inventorySlot] = null;
+        this.battleButtons[btnIndex].kill();
+
     }
 
     updateLogText(logText){
@@ -160,18 +187,37 @@ export default class extends Phaser.State {
         if(!this.battlePaused){
             let player = this.game.player;
             let enemy = this.currentEnemy;
-            let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
 
-            enemy.hp -= strike;
+            let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
+            let miss = Forge.rand(0+player.baseStats.dexterity, 100);
+            let crit = Forge.rand(0+player.baseStats.dexterity, 100);
+            if(miss > 15){
+                if(crit > 95){
+                    strike = Math.floor(player.battleStats.dmg.max*1.5);
+                    this.enDmgText.fontSize = 40;
+                    this.enDmgText.text = strike+'!';
+                } else {
+                    this.enDmgText.fontSize = 32;
+                    this.enDmgText.text = strike;
+                }
+                enemy.hp -= strike;
+            } else {
+                this.enDmgText.text = 'miss';
+            }
 
             let armorReduction = Math.ceil(enemy.dps*(player.battleStats.armor/100));
             let enStrike = enemy.dps - armorReduction;
+            let enMiss = Forge.rand(0+player.baseStats.dexterity, 100);
+            //let enCrit = Forge.rand(0+player.baseStats.dexterity, 100);
+            if(enMiss > 15){
+                player.battleStats.currentHealth -= enStrike;
+                this.dmgText.text = enStrike;
+            } else {
+                this.dmgText.text = 'miss';
+            }
 
-            player.battleStats.currentHealth -= enStrike;
 
-            this.dmgText.text = enStrike;
             this.dmgText.visible = true;
-            this.enDmgText.text = strike;
             this.enDmgText.visible = true;
 
             console.log(`En: -${strike}hp (${enemy.hp}/${enemy.originalHp}), Pl: -${enStrike}hp (${player.battleStats.currentHealth})`);
@@ -300,8 +346,8 @@ export default class extends Phaser.State {
         this.dmgText.visible = false;
         this.enDmgText.text = '';
         this.enDmgText.visible = false;
-        this.dmgText.position.y = this.game.world.centerY - 120;
-        this.enDmgText.position.y = this.game.world.centerY - 120;
+        this.dmgText.position.y = this.game.world.centerY - 270;
+        this.enDmgText.position.y = this.game.world.centerY - 270;
         this.dmgText.alpha = 1;
         this.enDmgText.alpha = 1;
     }

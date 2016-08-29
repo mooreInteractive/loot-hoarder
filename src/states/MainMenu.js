@@ -61,6 +61,28 @@ export default class extends Phaser.State {
             btn.events.onInputDown.add(this.switchDungeon.bind(this, dungeon), this);
             btn.input.useHandCursor = true;
             this.raidBtns.push(btn);
+
+            if(this.game.player.latestUnlockedDungeon >= dungeon.level){
+                /* Player Health Bar Graphic and Text */
+                let dungeonProgressBG = this.add.bitmapData(64, 5);
+                let dungeonProgress = this.add.bitmapData(60, 3);
+
+                dungeonProgressBG.ctx.beginPath();
+                dungeonProgressBG.ctx.rect(0, 0, 64, 5);
+                dungeonProgressBG.ctx.fillStyle = '#111111';
+                dungeonProgressBG.ctx.fill();
+
+                dungeonProgress.ctx.beginPath();
+                dungeonProgress.ctx.rect(0, 0, 60, 3);
+                dungeonProgress.ctx.fillStyle = '#DE1111';
+                dungeonProgress.ctx.fill();
+
+                this.dungeonProgressBg = this.add.sprite(dungeon.sprite.x-32, dungeon.sprite.y-(btn.height/2) - 10, dungeonProgressBG);
+                this.dungeonProgress = this.add.sprite(dungeon.sprite.x-30, dungeon.sprite.y-(btn.height/2) - 8, dungeonProgress);
+
+                let progress = dungeon.enemiesLeft / dungeon.enemiesAmount;
+                this.dungeonProgress.scale.x = progress;
+            }
         });
     }
 
