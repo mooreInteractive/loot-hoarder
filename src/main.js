@@ -30,7 +30,7 @@ class Game extends Phaser.Game {
         /***** VERSION NUMBER - UPDATING WILL WIPE PLAYER DATA *************
         /****
         /**/
-        this.version = '0.0.11'; //updated 8/21 5:19pm
+        this.version = '0.0.12'; //updated 8/21 5:19pm
         /**/
         /****
         *******************************************************************/

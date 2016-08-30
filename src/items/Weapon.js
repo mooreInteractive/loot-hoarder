@@ -41,86 +41,58 @@ export function build(levelMin, levelMax) {
         break;
     }
 
-    if(weapon.type == 'melee'){
-        switch(this.rand(0,3)){
-        case 0: weapon.name = 'Spear';
-            weapon.sprite = 'spear0';
-            weapon.shape = Constants.shapes.shape1x3;
-            weapon.shapeWidth = 1;
-            weapon.shapeHeight = 3;
-            break;
-        case 1: weapon.name = 'Sword';
-            weapon.sprite = 'sword2';
-            weapon.shape = Constants.shapes.shape1x3;
-            weapon.shapeWidth = 1;
-            weapon.shapeHeight = 3;
-            break;
-        case 2: weapon.name = 'Axe';
-            weapon.sprite = 'axe0';
-            break;
-        }
-    } else {
-        weapon.name = 'Bow';
-        weapon.sprite = 'bow0';
-    }
-
     //weapon level
     weapon.level = this.rand(levelMin, levelMax+1);
-    weapon.value = 20*weapon.level;
     //add level modifier to name
-    if(weapon.name == 'Sword'){
-        let weaponSet = Weapons.swords.filter((sword)=>{
-            return sword.level == weapon.level;
-        });
-        let sword = weaponSet[this.rand(0,weaponSet.length-1)];
-        let dmgSplit = sword.dmg.split('+');
-        let modifier = parseInt(dmgSplit[1]) || 0;
-        let dmgMinMax = dmgSplit[0].split('d');
-        let dmgMin = parseInt(dmgMinMax[0])+modifier;
-        let dmgMax = (parseInt(dmgMinMax[0])*parseInt(dmgMinMax[1]))+modifier;
 
-        weapon.name = sword.name;
-        weapon.weight = parseInt(sword.weight);
-        weapon.dmg.min = dmgMin;
-        weapon.dmg.max = dmgMax;
-    } else {
-        switch(weapon.level){
-        case 1: weapon.name = 'Broken '+weapon.name;
-            weapon.weight = 4;
-            weapon.durability = this.rand(8,12);
-            weapon.dmg.min = this.rand(1,2);
-            weapon.dmg.max = this.rand(5,6);
-            break;
-        case 2: weapon.name = 'Worn '+weapon.name;
-            weapon.weight = 5;
-            weapon.durability = this.rand(10,15);
-            weapon.dmg.min = this.rand(2,3);
-            weapon.dmg.max = this.rand(7,8);
-            break;
-        case 3: weapon.weight = 7;
-            weapon.durability = this.rand(12,16);
-            weapon.dmg.min = this.rand(3,4);
-            weapon.dmg.max = this.rand(9,10);
-            break;
-        case 4: weapon.name = 'Sharp '+weapon.name;
-            weapon.weight = 6;
-            weapon.durability = this.rand(15,18);
-            weapon.dmg.min = this.rand(5,6);
-            weapon.dmg.max = this.rand(10,12);
-            break;
-        case 5: weapon.name = 'Superior '+weapon.name;
-            weapon.weight = 6;
-            weapon.durability = this.rand(18,22);
-            weapon.dmg.min = this.rand(8,10);
-            weapon.dmg.max = this.rand(15,18);
-            break;
-        }
+    let weaponSet = Weapons.weapons.filter((randWeapon)=>{
+        return randWeapon.level == weapon.level;
+    });
+    let newWeapon = weaponSet[this.rand(0,weaponSet.length-1)];
+    let dmgSplit = newWeapon.dmg.split('+');
+    let modifier = parseInt(dmgSplit[1]) || 0;
+    let dmgMinMax = dmgSplit[0].split('d');
+    let dmgMin = parseInt(dmgMinMax[0])+modifier;
+    let dmgMax = (parseInt(dmgMinMax[0])*parseInt(dmgMinMax[1]))+modifier;
+
+    weapon.name = newWeapon.name;
+    weapon.weight = parseInt(newWeapon.weight);
+    weapon.dmg.min = dmgMin;
+    weapon.dmg.max = dmgMax;
+    weapon.value = parseInt(newWeapon.value);
+
+    switch(newWeapon.spriteType){
+    case 'spear':
+        weapon.sprite = 'spear0';
+        weapon.shape = Constants.shapes.shape1x3;
+        weapon.shapeWidth = 1;
+        weapon.shapeHeight = 3;
+        break;
+    case 'sword':
+        weapon.sprite = 'sword2';
+        weapon.shape = Constants.shapes.shape1x3;
+        weapon.shapeWidth = 1;
+        weapon.shapeHeight = 3;
+        break;
+    case 'axe':
+        weapon.sprite = 'axe0';
+        weapon.shape = Constants.shapes.shape2x3;
+        weapon.shapeWidth = 2;
+        weapon.shapeHeight = 3;
+        break;
+    case 'dagger':
+        weapon.sprite = 'shank0';
+        weapon.shape = Constants.shapes.shape1x2;
+        weapon.shapeWidth = 1;
+        weapon.shapeHeight = 2;
+        break;
+    case 'bow':
+        weapon.sprite = 'bow0';
+        weapon.shape = Constants.shapes.shape2x3;
+        weapon.shapeWidth = 2;
+        weapon.shapeHeight = 3;
+        break;
     }
-
-
-
-    weapon.value += weapon.dmg.max - weapon.dmg.min;
-    weapon.value += weapon.durability - 10;
 
     switch(this.rand(0,12)){
     case 0:
