@@ -50,6 +50,8 @@ export default class extends Phaser.State {
         this.load.image('castle_courtyard', './assets/images/terrain/castle_courtyard.png', 48, 48);
 
         this.load.image('island', './assets/images/terrain/island_bare.png');
+        this.load.image('field-blue', './assets/images/terrain/field-blue.png');
+        this.load.image('field-tan', './assets/images/terrain/field-tan.png');
 
         //Mobs
         this.game.load.spritesheet('goo', './assets/images/mobs/goo.png', 77, 72);

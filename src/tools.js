@@ -9,21 +9,22 @@ export default class Tools {
         window.beefcake = this.beefcake.bind(this);
     }
 
-    addLoot(amt, lvlMin=1, lvlMax=5){
+    addLoot(amt=3, lvlMin=1, lvlMax=5){
         for(let i = 0; i < amt; i++){
             this.game.loot.push(Forge.getRandomItem(lvlMin,lvlMax));
         }
     }
 
-    addBestLoot(amt){
-        this.addLoot(amt, 5, 5);
+    addBestLoot(amt=3){
+        this.addLoot(amt, 8, 10);
     }
 
-    beefcake(){
+    beefcake(statsAmt=50){
         let stats = this.game.player.baseStats;
-        stats.strength = 50;
-        stats.vitality = 50;
-        stats.wisdom = 50;
+        stats.strength = statsAmt;
+        stats.vitality = statsAmt;
+        stats.wisdom = statsAmt;
+        stats.dexterity = statsAmt;
         this.addBestLoot(5);
         this.game.player.updateBattleStats();
         this.game.player.latestUnlockedDungeon = 5;

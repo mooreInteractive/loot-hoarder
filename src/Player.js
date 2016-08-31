@@ -82,6 +82,10 @@ class Player {
                 'min': 1,
                 'max': 2
             },
+            'crit':{
+                'multiplier': '2',
+                'threshold': '95'
+            },
             'magic': {
                 'effect':{
                     'attribute': null,

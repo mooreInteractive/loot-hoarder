@@ -54,12 +54,18 @@ export function build(levelMin, levelMax) {
     let dmgMinMax = dmgSplit[0].split('d');
     let dmgMin = parseInt(dmgMinMax[0])+modifier;
     let dmgMax = (parseInt(dmgMinMax[0])*parseInt(dmgMinMax[1]))+modifier;
+    let critData = newWeapon.crit.split('/');
+    let critThreshold = critData.length > 1 ? critData[0] : 95;
+    let critMultiplier = critData.length > 1 ? critData[1].slice(1) : critData[0].slice(1);
 
     weapon.name = newWeapon.name;
     weapon.weight = parseInt(newWeapon.weight);
     weapon.dmg.min = dmgMin;
     weapon.dmg.max = dmgMax;
     weapon.value = parseInt(newWeapon.value);
+    weapon.crit = {};
+    weapon.crit.multiplier = critMultiplier;
+    weapon.crit.threshold = critThreshold;
 
     switch(newWeapon.spriteType){
     case 'spear':

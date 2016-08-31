@@ -22,6 +22,14 @@ export default class extends Phaser.State {
     }
 
     create () {
+        //Backgrounds
+        let bg = 'field-tan';
+        if(this.dungeon.beaten){
+            bg = 'field-blue';
+        }
+        this.add.image(0,0,bg);
+
+
         let avatarSettings = {x: this.dungeon.sprite.x - 50, y: this.dungeon.sprite.y + 25, scale: 2};
         let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
         this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, false); //Need to call avatar.update() and avatar.render()
@@ -40,8 +48,8 @@ export default class extends Phaser.State {
         EnHpBar.ctx.fillStyle = '#DE11CD';
         EnHpBar.ctx.fill();
 
-        this.enHealthBarBg = this.add.sprite(this.game.world.centerX+155, this.game.world.centerY-10, EnHpBarBg);
-        this.enHealthBar = this.add.sprite(this.game.world.centerX+161, this.game.world.centerY-4, EnHpBar);
+        this.enHealthBarBg = this.add.sprite(this.game.world.centerX+155, this.game.world.height-80, EnHpBarBg);
+        this.enHealthBar = this.add.sprite(this.game.world.centerX+161, this.game.world.height-74, EnHpBar);
         this.enHealthBarBg.visible = false;
         this.enHealthBar.visible = false;
 
@@ -51,9 +59,9 @@ export default class extends Phaser.State {
         logBg.ctx.fillStyle = '#FFFFFF';
         logBg.ctx.fill();
 
-        this.logBackground = this.add.sprite(100, this.game.world.centerY + 265, logBg);
+        this.logBackground = this.add.sprite(100, 15, logBg);
 
-        this.errorText = this.add.text(110, this.game.world.centerY + 275, '');
+        this.errorText = this.add.text(110, 20, '');
         this.errorText.font = 'Press Start 2P';
         this.errorText.fontSize = 18;
         this.errorText.fill = '#131389';
@@ -63,7 +71,7 @@ export default class extends Phaser.State {
         this.dungeon.enemies.forEach((enemy)=>{
             if(this.loadedSprites.indexOf(enemy.sprite) == -1){
                 this.loadedSprites.push(enemy.sprite);
-                let addedSprite = this.game.add.sprite(this.game.world.width + 200, this.game.world.centerY -25, enemy.sprite);
+                let addedSprite = this.game.add.sprite(this.game.world.width + 200, this.game.world.height-125, enemy.sprite);
                 addedSprite.anchor.setTo(0.5,1);
                 addedSprite.scale.setTo(2,2);
                 addedSprite.animations.add('walk');
@@ -82,7 +90,7 @@ export default class extends Phaser.State {
         this.battleButtons = [];
         if(battleItems.length > 0){
             battleItems.forEach((item, index)=>{
-                let btn = new Phaser.Button(this.game, 200+(120*index), this.game.world.centerY + 150, item.sprite, this.useItem.bind(this, item, index), this);
+                let btn = new Phaser.Button(this.game, 200+(120*index), this.game.world.centerY - 250, item.sprite, this.useItem.bind(this, item, index), this);
                 btn.anchor.setTo(0.5);
                 btn.visible = true;
 
@@ -91,7 +99,7 @@ export default class extends Phaser.State {
             });
         }
 
-        this.dmgText = this.add.text(this.game.world.centerX - 200, this.game.world.centerY -70, '');
+        this.dmgText = this.add.text(this.game.world.centerX - 200, this.game.world.centerY + 100, '');
         this.dmgText.font = 'Press Start 2P';
         this.dmgText.fontSize = 32;
         this.dmgText.stroke = '#FFFFFF';
@@ -99,7 +107,7 @@ export default class extends Phaser.State {
         this.dmgText.fill = '#CD1313';
         this.dmgText.visible = false;
 
-        this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY -70, '');
+        this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY + 100, '');
         this.enDmgText.font = 'Press Start 2P';
         this.enDmgText.fontSize = 32;
         this.enDmgText.stroke = '#FFFFFF';
@@ -112,8 +120,8 @@ export default class extends Phaser.State {
     }
 
     animateBattleStart(){
-        let avatarSettings = {x: this.game.world.centerX - 200, y: this.game.world.centerY - 160, scale: 2};
-        let hpSettings = {x: this.game.world.centerX - 200, y: this.game.world.centerY + 14};
+        let avatarSettings = {x: this.game.world.centerX - 200, y: this.game.world.height-275, scale: 2};
+        let hpSettings = {x: this.game.world.centerX - 200, y: this.game.world.height - 53};
         this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, this.queueEnemy);
     }
 
@@ -122,6 +130,8 @@ export default class extends Phaser.State {
             this.game.player.battling = false;
             this.game.state.start('MainMenu', true, false, this.passedEvent);
         };
+        this.endAnimStarted = true;
+        this.updateLogText('Battle has ended.');
         let avatarSettings = {x: this.dungeon.sprite.x, y: this.dungeon.sprite.y, scale: 1};
         let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
         this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, endCB);
@@ -174,13 +184,55 @@ export default class extends Phaser.State {
                     });
                 } else {
                     this.battlePaused = false;
+                    this.frameCount = 0;
                 }
             }, this);
-        } else {
-            if(this.currentEnemy == null){
-                console.log('--no enemies left here...');
-            }
         }
+    }
+
+    playerAction(){
+        let enemy = this.currentEnemy;
+        let player = this.game.player;
+
+        let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
+        let miss = Forge.rand(0+player.baseStats.dexterity, 100);
+        let crit = Forge.rand(0+player.baseStats.dexterity, 100);
+        let critThreshold = player.equipped.leftHand ? player.equipped.leftHand.crit.threshold : 95;
+        let critMulti = player.equipped.leftHand ? player.equipped.leftHand.crit.multiplier : 95;
+
+        if(miss > 15){
+            if(crit > critThreshold){
+                strike = Math.floor(player.battleStats.dmg.max*critMulti);
+                this.enDmgText.fontSize = 40;
+                this.enDmgText.text = strike+'!';
+            } else {
+                this.enDmgText.fontSize = 32;
+                this.enDmgText.text = strike;
+            }
+            enemy.hp -= strike;
+        } else {
+            this.enDmgText.text = 'miss';
+        }
+
+        this.enDmgText.visible = true;
+    }
+
+    enemyAction(){
+        let enemy = this.currentEnemy;
+        let player = this.game.player;
+
+        let armorReduction = Math.ceil(enemy.dps*(player.battleStats.armor/100));
+        let enStrike = enemy.dps - armorReduction;
+        let enMiss = Forge.rand(0+player.baseStats.dexterity, 100);
+        //let enCrit = Forge.rand(0+player.baseStats.dexterity, 100);
+        if(enMiss > 15){
+            player.battleStats.currentHealth -= enStrike;
+            this.dmgText.text = enStrike;
+        } else {
+            this.dmgText.text = 'miss';
+        }
+
+        this.dmgText.visible = true;
     }
 
     action(){
@@ -281,6 +333,8 @@ export default class extends Phaser.State {
 
         if(this.dungeon.currentEnemies.length == 0 || player.battleStats.currentHealth < 1){
             this.finishUpRaid();
+        } else {
+            this.queueEnemy();
         }
     }
 
@@ -343,43 +397,51 @@ export default class extends Phaser.State {
         }
     }
 
-    resetHitText(){
-        this.dmgText.text = '';
-        this.dmgText.visible = false;
+    resetEnHitText(){
         this.enDmgText.text = '';
         this.enDmgText.visible = false;
-        this.dmgText.position.y = this.game.world.centerY - 270;
-        this.enDmgText.position.y = this.game.world.centerY - 270;
-        this.dmgText.alpha = 1;
+        this.enDmgText.position.y = this.game.world.centerY + 100;
         this.enDmgText.alpha = 1;
     }
 
+    resetPlHitText(){
+        this.dmgText.text = '';
+        this.dmgText.visible = false;
+        this.dmgText.position.y = this.game.world.centerY + 100;
+        this.dmgText.alpha = 1;
+    }
+
     update(){
-        if(this.frameCount == 0){
-            if(this.raidEnded){
-                if(!this.endAnimStarted){
+        if(this.raidEnded){
+            if(this.frameCount > 0){ this.frameCount = 0; }
+
+            if(!this.endAnimStarted){
+                this.frameCount -= 1;
+                if(this.frameCount <= -120){
                     this.animateBattleEnd();
                 }
-                //this.game.state.start('MainMenu', true, false);
-            } else {
-                this.resetHitText();
-                this.queueEnemy();
-                this.action();
-                this.assessment();
-            }
-        }
-
-        this.frameCount += 1;
-
-        if(this.raidStarted){
-            if(this.frameCount == 60){
-                this.frameCount = 0;
             }
         } else {
-            if(this.frameCount == 90){
-                this.raidStarted = true;
-                this.frameCount = 0;
+            this.frameCount += 1;
+        }
+
+        let enemySpeedStandIn = 60;
+        let playerSpeed = 60 - Math.floor(this.game.player.battleStats.dexterity / 3);
+
+        if(this.raidStarted && !this.battlePaused && !this.raidEnded){
+            if((this.frameCount % playerSpeed == 0) && this.currentEnemy){
+                this.resetEnHitText();
+                this.playerAction();
+                this.assessment();
             }
+            if(this.currentEnemy && (this.frameCount % enemySpeedStandIn == 0)){
+                this.resetPlHitText();
+                this.enemyAction();
+                this.assessment();
+            }
+        } else if(!this.raidStarted){
+            this.raidStarted = true;
+            this.queueEnemy();
         }
 
 
