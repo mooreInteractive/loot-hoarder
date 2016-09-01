@@ -8,7 +8,7 @@ gulp.task('deploy', function () {
         .pipe(sftp({
             host: 'ftp.moore-interactive.net',
             auth: 'ftpcreds',
-            remotePath: 'public_html/js/loot/'
+            remotePath: 'public_html/mooreslewt'
         }));
 });
 
