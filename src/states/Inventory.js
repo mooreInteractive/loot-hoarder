@@ -22,8 +22,8 @@ export default class extends Phaser.State {
         this.equippedGridBackground();
         this.drawInventoryItems();
 
-        let Pixel24Black = {font: 'Press Start 2P', fontSize: 28, fill: '#000000' };
-        let Pixel36Blue = {font: 'Press Start 2P', fontSize: 36, fill: '#1313CD' };
+        let Pixel24Black = {font: 'Press Start 2P', fontSize: 36, fill: '#000000' };
+        let Pixel36Blue = {font: 'Press Start 2P', fontSize: 42, fill: '#1313CD' };
         let Pixel16Black = {font: 'Press Start 2P', fontSize: 16, fill: '#000000' };
 
         //Player Stats
@@ -42,10 +42,10 @@ export default class extends Phaser.State {
 
         //skillPoint + Buttons
         this.plusBtns = [
-            this.add.text(150, 195, '+', Pixel36Blue),
-            this.add.text(150, 230, '+', Pixel36Blue),
-            this.add.text(150, 265, '+', Pixel36Blue),
-            this.add.text(150, 300, '+', Pixel36Blue)
+            this.add.text(150, 198, '+', Pixel36Blue),
+            this.add.text(150, 239, '+', Pixel36Blue),
+            this.add.text(150, 280, '+', Pixel36Blue),
+            this.add.text(150, 324, '+', Pixel36Blue)
         ];
 
         this.plusBtns.forEach((btn, index) => {
@@ -55,10 +55,28 @@ export default class extends Phaser.State {
             btn.input.useHandCursor = true;
         });
 
+        //Potions
+        this.potionButton = new Phaser.Button(this.game, 90, 200, 'potion', this.usePotion, this);
+        this.potionButton.anchor.setTo(0.5);
+        this.potionButton.visible = this.game.player.potions > 0;
+        this.add.existing(this.potionButton);
+
+        this.potionText = this.add.text(85, 210, `x${this.game.player.potions}`, Pixel16Black);
+        this.potionText.visible = this.game.player.potions > 1;
     }
 
     create () {
         this.mainNav = new MainNavigation(this.game, this, this.currentDungeon);
+    }
+
+    usePotion(){
+        let player = this.game.player;
+        if(player.battleStats.currentHealth != player.battleStats.health){
+            player.battleStats.currentHealth = player.battleStats.health;
+            player.potions -= 1;
+        }
+        this.potionButton.visible = this.game.player.potions > 0;
+        this.potionText.visible = this.game.player.potions > 1;
     }
 
     plusClicked(index){

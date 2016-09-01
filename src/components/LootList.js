@@ -76,11 +76,18 @@ export default class LootList{
 
                 let addBtn = new Phaser.Button(this.game, this.game.world.centerX - 310, buttonsY, 'blueButton', () => {
                     console.log('--clicked keep, loot, item', loot, item);
-                    let placed = this.tryToPlaceItemInInventory(item);
-                    if(placed){
+                    if(item.name == 'Health Potion'){
+                        this.game.player.potions += 1;
                         loot.splice(loot.indexOf(item), 1);
                         this.keptLoot = true;
                         this.updateLootTextAndButtons(loot);
+                    } else {
+                        let placed = this.tryToPlaceItemInInventory(item);
+                        if(placed){
+                            loot.splice(loot.indexOf(item), 1);
+                            this.keptLoot = true;
+                            this.updateLootTextAndButtons(loot);
+                        }
                     }
                 }, this);
                 addBtn.scale.x = 0.4;

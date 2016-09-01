@@ -23,6 +23,7 @@ class Player {
         this.latestUnlockedDungeon = 1;
         this.currentDungeon = 0;
         this.inventory = [];
+        this.potions = 0;
         this.gold = 0;
         this.baseStats = {
             strength: 1,
@@ -115,7 +116,7 @@ class Player {
 
     heal(){
         if(!this.battling){
-            this.battleStats.currentHealth += this.battleStats.wisdom * 1;
+            this.battleStats.currentHealth += Math.floor(this.battleStats.wisdom * 0.5) || 1;
             //this.savePlayerData();
             //healed hooks
             if(    this.battleStats.currentHealth == this.baseStats.health
@@ -225,6 +226,7 @@ class Player {
                 nextLevel: this.nextLevel,
                 skillPoints: this.skillPoints,
                 inventory: this.inventory,
+                potions: this.potions,
                 backpack: backpackImage,
                 equipped: this.equipped,
                 gold: this.gold,
@@ -274,6 +276,7 @@ class Player {
         this.battling = false;
         this.inventory = playerData.inventory;
         this.equipped = playerData.equipped;
+        this.potions = playerData.potions;
         this.gold = playerData.gold;
         this.baseStats = playerData.baseStats;
         this.currentDungeon = playerData.currentDungeon;

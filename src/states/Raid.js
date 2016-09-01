@@ -60,6 +60,7 @@ export default class extends Phaser.State {
         logBg.ctx.fill();
 
         this.logBackground = this.add.sprite(100, 15, logBg);
+        this.logBackground.alpha = 0.3;
 
         this.errorText = this.add.text(110, 20, '');
         this.errorText.font = 'Press Start 2P';
@@ -80,24 +81,6 @@ export default class extends Phaser.State {
                 this.enemySprites[enemy.sprite] = addedSprite;
             }
         });
-
-        //Load action items from inventory...
-        let equipment = this.game.player.equipped;
-        this.accessories = [equipment.accessory1, equipment.accessory2, equipment.accessory3, equipment.accessory4];
-        let battleItems = this.accessories.filter((item)=>{
-            return item != null && item.type == 'misc' && !(item.name.search(/unknown/ig) > -1);
-        });
-        this.battleButtons = [];
-        if(battleItems.length > 0){
-            battleItems.forEach((item, index)=>{
-                let btn = new Phaser.Button(this.game, 200+(120*index), this.game.world.centerY - 250, item.sprite, this.useItem.bind(this, item, index), this);
-                btn.anchor.setTo(0.5);
-                btn.visible = true;
-
-                this.add.existing(btn);
-                this.battleButtons.push(btn);
-            });
-        }
 
         this.dmgText = this.add.text(this.game.world.centerX - 200, this.game.world.centerY + 100, '');
         this.dmgText.font = 'Press Start 2P';
@@ -135,19 +118,6 @@ export default class extends Phaser.State {
         let avatarSettings = {x: this.dungeon.sprite.x, y: this.dungeon.sprite.y, scale: 1};
         let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
         this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, endCB);
-    }
-
-    useItem(item, btnIndex){
-        this.updateLogText('used item:'+item.name);
-        switch(item.name){
-        case 'Health Potion': this.game.player.battleStats.currentHealth = this.game.player.battleStats.health;
-            break;
-        case 'Scroll of Fireball': console.log('using a fireball...');
-            break;
-        }
-        this.game.player.equipped[item.inventorySlot] = null;
-        this.battleButtons[btnIndex].kill();
-
     }
 
     updateLogText(logText){
@@ -233,47 +203,6 @@ export default class extends Phaser.State {
         }
 
         this.dmgText.visible = true;
-    }
-
-    action(){
-        if(!this.battlePaused){
-            let player = this.game.player;
-            let enemy = this.currentEnemy;
-
-            let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
-            let miss = Forge.rand(0+player.baseStats.dexterity, 100);
-            let crit = Forge.rand(0+player.baseStats.dexterity, 100);
-            if(miss > 15){
-                if(crit > 95){
-                    strike = Math.floor(player.battleStats.dmg.max*1.5);
-                    this.enDmgText.fontSize = 40;
-                    this.enDmgText.text = strike+'!';
-                } else {
-                    this.enDmgText.fontSize = 32;
-                    this.enDmgText.text = strike;
-                }
-                enemy.hp -= strike;
-            } else {
-                this.enDmgText.text = 'miss';
-            }
-
-            let armorReduction = Math.ceil(enemy.dps*(player.battleStats.armor/100));
-            let enStrike = enemy.dps - armorReduction;
-            let enMiss = Forge.rand(0+player.baseStats.dexterity, 100);
-            //let enCrit = Forge.rand(0+player.baseStats.dexterity, 100);
-            if(enMiss > 15){
-                player.battleStats.currentHealth -= enStrike;
-                this.dmgText.text = enStrike;
-            } else {
-                this.dmgText.text = 'miss';
-            }
-
-
-            this.dmgText.visible = true;
-            this.enDmgText.visible = true;
-
-            console.log(`En: -${strike}hp (${enemy.hp}/${enemy.originalHp}), Pl: -${enStrike}hp (${player.battleStats.currentHealth})`);
-        }
     }
 
     assessment(){

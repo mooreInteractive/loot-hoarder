@@ -29,14 +29,14 @@ export default class extends Phaser.State {
         this.game.add.existing(this.playBtn);
 
         //Title Text
-        let titleStyle = {font: 'Press Start 2P', fontSize: 64, fill: '#1313CD', align: 'center'};
+        let titleStyle = {font: '104px Musketeer', fill: '#FFFF00', align: 'center'};
         this.title = this.add.text(this.game.world.centerX, 250, 'MOORE\'S\nLEWT', titleStyle);
         this.title.anchor.setTo(0.5);
         this.title.stroke = '#000000';
         this.title.strokeThickness = 12;
 
 
-        let playStyle = {font: 'Press Start 2P', fontSize: 40, fill: '#111111'};
+        let playStyle = {font: '50px Press Start 2P', fill: '#111111'};
         this.banner = this.add.text(this.game.world.centerX, this.game.world.centerY+350, 'Play', playStyle);
         this.banner.anchor.setTo(0.5);
         this.banner.inputEnabled = true;
@@ -46,16 +46,8 @@ export default class extends Phaser.State {
     }
 
     createMap(){
-        //MAP
-        //this.waterBg = this.game.add.sprite(0, 0, 'water');
-        // this.water = this.add.tileSprite(0, 0, 32 * 6, 32 * 9, 'water');
-        // this.water.scale.setTo(4,4);
-        // this.water.animations.add('flow', null, 4, true);
-        // this.water.animations.play('flow');
-
         this.island = this.game.add.image(0,0,'island');
         this.island.scale.setTo(2,2);
-
     }
 
     update(){
@@ -72,10 +64,6 @@ export default class extends Phaser.State {
                 this.avatar.fakeUpdate();
             }
         }
-    }
-
-    render () {
-
     }
 
     playClicked(){

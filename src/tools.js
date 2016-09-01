@@ -7,6 +7,7 @@ export default class Tools {
         window.addLoot = this.addLoot.bind(this);
         window.mobParty = this.mobParty.bind(this);
         window.beefcake = this.beefcake.bind(this);
+        window.levelUp = this.levelUp.bind(this);
     }
 
     addLoot(amt=3, lvlMin=1, lvlMax=5){
@@ -28,6 +29,11 @@ export default class Tools {
         this.addBestLoot(5);
         this.game.player.updateBattleStats();
         this.game.player.latestUnlockedDungeon = 5;
+    }
+
+    levelUp(){
+        this.game.player.exp += this.game.player.nextLevel.minExp;
+        this.game.player.levelUp();
     }
 
     mobParty(){

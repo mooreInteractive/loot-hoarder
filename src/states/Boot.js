@@ -15,7 +15,7 @@ export default class extends Phaser.State {
 
         WebFont.load({
             google: {
-                families: ['Oswald', 'Press Start 2P']
+                families: ['Oswald', 'Press Start 2P', 'Musketeer']
             },
             active: this.fontsLoaded
         });
