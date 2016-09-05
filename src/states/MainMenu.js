@@ -100,7 +100,7 @@ export default class extends Phaser.State {
     }
 
     update(){
-        this.avatar.update();
         this.mainNav.update(this.currentDungeon);
+        this.avatar.update();
     }
 }

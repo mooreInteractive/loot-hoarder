@@ -86,3 +86,16 @@ export const removeItemFromBackpack = (backpack, item) => {
         });
     });
 };
+
+export const convertSecondsToTime = (seconds) => {
+    let timeString = '0:00';
+    let minutes = Math.floor(seconds/60);
+    let secondsLeft = seconds%60 < 10 ? '0'+seconds%60 : seconds%60;
+
+    if(minutes < 0 ){minutes = 0;}
+    if(seconds%0 < 0){secondsLeft = '00';}
+
+    timeString = `${minutes}:${secondsLeft}`;
+
+    return timeString;
+};

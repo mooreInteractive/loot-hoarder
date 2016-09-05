@@ -18,6 +18,10 @@ export default class extends Phaser.State {
         this.load.image('optionsBanner', './assets/images/options_banner.png');
         this.load.image('yellow_dotted', './assets/images/yellow_dotted.png');
 
+        //UI
+        this.load.spritesheet('hud_main', './assets/images/hud_character.png', 276, 100);
+        this.load.image('hud_loot', './assets/images/hud_loot.png');
+
         //weapons
         this.load.image('shank0', './assets/images/items/shank.png');
         this.load.image('spear0', './assets/images/items/spear.png');

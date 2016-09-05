@@ -25,6 +25,7 @@ class Player {
         this.inventory = [];
         this.potions = 0;
         this.gold = 0;
+        this.magicFX = {name: null, time: 0, totalTime: 300, effect: ''};
         this.baseStats = {
             strength: 1,
             vitality: 1,
@@ -68,6 +69,15 @@ class Player {
         this.story = Story.Story;
         this.generateStarterWeapon();
 
+    }
+
+    setMagicEffect(type='might'){
+        switch(type){
+        case 'might': this.magicFX = {name: 'Might', time: 300, totalTime: 300, effect: 'strength+1'};
+            break;
+        default:
+            break;
+        }
     }
 
     generateStarterWeapon(){
@@ -225,6 +235,7 @@ class Player {
                 exp: this.exp,
                 nextLevel: this.nextLevel,
                 skillPoints: this.skillPoints,
+                magicFX: this.magicFX,
                 inventory: this.inventory,
                 potions: this.potions,
                 backpack: backpackImage,
@@ -273,6 +284,7 @@ class Player {
         this.exp = playerData.exp;
         this.nextLevel = playerData.nextLevel;
         this.skillPoints = playerData.skillPoints;
+        this.magicFX = playerData.magicFX;
         this.battling = false;
         this.inventory = playerData.inventory;
         this.equipped = playerData.equipped;

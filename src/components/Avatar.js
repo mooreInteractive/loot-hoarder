@@ -1,57 +1,78 @@
 import * as Forge from '../items/Forge';
+import * as utils from '../utils';
 
 export default class Avatar{
 
-    constructor(game, gameState, settings, hpSettings={x: settings.x-105, y: settings.y}, render=true, renderLevel=false){
+    constructor(game, gameState, settings, hpSettings={x: settings.x-105, y: settings.y}, render=true){
         this.game = game;
         this.gameState = gameState;
         this.update = this.update.bind(this);
         let animSpeed = 6;
         let hpWidth = 212;
         let hpHeight = 62;
-        let healthBarBackgroundBitMap = this.gameState.add.bitmapData(hpWidth, hpHeight);
-        let healthBarBitMap = this.gameState.add.bitmapData(hpWidth-10, hpHeight-22);
-        let expBarBitMap = this.gameState.add.bitmapData(hpWidth-10, 5);
-        let levelIconBitMap = this.gameState.add.bitmapData(100,100);
 
         this.animSpeed = animSpeed;
-
-        //Level Icon
-        levelIconBitMap.circle(50,50,50, '#111111');
-        //levelIconBitMap.circle(50,50,40, '#FFFFFF');
-
-        this.levelIconBg = this.gameState.add.sprite(hpSettings.x - (hpWidth/2) - 70, hpSettings.y - hpHeight + 5, levelIconBitMap);
-        let Pixel28Black = {font: 'Press Start 2P', fontSize: 36, fill: '#FFFFFF', align: 'center' };
-        this.levelText = this.gameState.add.text(hpSettings.x - (hpWidth/2) - 45, hpSettings.y - hpHeight + 35, this.game.player.level, Pixel28Black);
-
-        if(!renderLevel){
-            this.levelIconBg.visible = false;
-            this.levelText.visible = false;
-        }
+        let charBackgroundBitMap = this.game.make.bitmapData(hpWidth, 95);
+        let healthBarBitMap = this.game.make.bitmapData(200, 25);
+        let expBarBitMap = this.game.make.bitmapData(190, 6);
+        let magicFXBitMap = this.gameState.add.bitmapData(200, 25);
+        this.characterHUD = this.gameState.add.group();
         /* Player Health Bar Graphic and Text */
-        healthBarBackgroundBitMap.ctx.beginPath();
-        healthBarBackgroundBitMap.ctx.rect(0, 0, hpWidth, hpHeight);
-        healthBarBackgroundBitMap.ctx.fillStyle = '#111111';
-        healthBarBackgroundBitMap.ctx.fill();
+        charBackgroundBitMap.ctx.beginPath();
+        charBackgroundBitMap.ctx.rect(0, 0, hpWidth, 95);
+        charBackgroundBitMap.ctx.fillStyle = '#111111';
+        charBackgroundBitMap.ctx.fill();
+
 
         healthBarBitMap.ctx.beginPath();
-        healthBarBitMap.ctx.rect(0, 0, hpWidth-10, hpHeight-22);
-        healthBarBitMap.ctx.fillStyle = '#DE1111';
+        healthBarBitMap.ctx.rect(0, 0, 200, 25);
+        healthBarBitMap.ctx.fillStyle = '#DE3434';
         healthBarBitMap.ctx.fill();
 
-        this.healthBarBg = this.gameState.add.sprite(hpSettings.x - (hpWidth/2), hpSettings.y - (hpHeight/2), healthBarBackgroundBitMap);
-        this.healthBar = this.gameState.add.sprite(hpSettings.x - (hpWidth/2) + 6, hpSettings.y - (hpHeight/2) + 6, healthBarBitMap);
+        magicFXBitMap.ctx.beginPath();
+        magicFXBitMap.ctx.rect(0, 0, 200, 25);
+        magicFXBitMap.ctx.fillStyle = '#DE34DE';
+        magicFXBitMap.ctx.fill();
 
-        let Pixel12White = {font: 'Press Start 2P', fontSize: 16, fill: '#FFFFFF' };
-        this.healthText = this.gameState.add.text(hpSettings.x - (hpWidth/2) + 12, hpSettings.y - (hpHeight/2) + 18, 'Hp:', Pixel12White);
+        this.charBg = this.characterHUD.create(hpSettings.x - (hpWidth/2) - 10, hpSettings.y - 55, charBackgroundBitMap);
+        this.healthBar = this.characterHUD.create(hpSettings.x - (hpWidth/2) + 6, hpSettings.y - 52, healthBarBitMap);
+        this.magicFX = this.characterHUD.create(hpSettings.x - (hpWidth/2) + 6, hpSettings.y + 10, magicFXBitMap);
 
         //Experience Bar
         expBarBitMap.ctx.beginPath();
-        expBarBitMap.ctx.rect(0, 0, hpWidth-10, 5);
-        expBarBitMap.ctx.fillStyle = '#7EC0EE';
+        expBarBitMap.ctx.rect(0, 0, 190, 6);
+        expBarBitMap.ctx.fillStyle = '#2b54b6';
         expBarBitMap.ctx.fill();
 
-        this.expBar = this.gameState.add.sprite(hpSettings.x - (hpWidth/2) + 6, hpSettings.y + (hpHeight/2) - 10, expBarBitMap);
+        this.expBar = this.characterHUD.create(hpSettings.x - (hpWidth/2) + 16, hpSettings.y - 25, expBarBitMap);
+
+        //Level Icon
+        //levelIconBitMap.circle(50,50,50, '#111111');
+        //levelIconBitMap.circle(50,50,40, '#FFFFFF');
+        let hudPos = {x: hpSettings.x - (hpWidth/2) - 70, y: hpSettings.y - hpHeight + 5};
+        this.levelIconBg = this.characterHUD.create(hudPos.x, hudPos.y, 'hud_main');
+        this.levelIconBg.animations.add('pulse', null, 12);
+        if(this.game.player.skillPoints > 0){
+            this.levelIconBg.animations.play('pulse', 12, true);
+        }
+        let Pixel28Black = {font: 'Press Start 2P', fontSize: 36, fill: '#FFFFFF', align: 'center' };
+        this.levelText = this.gameState.add.text(hpSettings.x - (hpWidth/2) - 18, hpSettings.y - hpHeight + 60, this.game.player.level, Pixel28Black, this.characterHUD);
+        this.levelText.anchor.setTo(0.5);
+        //this.characterHUD.add(this.leveltext);
+        //HP Text
+        let Pixel12White = {font: 'Press Start 2P', fontSize: 16, fill: '#FFFFFF' };
+        this.healthText = this.gameState.add.text(hpSettings.x - (hpWidth/2) + 25, hpSettings.y - 48, 'Hp:', Pixel12White, this.characterHUD);
+
+        //Magical Effect Text
+        this.magicFXText = this.gameState.add.text(hpSettings.x - (hpWidth/2) + 27, hpSettings.y + 15, 'Valor 0:00', Pixel12White, this.characterHUD);
+        if(this.game.player.magicFX.time != 0){
+            let timeLeft = utils.convertSecondsToTime(this.game.player.magicFX.time);
+            this.magicFXText.text = `${this.game.player.magicFX.name} ${timeLeft}`;
+        } else {
+            this.magicFX.visible = false;
+            this.magicFXText.visible = false;
+        }
+
 
         this.dude = this.gameState.add.group();
         this.armor = {head: null, torso: null, feet: null};
@@ -226,14 +247,24 @@ export default class Avatar{
         let time = Math.floor((new Date).getTime()/1000);
         let storedTime = localStorage.getItem('loot-hoarder-clock');
         let player = this.game.player;
+        let timeDiff = time - storedTime < 0 ? 0 : time - storedTime;
 
-        if( storedTime != time){
-            let timeDiff = time - storedTime;
+        //If at least one second has passed, if more, compensate
+        if(storedTime != time){
             localStorage.setItem('loot-hoarder-clock', time);
+            //Update Character Health
             if(player.battleStats.currentHealth < player.battleStats.health && !player.battling){
                 for(let i = 0; i < timeDiff; i++){
                     player.heal();
                 }
+            }
+            //Update magic FX
+            if(player.magicFX.time > 0){
+                this.game.player.magicFX.time -= timeDiff;
+                let timeLeft = utils.convertSecondsToTime(this.game.player.magicFX.time);
+                this.magicFXText.text = `${this.game.player.magicFX.name} ${timeLeft}`;
+            } else {
+                this.magicFXText.visible = false;
             }
         }
 
@@ -246,23 +277,30 @@ export default class Avatar{
         let nextExp = player.nextLevel.minExp;
         let nextExpAdjust = player.level == 0 ? 0 : (nextExp/2);
         let expPercent = (currExp - nextExpAdjust)/nextExp;
-        
+
         if (expPercent < 0) {
             expPercent = 0;
         } else if (expPercent > 1){
             expPercent = 1;
         }
 
-        this.healthText.text = `Hp: ${currHealth}/${maxHealth}`;
+        let magicFXPercent = player.magicFX.time/player.magicFX.totalTime > 0 ? player.magicFX.time/player.magicFX.totalTime : 0;
+
+        this.healthText.text = `HP ${currHealth}/${maxHealth}`;
         this.healthBar.scale.x = healthPercent;
 
+        this.magicFX.scale.x = magicFXPercent;
+
         this.expBar.scale.x = expPercent;
+
+        if(this.game.player.skillPoints == 0){
+            this.levelIconBg.frame = 0;
+            this.levelIconBg.animations.stop();
+        }
     }
 
     moveToAtScale(settings={x:this.nakie.x, y:this.nakie.y, scale:this.nakie.scale.x}, hpSettings, speed, cb){
         let animTime = speed;
-        let hpWidth = 212;
-        let hpHeight = 52;
 
 
         let tween = this.gameState.add.tween(this.nakie).to( {x: settings.x, y: settings.y}, animTime, null, true);
@@ -289,15 +327,16 @@ export default class Avatar{
         });
 
         if(hpSettings){
+            console.log('hud position:', this.characterHUD.position);
+            this.gameState.add.tween(this.characterHUD.position).to({x: -150, y: 165}, animTime, null, true);
+            //this.gameState.add.tween(this.characterHUD.position).to({x: hpSettings.x - (hpWidth/2) - 57, y: hpSettings.y - hpHeight + 40}, animTime, null, true);
             //hp bar and text
-            this.gameState.add.tween(this.healthBarBg).to( { x: hpSettings.x - (hpWidth/2), y: hpSettings.y - (hpHeight/2) }, animTime, null, true);
-            this.gameState.add.tween(this.healthBar).to( { x: hpSettings.x - (hpWidth/2) + 6, y: hpSettings.y - (hpHeight/2) + 6 }, animTime, null, true);
-            this.gameState.add.tween(this.expBar).to( { x: hpSettings.x - (hpWidth/2) + 6, y: hpSettings.y + (hpHeight/2) }, animTime, null, true);
-
-            this.gameState.add.tween(this.healthText).to( { x: hpSettings.x - (hpWidth/2) + 12 , y: hpSettings.y - (hpHeight/2) + 18 }, animTime, null, true);
+            // this.gameState.add.tween(this.levelIconBg).to( { x:hpSettings.x - (hpWidth/2) - 57, y: hpSettings.y - hpHeight + 40 }, animTime, null, true);
+            // this.gameState.add.tween(this.healthBar).to( { x: hpSettings.x - (hpWidth/2) + 6, y: hpSettings.y - 52 }, animTime, null, true);
+            // this.gameState.add.tween(this.expBar).to( { x: hpSettings.x - (hpWidth/2) + 6, y: hpSettings.y + (hpHeight/2) }, animTime, null, true);
+            //
+            // this.gameState.add.tween(this.healthText).to( { x: hpSettings.x - (hpWidth/2) + 25, y: hpSettings.y - 48 }, animTime, null, true);
         }
-
-
 
         tween.onComplete.addOnce(cb.bind(this.gameState));
     }

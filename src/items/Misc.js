@@ -20,7 +20,7 @@ export function build() {
         'inventorySlot': {x:0, y:0},
         'value': 0
     };
-    let type = this.rand(0,1);
+    let type = this.rand(0,2);
     switch(type){
     case 0: accessory.name = 'Health Potion';
         accessory.sprite = 'potion';

@@ -340,6 +340,10 @@ export default class extends Phaser.State {
         this.dmgText.alpha = 1;
     }
 
+    render(){
+
+    }
+
     update(){
         if(this.raidEnded){
             if(this.frameCount > 0){ this.frameCount = 0; }

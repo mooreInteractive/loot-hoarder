@@ -323,6 +323,9 @@ export default class extends Phaser.State {
         this.selectedSprite = sprite;
         this.selectedSprite.tint = 0xe5e5FF;
         this.itemReadOut.updateItem(item);
+        if(item.type == 'misc'){
+            //TODO - button visible, button text, button action
+        }
     }
 
     drawInventoryItems(){
@@ -476,12 +479,9 @@ export default class extends Phaser.State {
         utils.placeItemInSlot(this.game.player, item, item.inventorySlot);
     }
 
-    render (){
+    update(){
         this.updateCharacterText();
         this.avatar.update();
-    }
-
-    update(){
         this.mainNav.update(this.currentDungeon);
     }
 
