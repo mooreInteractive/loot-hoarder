@@ -71,13 +71,8 @@ class Player {
 
     }
 
-    setMagicEffect(type='might'){
-        switch(type){
-        case 'might': this.magicFX = {name: 'Might', time: 300, totalTime: 300, effect: 'strength+1'};
-            break;
-        default:
-            break;
-        }
+    setMagicEffect(magicFX){
+        this.magicFX = magicFX;
     }
 
     generateStarterWeapon(){

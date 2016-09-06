@@ -3,10 +3,11 @@ import * as utils from '../utils';
 
 export default class Avatar{
 
-    constructor(game, gameState, settings, hpSettings={x: settings.x-105, y: settings.y}, render=true){
+    constructor(game, gameState, settings, hpSettings={x: settings.x-105, y: settings.y}, render=true, renderHp=true){
         this.game = game;
         this.gameState = gameState;
         this.update = this.update.bind(this);
+        this.renderHp = renderHp;
         let animSpeed = 6;
         let hpWidth = 212;
         let hpHeight = 62;
@@ -263,8 +264,13 @@ export default class Avatar{
                 this.game.player.magicFX.time -= timeDiff;
                 let timeLeft = utils.convertSecondsToTime(this.game.player.magicFX.time);
                 this.magicFXText.text = `${this.game.player.magicFX.name} ${timeLeft}`;
+                if(this.renderHp){
+                    this.magicFXText.visible = true;
+                    this.magicFX.visible = true;
+                }
             } else {
                 this.magicFXText.visible = false;
+                this.magicFX.visible = false;
             }
         }
 

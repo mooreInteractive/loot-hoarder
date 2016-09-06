@@ -222,17 +222,17 @@ export default class extends Phaser.State {
             if(enemy.boss){lootThreshold = 35; lootMax = this.dungeon.level + 1;}
             if( lootChance > lootThreshold || !story.chapter1.firstLootDrop){
                 //Story Junk - TODO offload somewhere? This will get bad
-                if(this.dungeon.level == 2 && !story.chapter1.foundSecondNote && story.chapter1.timesCheckedShop > 1){
+                if(this.dungeon.level == 2 && !story.chapter1.foundSecondNote && story.chapter1.timesCheckedShop > 0){
                     StoryFunctions.chapter1.dropNote(this.game, this, story);
                     story.chapter1.foundSecondNote = true;
                 } else {
                     if(!story.chapter1.firstLootDrop){
                         story.chapter1.firstLootDrop = true;
                         StoryFunctions.saveStory(story);
+                        this.game.loot.push(Forge.getRandomWeapon(lootMin,lootMax));
+                    } else {
+                        this.game.loot.push(Forge.getRandomItem(lootMin,lootMax));
                     }
-
-                    //Generate Loot
-                    this.game.loot.push(Forge.getRandomItem(lootMin,lootMax));
                     this.updateLogText('Dropped item!');
                 }
 
@@ -246,6 +246,7 @@ export default class extends Phaser.State {
             }
             //get exp
             let newExp = Math.floor((enemy.dps + enemy.originalHp) / 3);
+            if(player.magicFX.time != 0 && player.magicFX.name == 'EXP'){ newExp = newExp*2; }
             player.exp += newExp;
 
             this.updateLogText(`Defeated ${enemy.sprite}. +${newExp} XP`);

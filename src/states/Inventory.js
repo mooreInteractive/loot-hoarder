@@ -3,6 +3,7 @@ import * as utils from '../utils';
 import MainNavigation from '../components/MainNavigation';
 import Avatar from '../components/Avatar';
 import ItemReadOut from '../components/ItemReadOut';
+import Dialogue from '../components/Dialogue';
 
 export default class extends Phaser.State {
     init () {
@@ -63,6 +64,18 @@ export default class extends Phaser.State {
 
         this.potionText = this.add.text(85, 210, `x${this.game.player.potions}`, Pixel16Black);
         this.potionText.visible = this.game.player.potions > 1;
+
+        this.itemActionButton = new Phaser.Button(this.game, 665, 485, 'greyButton', this.useItem, this);
+        this.itemActionButton.scale.setTo(0.5, 1.5);
+        this.itemActionButton.anchor.setTo(0.5);
+        this.itemActionButton.visible = false;
+        this.add.existing(this.itemActionButton);
+
+        this.itemActionText = this.add.text(665, 485, 'use', Pixel16Black);
+        this.itemActionText.anchor.setTo(0.5);
+        this.itemActionText.visible = false;
+
+
     }
 
     create () {
@@ -77,6 +90,25 @@ export default class extends Phaser.State {
         }
         this.potionButton.visible = this.game.player.potions > 0;
         this.potionText.visible = this.game.player.potions > 1;
+    }
+
+    useItem(){
+        let player = this.game.player;
+        let item = this.selectedItem;
+        player.magicFX = this.selectedItem.magicFX;
+        //clean up
+        this.selectedItem = null;
+        this.selectedSprite.destroy();
+        this.selectedSprite = null;
+        this.itemActionButton.visible = false;
+        this.itemActionText.visible = false;
+        let itemIndex = player.inventory.indexOf(item);
+        if(itemIndex > -1){
+            player.inventory.splice(itemIndex, 1);
+        }
+
+        player.backpack[item.inventorySlot.y][item.inventorySlot.x].invItem = -1;
+        player.backpack[item.inventorySlot.y][item.inventorySlot.x].sprite.tint = 0xFFFFFF;
     }
 
     plusClicked(index){
@@ -322,9 +354,15 @@ export default class extends Phaser.State {
         }
         this.selectedSprite = sprite;
         this.selectedSprite.tint = 0xe5e5FF;
+        this.selectedItem = item;
         this.itemReadOut.updateItem(item);
-        if(item.type == 'misc'){
-            //TODO - button visible, button text, button action
+        if(item.type === 'misc' && item.identified === true){
+            this.itemActionButton.visible = true;
+            this.itemActionText.visible = true;
+            this.itemActionText.text = item.buttonText;
+        } else {
+            this.itemActionButton.visible = false;
+            this.itemActionText.visible = false;
         }
     }
 
@@ -347,7 +385,11 @@ export default class extends Phaser.State {
 
     startDrag(sprite, item, equipped=false){
         //console.log('-startDrag(sprite, item, equipped)', sprite, item, equipped);
-        this.mainNav.startedDraggingItem();
+        if(  (this.currentDungeon.level == 1 && this.game.player.latestUnlockedDungeon > 1) ||
+            (item.type == 'misc' && this.currentDungeon.level == 3 && this.game.player.latestUnlockedDungeon > 3)
+        ){
+            this.mainNav.startedDraggingItem();
+        }
         if(equipped){
             utils.unequipItem(this.game.player, item);
         } else {
@@ -392,7 +434,9 @@ export default class extends Phaser.State {
     }
 
     mouseOverShop(mouse){
-        if(this.game.player.currentDungeon == 0 && this.game.player.latestUnlockedDungeon > 1){
+        if((this.currentDungeon.level == 1 && this.game.player.latestUnlockedDungeon > 1) ||
+            (this.currentDungeon.level == 3 && this.game.player.latestUnlockedDungeon > 3)
+        ){
             let shop = {x:this.game.world.width - 200, y:this.game.world.height - 90, width: 190*1.8, height: 49*3};
 
             if( //Dropping on the Shop
@@ -401,11 +445,46 @@ export default class extends Phaser.State {
                 mouse.y >= (shop.y - shop.height * 0.5) &&
                 mouse.y <= ((shop.y - shop.height * 0.5) + shop.height)
             ){
+                console.log('onshop...');
                 return true;
             }
         }
 
         return false;
+    }
+
+    shopAction(currentSprite, item){
+        if(this.currentDungeon.level == 1 && this.game.player.latestUnlockedDungeon > 1){
+            this.game.player.gold += item.value;
+            let itemIndex = this.game.player.inventory.indexOf(item);
+            if(itemIndex > -1){
+                this.game.player.inventory.splice(itemIndex, 1);
+            }
+            currentSprite.destroy();
+            this.game.player.savePlayerData();
+        } else if(this.currentDungeon.level == 3 && this.game.player.latestUnlockedDungeon > 3){
+            if(item.name == 'Unknown Scroll'){
+                let cost = 100;
+                new Dialogue(this.game, this, 'bool', `You wish to identify this\nscroll for ${cost} gold?`, (reply)=>{
+                    if(reply == 'yes'){
+                        if(this.game.player.gold > cost-1){
+                            console.log('identify scroll...');
+                            this.game.player.gold -= cost;
+                            utils.identifyScroll(item);
+                            this.selectItem(currentSprite, item);
+                            this.game.player.savePlayerData();
+                        } else {
+                            let short = cost - this.game.player.gold;
+                            new Dialogue(this.game, this, 'ok', `You're short about\n${short} gold.`, ()=>{});
+                        }
+                    }
+                });
+            } else {
+                new Dialogue(this.game, this, 'ok', 'This scroll is already\nIdentified.', ()=>{});
+            }
+            this.returnItemToOrigin(currentSprite, item);
+        }
+
     }
 
     stopDrag(currentSprite, item, gridPos, mouse){
@@ -434,10 +513,7 @@ export default class extends Phaser.State {
                 currentSprite.destroy();
             } else if(shopSlot){
                 // console.log('----on shop Slot...');
-                this.game.player.gold += item.value;
-                // console.log('after fix:',this.game.player.backpack, this.game.player.inventory);
-                currentSprite.destroy();
-                this.game.player.savePlayerData();
+                this.shopAction(currentSprite, item);
             } else {
                 currentSprite.position.copyFrom(currentSprite.originalPosition);
                 utils.equipItem(this.game.player, item, {type: item.inventorySlot});
@@ -461,11 +537,7 @@ export default class extends Phaser.State {
                 currentSprite.destroy();
             } else if(shopSlot){
                 // console.log('----on shop Slot...');
-                this.game.player.gold += item.value;
-                let itemIndex = this.game.player.inventory.indexOf(item);
-                this.game.player.inventory.splice(itemIndex, 1);
-                currentSprite.destroy();
-                this.game.player.savePlayerData();
+                this.shopAction(currentSprite, item);
             } else {
                 // console.log('----on nothing, return to origin...');
                 this.returnItemToOrigin(currentSprite, item);
@@ -483,6 +555,11 @@ export default class extends Phaser.State {
         this.updateCharacterText();
         this.avatar.update();
         this.mainNav.update(this.currentDungeon);
+
+        //potion text
+        this.potionText.text = `x${this.game.player.potions}`;
+        this.potionButton.visible = this.game.player.potions > 0;
+        this.potionText.visible = this.game.player.potions > 1;
     }
 
 }

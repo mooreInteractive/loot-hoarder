@@ -13,7 +13,7 @@ export default class extends Phaser.State {
 
         //Avatar
         let avatarSettings = {x: this.game.world.centerX, y: this.game.world.centerY + 50, scale: 3};
-        this.avatar = new Avatar(this.game, this, avatarSettings); //Need to call avatar.update() and avatar.render()
+        this.avatar = new Avatar(this.game, this, avatarSettings, undefined, true, false); //Need to call avatar.update() and avatar.render()
         this.avatar.charBg.visible = false;
         this.avatar.healthBar.visible = false;
         this.avatar.magicFX.visible = false;

@@ -10,7 +10,7 @@ export default class MainNavigation{
         this.currentDungeon = this.game.dungeons[this.game.player.currentDungeon];
 
         let bigBtnStyle = {fontSize: 48, font: 'Press Start 2P', fill: '#000000', align: 'center'};
-        let invBtnStyle = {fontSize: 48, font: 'Press Start 2P', fill: '#000000', align: 'center'};
+        //let littleBtnStyle = {fontSize: 36, font: 'Press Start 2P', fill: '#000000', align: 'center'};
         this.smallBtnStyle = {fontSize: 36, font: 'Press Start 2P', fill: '#000000', align: 'center'};
 
         this.lootBtn = new Phaser.Button(this.game, this.game.world.width - 200, this.game.world.height - 210, 'greenButton', this.viewLoot, this);
@@ -19,15 +19,15 @@ export default class MainNavigation{
         this.lootBtn.alpha = 0.5;
 
         //Inv Button
-        this.inventoryBtn = new Phaser.Button(this.game, 200, this.game.world.height - 90, 'blueButton', this.openInventory, this);
+        this.inventoryBtn = new Phaser.Button(this.game, 200, this.game.world.height - 60, 'blueButton', this.openInventory, this);
         this.inventoryBtn.scale.x = 1.8;
-        this.inventoryBtn.scale.y = 3;
+        this.inventoryBtn.scale.y = 1.5;
         this.inventoryBtn.anchor.setTo(0.5);
 
         //Main Left
-        this.overworldLeftBtn = new Phaser.Button(this.game, 200, this.game.world.height - 90, 'greyButton', this.openMain, this);
+        this.overworldLeftBtn = new Phaser.Button(this.game, 200, this.game.world.height - 60, 'greyButton', this.openMain, this);
         this.overworldLeftBtn.scale.x = 1.8;
-        this.overworldLeftBtn.scale.y = 3;
+        this.overworldLeftBtn.scale.y = 1.5;
         this.overworldLeftBtn.anchor.setTo(0.5);
 
         //Main Right
@@ -48,6 +48,12 @@ export default class MainNavigation{
         if(this.game.player.latestUnlockedDungeon > 1 && this.currentDungeon.level == 1){
             this.townText = 'SHOP';
             townBtnColor = 'yellowButton';
+        } else if(this.game.player.latestUnlockedDungeon > 2 && this.currentDungeon.level == 2){
+            this.townText = 'POTS';
+            townBtnColor = 'yellowButton';
+        } else if(this.game.player.latestUnlockedDungeon > 3 && this.currentDungeon.level == 3){
+            this.townText = 'SCROLLS';
+            townBtnColor = 'yellowButton';
         }
         this.raidBtn = new Phaser.Button(this.game, this.game.world.width - 200, this.game.world.height - 90, townBtnColor, this.raidCurrentDungeon, this);
         this.raidBtn.scale.x = 1.8;
@@ -61,7 +67,7 @@ export default class MainNavigation{
             this.game.add.existing(this.overworldLeftBtn);
             this.game.add.existing(this.raidBtn);
 
-            this.overworldLeftText = this.gameState.add.text(200, this.game.world.height - 90, 'WORLD\nMAP', bigBtnStyle);
+            this.overworldLeftText = this.gameState.add.text(200, this.game.world.height - 60, 'WORLD MAP', this.smallBtnStyle);
             this.overworldLeftText.anchor.setTo(0.5);
 
             this.raidText = this.gameState.add.text(this.game.world.width - 200, this.game.world.height - 90, this.townText, bigBtnStyle);
@@ -79,7 +85,7 @@ export default class MainNavigation{
             this.game.add.existing(this.inventoryBtn);
             this.game.add.existing(this.raidBtn);
 
-            this.inventoryText = this.gameState.add.text(200, this.game.world.height - 90, 'GEAR', invBtnStyle);
+            this.inventoryText = this.gameState.add.text(200, this.game.world.height - 60, 'GEAR', this.smallBtnStyle);
             this.inventoryText.anchor.setTo(0.5);
 
             this.raidText = this.gameState.add.text(this.game.world.width - 200, this.game.world.height - 90, this.townText, bigBtnStyle);
@@ -96,7 +102,7 @@ export default class MainNavigation{
             this.game.add.existing(this.inventoryBtn);
             this.game.add.existing(this.overworldRightBtn);
 
-            this.inventoryText = this.gameState.add.text(200, this.game.world.height - 90, 'GEAR', invBtnStyle);
+            this.inventoryText = this.gameState.add.text(200, this.game.world.height - 60, 'GEAR', this.smallBtnStyle);
             this.inventoryText.anchor.setTo(0.5);
 
             this.overworldRightText = this.gameState.add.text(this.game.world.width - 200, this.game.world.height - 90, 'WORLD\nMAP', bigBtnStyle);
@@ -125,9 +131,41 @@ export default class MainNavigation{
         }
     }
 
+    openScrollShop(){
+        new Dialogue(this.game, this.gameState, 'bool', 'Drag scrolls here from your\n inventory to have them\nidentified. You know how\nscrolls work right?', (reply)=>{
+            if(reply == 'yes'){
+                new Dialogue(this.game, this.gameState, 'ok', 'Great!\nCome back when you have\nan unknwon scroll!', ()=>{});
+            } else if(reply == 'no'){
+                new Dialogue(this.game, this.gameState, 'ok', 'Once I\'ve identified them,\nyou can use them to gain\nmagical effects that will\naid you in battle.', ()=>{});
+            }
+        });
+    }
+
+    openPotionShop(){
+        console.log('openning potion shop...');
+        new Dialogue(this.game, this.gameState, 'bool', 'Buy a potion for 50 gold?', (reply)=>{
+            if(reply == 'yes'){
+                if(this.game.player.gold > 49){
+                    this.game.player.gold -= 50;
+                    this.game.player.potions += 1;
+                    new Dialogue(this.game, this.gameState, 'ok', 'Here you go!\n(1 potion was added)', ()=>{});
+                } else {
+                    let short = 50 - this.game.player.gold;
+                    new Dialogue(this.game, this.gameState, 'ok', `Looks like your short about\n${short} gold.`, ()=>{});
+                }
+            } else {
+                new Dialogue(this.game, this.gameState, 'ok', 'Come back if you change your mind.', ()=>{});
+            }
+        });
+    }
+
     raidCurrentDungeon(){
         if(this.townText == 'SHOP'){
             this.openShop();
+        } else if(this.townText == 'POTS'){
+            this.openPotionShop();
+        } else if(this.townText == 'SCROLLS'){
+            this.openScrollShop();
         } else {
             let equippedGear = false;
             let equipment = this.game.player.equipped;
@@ -186,6 +224,28 @@ export default class MainNavigation{
                 if(this.draggingItem){
                     townBtnColor = 'yellow_dotted';
                     this.raidText.text = 'SELL';
+                    this.raidText.fill = '#ffd948';
+                } else {
+                    townBtnColor = 'yellowButton';
+                    this.raidText.text = this.townText;
+                    this.raidText.fill = '#000000';
+                }
+                this.raidBtn.loadTexture(townBtnColor);
+            } else if(this.game.player.latestUnlockedDungeon > 2 && this.currentDungeon.level == 2){
+                this.townText = 'POTS';
+                this.raidBtn.alpha = 1;
+                this.raidText.alpha = 1;
+                townBtnColor = 'yellowButton';
+                this.raidText.text = this.townText;
+                this.raidText.fill = '#000000';
+                this.raidBtn.loadTexture(townBtnColor);
+            } else if(this.game.player.latestUnlockedDungeon > 3 && this.currentDungeon.level == 3){
+                this.townText = 'SCROLLS';
+                this.raidBtn.alpha = 1;
+                this.raidText.alpha = 1;
+                if(this.draggingItem){
+                    townBtnColor = 'yellow_dotted';
+                    this.raidText.text = 'ID';
                     this.raidText.fill = '#ffd948';
                 } else {
                     townBtnColor = 'yellowButton';

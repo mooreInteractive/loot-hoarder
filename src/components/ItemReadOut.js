@@ -45,6 +45,9 @@ export default class ItemReadOut{
                 if(this.item.magic.effect.attribute != null){
                     this.lootText.text += `${this.item.magic.effect.attribute} +${this.item.magic.effect.value}\n`;
                 }
+            } else if(this.item.type == 'misc'){
+                this.lootText.text += `${this.item.name} \n`;
+                this.lootText.text += `${this.item.description} \n`;
             } else {
                 this.lootText.text += `${this.item.name} \n`;
                 if(this.item.magic.effect.attribute != null){

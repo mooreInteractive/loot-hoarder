@@ -99,3 +99,10 @@ export const convertSecondsToTime = (seconds) => {
 
     return timeString;
 };
+
+export const identifyScroll = (scroll) => {
+    scroll.name = scroll.hiddenName;
+    scroll.description = scroll.hiddenDescription;
+    scroll.value = scroll.hiddenValue;
+    scroll.identified = true;
+};

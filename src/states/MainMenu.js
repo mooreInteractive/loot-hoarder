@@ -19,7 +19,7 @@ export default class extends Phaser.State {
         this.mainNav = new MainNavigation(this.game, this);
 
         let avatarSettings = {x: this.currentDungeon.sprite.x, y: this.currentDungeon.sprite.y, scale: 1};
-        let hpSettings = {x: 200, y: this.game.world.height - 210 };
+        let hpSettings = {x: 230, y: this.game.world.height - 160 };
         this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, true); //Need to call avatar.update() and avatar.render()
 
         //clear data button
