@@ -168,6 +168,7 @@ export default class extends Phaser.State {
         let miss = Forge.rand(0+player.baseStats.dexterity, 100);
         let crit = Forge.rand(0+player.baseStats.dexterity, 100);
         let critThreshold = player.equipped.leftHand ? player.equipped.leftHand.crit.threshold : 95;
+        if(player.magicFX.time > 0 && player.magicFX.name == 'CRIT'){ critThreshold -= 15;}
         let critMulti = player.equipped.leftHand ? player.equipped.leftHand.crit.multiplier : 95;
 
         if(miss > 15){
@@ -220,6 +221,7 @@ export default class extends Phaser.State {
                 lootThreshold = 85;
             }
             if(enemy.boss){lootThreshold = 35; lootMax = this.dungeon.level + 1;}
+            if(player.magicFX.time > 0 && player.magicFX.name === 'LEWT'){lootThreshold -= 15;}
             if( lootChance > lootThreshold || !story.chapter1.firstLootDrop){
                 //Story Junk - TODO offload somewhere? This will get bad
                 if(this.dungeon.level == 2 && !story.chapter1.foundSecondNote && story.chapter1.timesCheckedShop > 0){

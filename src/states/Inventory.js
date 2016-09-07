@@ -14,6 +14,7 @@ export default class extends Phaser.State {
     }
 
     preload () {
+        this.add.image(0,0,'inv_bg');
 
         let avatarSettings = {x: 90, y: 85, scale: 1};
         let hpSettings = {x: 325, y: 100 };
@@ -23,30 +24,31 @@ export default class extends Phaser.State {
         this.equippedGridBackground();
         this.drawInventoryItems();
 
-        let Pixel24Black = {font: 'Press Start 2P', fontSize: 36, fill: '#000000' };
-        let Pixel36Blue = {font: 'Press Start 2P', fontSize: 42, fill: '#1313CD' };
+        //let Pixel24Black = {font: 'Press Start 2P', fontSize: 36, fill: '#000000' };
+        let Pixel24White = {font: 'Press Start 2P', fontSize: 36, fill: '#898989' };
+        let Pixel36Blue = {font: 'Press Start 2P', fontSize: 42, fill: '#CDCDCD' };
         let Pixel16Black = {font: 'Press Start 2P', fontSize: 16, fill: '#000000' };
 
         //Player Stats
-        this.playerInfo = this.add.text(200, 200, '', Pixel24Black);
-        this.playerInfo2 = this.add.text(465, 325, '', Pixel16Black);
+        this.playerInfo = this.add.text(180, 200, '', Pixel24White);
+        this.playerInfo2 = this.add.text(470, 310, '', Pixel16Black);
 
         //ItemReadOutBG
-        let itemHoverBG = this.add.bitmapData(450, 110);
-        itemHoverBG.ctx.beginPath();
-        itemHoverBG.ctx.rect(0, 0, 450, 110);
-        itemHoverBG.ctx.fillStyle = '#FFFFFF';
-        itemHoverBG.ctx.fill();
-        this.hoverItemBG = this.add.sprite(145, 430, itemHoverBG);
+        // let itemHoverBG = this.add.bitmapData(450, 110);
+        // itemHoverBG.ctx.beginPath();
+        // itemHoverBG.ctx.rect(0, 0, 450, 110);
+        // itemHoverBG.ctx.fillStyle = '#FFFFFF';
+        // itemHoverBG.ctx.fill();
+        // this.hoverItemBG = this.add.sprite(145, 430, itemHoverBG);
         //Item Read Out Text
-        this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 150, y: 435});
+        this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 155, y: 435});
 
         //skillPoint + Buttons
         this.plusBtns = [
-            this.add.text(150, 198, '+', Pixel36Blue),
-            this.add.text(150, 239, '+', Pixel36Blue),
-            this.add.text(150, 280, '+', Pixel36Blue),
-            this.add.text(150, 324, '+', Pixel36Blue)
+            this.add.text(130, 198, '+', Pixel36Blue),
+            this.add.text(130, 239, '+', Pixel36Blue),
+            this.add.text(130, 280, '+', Pixel36Blue),
+            this.add.text(130, 324, '+', Pixel36Blue)
         ];
 
         this.plusBtns.forEach((btn, index) => {
@@ -138,7 +140,7 @@ export default class extends Phaser.State {
         this.equippedSlots = this.game.add.group();
 
         let equipmentSlotSprites = [
-            {w: 252, h: 264, x: -20, y: -10},
+            {w: 1, h: 1, x: -20, y: -10},
             {w:64, h:96, x:0, y:74},//left hand
             {w:64, h:96, x:74, y:74},//torso
             {w:64, h:96, x:148, y:74},//right hand
@@ -233,7 +235,7 @@ export default class extends Phaser.State {
         let height = 65*4; // example;
         let bgbmd = this.game.add.bitmapData(width+10, height+10);
         bgbmd.ctx.beginPath();
-        bgbmd.ctx.rect(0, 0, width+10, height+10);
+        bgbmd.ctx.rect(0, 0, 1, 1);
         bgbmd.ctx.fillStyle = '#131313';
         bgbmd.ctx.fill();
         this.inventoryGridSprite = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY+150, bgbmd);

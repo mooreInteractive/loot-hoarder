@@ -7,6 +7,7 @@ export default class ItemReadOut{
 
         let Oswald24Black = {font: 'Oswald', fontSize: 22, fill: '#000000'};
         this.lootText = this.gameState.add.text(this.settings.x, this.settings.y, '', Oswald24Black);
+        this.lootText.lineSpacing = -5;
 
         if(this.item != null){
             this.drawItemText();
@@ -29,6 +30,8 @@ export default class ItemReadOut{
         } else{
             if(this.item.magic.effect.attribute != null){
                 this.lootText.fill = '#1313AB';
+            } else if(this.item.type == 'misc'){
+                this.lootText.fill = '#670067';
             } else {
                 this.lootText.fill = '#000000';
             }
@@ -40,8 +43,9 @@ export default class ItemReadOut{
                     this.lootText.text += `${this.item.magic.effect.attribute} +${this.item.magic.effect.value}\n`;
                 }
             } else if(this.item.dmg != null){//Weapon
+                let critPercent = (100 - this.item.crit.threshold) + '%';
                 this.lootText.text += `[${this.item.level}] ${this.item.name} \n`;
-                this.lootText.text += `Dmg: ${this.item.dmg.min} - ${this.item.dmg.max} \n`;
+                this.lootText.text += `Dmg: ${this.item.dmg.min} - ${this.item.dmg.max}   Crit: ${critPercent} - x${this.item.crit.multiplier}\n`;
                 if(this.item.magic.effect.attribute != null){
                     this.lootText.text += `${this.item.magic.effect.attribute} +${this.item.magic.effect.value}\n`;
                 }

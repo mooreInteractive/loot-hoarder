@@ -22,12 +22,6 @@ export function build(levelMax) {
     };
     let type = this.rand(0,levelMax);
     switch(type){
-    default:
-    case 0: accessory.name = 'Health Potion';
-        accessory.description = 'Use to return to battle quicker.';
-        accessory.sprite = 'potion';
-        accessory.value = 40;
-        break;
     case 4:accessory.name = 'Unknown Scroll';
         accessory.sprite = 'scroll';
         accessory.magicFX = {name: 'EXP', time: 120, totalTime: 120, effect: 'double exp'};
@@ -38,6 +32,33 @@ export function build(levelMax) {
         accessory.hiddenValue = 600;
         accessory.identified = false;
         accessory.buttonText = 'use';
+        break;
+    case 5:accessory.name = 'Unknown Scroll';
+        accessory.sprite = 'scroll';
+        accessory.magicFX = {name: 'CRIT', time: 180, totalTime: 180, effect: 'increased crit chance'};
+        accessory.hiddenName = 'Scroll of Crits';
+        accessory.hiddenDescription = 'For 3 minutes, your chance of critical damage\nis increased by 15%.';
+        accessory.description = 'Take this to an expert to be identified.';
+        accessory.value = 350;
+        accessory.hiddenValue = 800;
+        accessory.identified = false;
+        accessory.buttonText = 'use';
+        break;
+    case 6:accessory.name = 'Unknown Scroll';
+        accessory.sprite = 'scroll';
+        accessory.magicFX = {name: 'LEWT', time: 300, totalTime: 300, effect: 'increased loot drop'};
+        accessory.hiddenName = 'Scroll of Lewts';
+        accessory.hiddenDescription = 'For 5 minutes enemies are more likely\nto drop loot.';
+        accessory.description = 'Take this to an expert to be identified.';
+        accessory.value = 350;
+        accessory.hiddenValue = 1000;
+        accessory.identified = false;
+        accessory.buttonText = 'use';
+        break;
+    default: accessory.name = 'Health Potion';
+        accessory.description = 'Use to return to battle quicker.';
+        accessory.sprite = 'potion';
+        accessory.value = 40;
         break;
     }
     //return the accessory
