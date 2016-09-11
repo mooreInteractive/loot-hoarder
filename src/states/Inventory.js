@@ -198,33 +198,36 @@ export default class extends Phaser.State {
 
     mouseOverEquipmentSlot(mouse, item){
         let hitSlot = false;
-        let slots = this.equippedSlots.children;
         if(
             mouse.x >= this.equippedSlots.position.x &&
             mouse.x <= (this.equippedSlots.position.x + this.equippedSlots.width) &&
             mouse.y >= this.equippedSlots.position.y &&
             mouse.y <= (this.equippedSlots.position.y + this.equippedSlots.height)
         ){
-            for(let i = 1; i < slots.length; i++){
-                if(
-                    mouse.x >= slots[i].position.x + this.equippedSlots.position.x &&
-                    mouse.x <= (slots[i].position.x + this.equippedSlots.position.x + slots[i].width) &&
-                    mouse.y >= slots[i].position.y + this.equippedSlots.position.y &&
-                    mouse.y <= (slots[i].position.y + this.equippedSlots.position.y + slots[i].height)
-                ){
-                    if(  (item.inventoryType == 'hand' && (['leftHand', 'rightHand']).indexOf(slots[i].type) > -1)
-                      || (item.inventoryType == 'head' && slots[i].type == 'head')
-                      || (item.inventoryType == 'body' && slots[i].type == 'body')
-                      || (item.inventoryType == 'feet' && slots[i].type == 'feet')
-                      || (item.inventoryType == 'accessory' && (['accessory1','accessory2','accessory3','accessory4']).indexOf(slots[i].type) > -1)
-                    ){
-                        //console.log('-mouseOverEquipmentSlot:', slots[i], slots[i].type, this.game.player.equipped);
-                        if(this.game.player.equipped[slots[i].type] == null){
-                            hitSlot = slots[i];
-                        }
-                    }
+            let dropSlots = this.equippedSlots.filter((slot)=>{
+                if(item.inventoryType == 'hand' && (['leftHand', 'rightHand']).indexOf(slot.type) > -1){
+                    return true;
+                } else if((item.inventoryType == 'accessory' && (['accessory1','accessory2','accessory3','accessory4']).indexOf(slot.type) > -1)){
+                    return true;
+                } else {
+                    return slot.type == item.inventoryType;
                 }
+            }).list;//foreach is returning an arrayList object thingy.
+
+            if(dropSlots.length == 1){
+                //console.log('-mouseOverEquipmentSlot:', slots[i], slots[i].type, this.game.player.equipped);
+                if(this.game.player.equipped[dropSlots[0].type] == null){
+                    hitSlot = dropSlots[0];
+                }
+            } else if(dropSlots.length > 1){
+                dropSlots.some((slot)=>{
+                    if(this.game.player.equipped[slot.type] == null){
+                        hitSlot = slot;
+                        return true;
+                    }
+                });
             }
+            console.log(hitSlot);
         }
 
         return hitSlot;

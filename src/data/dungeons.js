@@ -267,7 +267,7 @@ export let dungeons = [
             {hp: 100, dps: 8, sprite: 'moss'},
             {hp: 150, dps: 50, sprite: 'skelly'},
             {hp: 150, dps: 50, sprite: 'skelly'},
-            {hp: 250, dps: 60, sprite: 'wraith', boss: true}
+            {hp: 1024, dps: 500, sprite: 'wraith', boss: true}
         ]
     }
 ];
