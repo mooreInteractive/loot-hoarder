@@ -247,7 +247,7 @@ export default class extends Phaser.State {
                 }
             }
             //get exp
-            let newExp = Math.floor((enemy.dps + enemy.originalHp) / 3);
+            let newExp = Math.floor((enemy.dps + enemy.originalHp) / 2);
             if(player.magicFX.time != 0 && player.magicFX.name == 'EXP'){ newExp = newExp*2; }
             player.exp += newExp;
 

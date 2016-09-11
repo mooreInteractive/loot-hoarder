@@ -12,7 +12,7 @@ export let chapter1 = {
             new Dialogue(game, gameState, 'ok', 'Don\'t forget you can sell\nloot from your inventory\nscreen here until I get back', ()=>{});
         } else {
             switch(game.player.story.chapter1.timesCheckedShop){
-            case 0: new Dialogue(game, gameState, 'ok', 'Back in 5 minutes!', ()=>{});
+            case 0: new Dialogue(game, gameState, 'ok', 'Back in 5 minutes!\nSell items from your\ninventory here until I\nget back.', ()=>{});
                 break;
             case 1: new Dialogue(game, gameState, 'ok', 'Maybe 20 minutes...', ()=>{});
                 break;

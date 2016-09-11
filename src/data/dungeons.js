@@ -14,20 +14,20 @@ export let dungeons = [
         heardMessage: false,
         currentEnemies: [],
         enemies: [
-            {hp: 15, dps: 1, sprite: 'goo'},
-            {hp: 15, dps: 1, sprite: 'goo'},
-            {hp: 36, dps: 3, sprite: 'whisper', boss: true},
-            {hp: 18, dps: 3, sprite: 'goo'},
-            {hp: 18, dps: 3, sprite: 'goo'},
-            {hp: 60, dps: 5, sprite: 'artichoke', boss: true, message: 'There\'s nothing good left\nin this town anyway.'}
+            {hp: 8, dps: 1, sprite: 'goo'},
+            {hp: 8, dps: 1, sprite: 'goo'},
+            {hp: 20, dps: 3, sprite: 'whisper', boss: true},
+            {hp: 15, dps: 2, sprite: 'goo'},
+            {hp: 15, dps: 2, sprite: 'goo'},
+            {hp: 30, dps: 4, sprite: 'artichoke', boss: true, message: 'There\'s nothing good left\nin this town anyway.'}
         ]
     },
     {
         level: 2,
-        enemiesAmount: 8,
-        enemiesLeft: 8,
+        enemiesAmount: 6,
+        enemiesLeft: 6,
         miniBoss: 3,
-        boss: 7,
+        boss: 6,
         defeated: false,
         sprite: {
             image: 'yellow_ranch',
@@ -37,22 +37,20 @@ export let dungeons = [
         heardMessage: false,
         currentEnemies: [],
         enemies: [
-            {hp: 15, dps: 3, sprite: 'goo'},
-            {hp: 18, dps: 6, sprite: 'whisper'},
-            {hp: 18, dps: 6, sprite: 'whisper'},
-            {hp: 48, dps: 6, sprite: 'artichoke', boss: true},
-            {hp: 18, dps: 6, sprite: 'whisper'},
-            {hp: 18, dps: 6, sprite: 'whisper'},
-            {hp: 15, dps: 12, sprite: 'artichoke'},
-            {hp: 105, dps: 12, sprite: 'moss', boss: true, message: 'Your friend isn\'t here chump.'}
+            {hp: 8, dps: 2, sprite: 'goo'},
+            {hp: 12, dps: 4, sprite: 'whisper'},
+            {hp: 24, dps: 4, sprite: 'artichoke', boss: true},
+            {hp: 12, dps: 3, sprite: 'whisper'},
+            {hp: 10, dps: 4, sprite: 'artichoke'},
+            {hp: 55, dps: 6, sprite: 'moss', boss: true, message: 'Your friend isn\'t here chump.'}
         ]
     },
     {
         level: 3,
-        enemiesAmount: 10,
-        enemiesLeft: 10,
-        miniBoss: 4,
-        boss: 9,
+        enemiesAmount: 7,
+        enemiesLeft: 7,
+        miniBoss: 3,
+        boss: 7,
         defeated: false,
         sprite: {
             image: 'red_ranch',
@@ -62,22 +60,19 @@ export let dungeons = [
         heardMessage: false,
         currentEnemies: [],
         enemies: [
-            {hp: 18, dps: 6, sprite: 'whisper'},
-            {hp: 18, dps: 9, sprite: 'whisper'},
-            {hp: 30, dps: 12, sprite: 'artichoke'},
-            {hp: 30, dps: 12, sprite: 'artichoke'},
-            {hp: 75, dps: 18, sprite: 'moss', boss: true},
-            {hp: 18, dps: 12, sprite: 'artichoke'},
-            {hp: 36, dps: 6, sprite: 'antler'},
-            {hp: 36, dps: 6, sprite: 'antler'},
-            {hp: 45, dps: 15, sprite: 'artichoke'},
-            {hp: 165, dps: 30, sprite: 'blood_skull', boss: true, message: 'Who are you anyways kid?'}
+            {hp: 18, dps: 3, sprite: 'whisper'},
+            {hp: 18, dps: 4, sprite: 'artichoke'},
+            {hp: 44, dps: 10, sprite: 'moss', boss: true},
+            {hp: 18, dps: 8, sprite: 'artichoke'},
+            {hp: 24, dps: 6, sprite: 'antler'},
+            {hp: 24, dps: 12, sprite: 'artichoke'},
+            {hp: 85, dps: 16, sprite: 'blood_skull', boss: true, message: 'Who are you anyways kid?'}
         ]
     },
     {
         level: 4,
-        enemiesAmount: 12,
-        enemiesLeft: 12,
+        enemiesAmount: 10,
+        enemiesLeft: 10,
         miniBoss: 4,
         boss: 9,
         defeated: false,
@@ -89,18 +84,16 @@ export let dungeons = [
         heardMessage: false,
         currentEnemies: [],
         enemies: [
-            {hp: 32, dps: 10, sprite: 'artichoke'},
-            {hp: 32, dps: 10, sprite: 'artichoke'},
-            {hp: 55, dps: 18, sprite: 'moss'},
-            {hp: 55, dps: 18, sprite: 'moss'},
-            {hp: 55, dps: 18, sprite: 'moss'},
-            {hp: 150, dps: 44, sprite: 'blood_skull', boss: true},
-            {hp: 85, dps: 20, sprite: 'artichoke'},
-            {hp: 100, dps: 8, sprite: 'moss'},
-            {hp: 100, dps: 8, sprite: 'moss'},
-            {hp: 150, dps: 50, sprite: 'skelly'},
-            {hp: 150, dps: 50, sprite: 'skelly'},
-            {hp: 250, dps: 60, sprite: 'wraith', boss: true, message: 'Well aren\'t you cute?'}
+            {hp: 40, dps: 10, sprite: 'artichoke'},
+            {hp: 40, dps: 10, sprite: 'artichoke'},
+            {hp: 55, dps: 15, sprite: 'moss'},
+            {hp: 55, dps: 15, sprite: 'moss'},
+            {hp: 75, dps: 20, sprite: 'blood_skull', boss: true},
+            {hp: 40, dps: 18, sprite: 'artichoke'},
+            {hp: 45, dps: 14, sprite: 'moss'},
+            {hp: 45, dps: 14, sprite: 'moss'},
+            {hp: 60, dps: 20, sprite: 'skelly'},
+            {hp: 120, dps: 36, sprite: 'wraith', boss: true, message: 'Well aren\'t you cute?'}
         ]
     },
     {
