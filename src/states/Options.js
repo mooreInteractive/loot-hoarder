@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import MainNavigation from '../components/MainNavigation';
 
 let credits = [
-    {text: 'Loxmyth Art - Avatar/Enemies Art', link: 'http://loxmythart.com'},
+    {text: 'Loxmyth - Avatar/Enemies Art', link: 'http://loxmyth.com'},
     {text: 'Nick Heathfield - Music', link: 'http://nickheathfield.co.uk'},
     {text: 'Buch(OGA) - overworld tiles', link: 'http://opengameart.org/users/buch'},
     {text: 'Bevouliin(OGA) - battle backgrounds', link: 'http://bevouliin.com/'},
