@@ -1,6 +1,14 @@
 import Phaser from 'phaser';
 import MainNavigation from '../components/MainNavigation';
 
+let credits = [
+    {text: 'Loxmyth Art - Avatar/Enemies Art', link: 'http://loxmythart.com'},
+    {text: 'Nick Heathfield - Music', link: 'http://nickheathfield.co.uk'},
+    {text: 'Buch(OGA) - overworld tiles', link: 'http://opengameart.org/users/buch'},
+    {text: 'Bevouliin(OGA) - battle backgrounds', link: 'http://bevouliin.com/'},
+    {text: 'Kenney (Asset Jesus) - Buttons Art', link: 'http://kenney.nl'}
+];
+
 export default class extends Phaser.State {
     init () {}
 
@@ -8,14 +16,46 @@ export default class extends Phaser.State {
         new MainNavigation(this.game, this);
 
         //clear data button
-        this.clearDataBtn = new Phaser.Button(this.game, this.game.world.centerX, this.game.world.centerY, 'redButton', this.clearPlayerData, this);
+        this.clearDataBtn = new Phaser.Button(this.game, this.game.world.centerX, 800, 'redButton', this.clearPlayerData, this);
         this.clearDataBtn.anchor.setTo(0.5);
         this.clearDataBtn.scale.setTo(2,2);
         this.game.add.existing(this.clearDataBtn);
 
-        let clearBtnStyle = {fontSize: 32, font: 'Oswald', fill: '#000000'};
-        this.clearBtnText = this.add.text(this.game.world.centerX, this.game.world.centerY, 'Clear Game Data', clearBtnStyle);
+        //music buttons
+        this.musicOn = new Phaser.Button(this.game, this.game.world.centerX + 140, 105, 'music_on', this.toggleMusic, this);
+        this.musicOn.anchor.setTo(0.5);
+        this.game.add.existing(this.musicOn);
+        this.musicOn.visible = !this.game.music.mute;
+
+        this.musicOff = new Phaser.Button(this.game, this.game.world.centerX + 140, 105, 'music_off', this.toggleMusic, this);
+        this.musicOff.anchor.setTo(0.5);
+        this.game.add.existing(this.musicOff);
+        this.musicOff.visible = this.game.music.mute;
+
+        let textStyle = {fontSize: 24, font: 'Press Start 2P', fill: '#000000'};
+        let smallTextStyle = {fontSize: 18, font: 'Press Start 2P', fill: '#000000'};
+
+        this.clearBtnText = this.add.text(this.game.world.centerX, 800, 'Clear Game Data', textStyle);
         this.clearBtnText.anchor.setTo(0.5);
+
+        this.musicText = this.add.text(this.game.world.centerX - 50, 110, 'Music on/off:', textStyle);
+        this.musicText.anchor.setTo(0.5);
+
+        this.creditsText = this.add.text(75, 200, 'Credtis(Thank you!):', textStyle);
+        //credits:
+        this.creditBtns = [];
+
+        credits.forEach((credit, index) => {
+            let btn = this.add.text(75, (250+(index*35)), credit.text, smallTextStyle);
+            btn.inputEnabled = true;
+            btn.events.onInputDown.add(this.creditClicked.bind(this, index), this);
+            btn.input.useHandCursor = true;
+            this.creditBtns.push(btn);
+        });
+    }
+
+    creditClicked(index){
+        window.open(credits[index].link, '_blank');
     }
 
     clearPlayerData(){
@@ -28,6 +68,12 @@ export default class extends Phaser.State {
             localStorage.removeItem('loot-hoarder-ver');
             window.location.reload();
         }
+    }
+
+    toggleMusic(){
+        this.game.music.mute = !this.game.music.mute;
+        this.musicOn.visible = !this.game.music.mute;
+        this.musicOff.visible = this.game.music.mute;
     }
 
 }

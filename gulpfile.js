@@ -3,8 +3,8 @@ var sftp = require('gulp-sftp');
 var csv2json = require('gulp-csv2json');
 var rename = require('gulp-rename');
 
-gulp.task('deploy', function () {
-    return gulp.src(['./dist/**/*', './index.html', './lb.html', './assets/**/*'], {base: '.'})
+gulp.task('deploy', () => {
+    return gulp.src(['./dist/**/*', './index.html', './lb.html', './assets/images/*', './assets/fonts/*'], {base: '.'})
         .pipe(sftp({
             host: 'ftp.moore-interactive.net',
             auth: 'ftpcreds',
@@ -12,7 +12,7 @@ gulp.task('deploy', function () {
         }));
 });
 
-gulp.task('build-items', function () {
+gulp.task('build-items', () => {
 
     var csvParseOptions = {}; //based on options specified here : http://csv.adaltas.com/parse/
 

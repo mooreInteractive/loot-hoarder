@@ -76,5 +76,8 @@ export default class extends Phaser.State {
         let avatarSettings = {x: this.game.world.centerX, y: this.game.world.centerY, scale: 0};
         this.avatar.moveToAtScale(avatarSettings, null, 500, () => {this.state.start('MainMenu');});
 
+        this.game.music = this.game.add.audio('heathfield_music');
+        this.game.music.loopFull();
+        this.game.music.play();
     }
 }

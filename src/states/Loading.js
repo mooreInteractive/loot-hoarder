@@ -10,53 +10,55 @@ export default class extends Phaser.State {
         text.anchor.setTo(0.5, 0.5);
 
         //Button Backgrounds
-        this.load.image('blueButton', './assets/images/blue_button00.png');
-        this.load.image('greenButton', './assets/images/green_button00.png');
-        this.load.image('greyButton', './assets/images/grey_button00.png');
-        this.load.image('yellowButton', './assets/images/yellow_button00.png');
-        this.load.image('redButton', './assets/images/red_button00.png');
-        this.load.image('optionsBanner', './assets/images/options_banner.png');
-        this.load.image('yellow_dotted', './assets/images/yellow_dotted.png');
+        this.game.load.image('blueButton', './assets/images/blue_button00.png');
+        this.game.load.image('greenButton', './assets/images/green_button00.png');
+        this.game.load.image('greyButton', './assets/images/grey_button00.png');
+        this.game.load.image('yellowButton', './assets/images/yellow_button00.png');
+        this.game.load.image('redButton', './assets/images/red_button00.png');
+        this.game.load.image('optionsBanner', './assets/images/options_banner.png');
+        this.game.load.image('yellow_dotted', './assets/images/yellow_dotted.png');
+        this.game.load.image('music_on', './assets/images/ui/musicOn.png', 100, 100);
+        this.game.load.image('music_off', './assets/images/ui/musicOff.png', 100, 100);
 
         //UI
-        this.load.spritesheet('hud_main', './assets/images/hud_character.png', 276, 100);
-        this.load.image('hud_loot', './assets/images/hud_loot.png');
-        this.load.image('inv_bg', './assets/images/INV.png');
+        this.game.load.spritesheet('hud_main', './assets/images/hud_character.png', 276, 100);
+        this.game.load.image('hud_loot', './assets/images/hud_loot.png');
+        this.game.load.image('inv_bg', './assets/images/INV.png');
 
         //weapons
-        this.load.image('shank0', './assets/images/items/shank.png');
-        this.load.image('spear0', './assets/images/items/spear.png');
-        this.load.image('shield3', './assets/images/items/shield.png');
-        this.load.image('helm1', './assets/images/items/stone_helm.png');
-        this.load.image('boots1', './assets/images/items/stone_boots.png');
-        this.load.image('armor0', './assets/images/items/leather_armor.png');
-        this.load.image('sword2', './assets/images/items/sword.png');
-        this.load.image('axe0', './assets/images/items/axe.png');
-        this.load.image('bow0', './assets/images/items/bow.png');
-        this.load.image('redRing', './assets/images/items/ring.png');
-        this.load.image('blueRing', './assets/images/items/blue_ring.png');
-        this.load.image('purpleRing', './assets/images/items/purple_ring.png');
-        this.load.image('pinkRing', './assets/images/items/pink_ring.png');
-        this.load.image('potion', './assets/images/items/potion.png');
-        this.load.image('scroll', './assets/images/items/scroll.png');
+        this.game.load.image('shank0', './assets/images/items/shank.png');
+        this.game.load.image('spear0', './assets/images/items/spear.png');
+        this.game.load.image('shield3', './assets/images/items/shield.png');
+        this.game.load.image('helm1', './assets/images/items/stone_helm.png');
+        this.game.load.image('boots1', './assets/images/items/stone_boots.png');
+        this.game.load.image('armor0', './assets/images/items/leather_armor.png');
+        this.game.load.image('sword2', './assets/images/items/sword.png');
+        this.game.load.image('axe0', './assets/images/items/axe.png');
+        this.game.load.image('bow0', './assets/images/items/bow.png');
+        this.game.load.image('redRing', './assets/images/items/ring.png');
+        this.game.load.image('blueRing', './assets/images/items/blue_ring.png');
+        this.game.load.image('purpleRing', './assets/images/items/purple_ring.png');
+        this.game.load.image('pinkRing', './assets/images/items/pink_ring.png');
+        this.game.load.image('potion', './assets/images/items/potion.png');
+        this.game.load.image('scroll', './assets/images/items/scroll.png');
 
         //terrain
-        this.load.spritesheet('water', './assets/images/terrain/water.png', 32, 32);
-        this.load.image('chesslike', './assets/images/terrain/wide_castle.png', 48, 32);
-        this.load.image('lair', './assets/images/terrain/large_cave.png', 48, 32);
-        this.load.image('cave', './assets/images/terrain/small_cave.png', 48, 32);
-        this.load.image('yellow_town', './assets/images/terrain/yellow_town.png', 32, 32);
-        this.load.image('brown_town', './assets/images/terrain/brown_town.png', 32, 32);
-        this.load.image('tall_tower', './assets/images/terrain/tall_tower.png', 32, 32);
-        this.load.image('small_tower', './assets/images/terrain/small_tower.png', 32, 32);
-        this.load.image('clay_town', './assets/images/terrain/clay_town.png', 32, 32);
-        this.load.image('yellow_ranch', './assets/images/terrain/yellow_ranch.png', 32, 32);
-        this.load.image('red_ranch', './assets/images/terrain/red_ranch.png', 32, 32);
-        this.load.image('castle_courtyard', './assets/images/terrain/castle_courtyard.png', 48, 48);
+        this.game.load.spritesheet('water', './assets/images/terrain/water.png', 32, 32);
+        this.game.load.image('chesslike', './assets/images/terrain/wide_castle.png', 48, 32);
+        this.game.load.image('lair', './assets/images/terrain/large_cave.png', 48, 32);
+        this.game.load.image('cave', './assets/images/terrain/small_cave.png', 48, 32);
+        this.game.load.image('yellow_town', './assets/images/terrain/yellow_town.png', 32, 32);
+        this.game.load.image('brown_town', './assets/images/terrain/brown_town.png', 32, 32);
+        this.game.load.image('tall_tower', './assets/images/terrain/tall_tower.png', 32, 32);
+        this.game.load.image('small_tower', './assets/images/terrain/small_tower.png', 32, 32);
+        this.game.load.image('clay_town', './assets/images/terrain/clay_town.png', 32, 32);
+        this.game.load.image('yellow_ranch', './assets/images/terrain/yellow_ranch.png', 32, 32);
+        this.game.load.image('red_ranch', './assets/images/terrain/red_ranch.png', 32, 32);
+        this.game.load.image('castle_courtyard', './assets/images/terrain/castle_courtyard.png', 48, 48);
 
-        this.load.image('island', './assets/images/terrain/island_bare.png');
-        this.load.image('field-blue', './assets/images/terrain/field-blue.png');
-        this.load.image('field-tan', './assets/images/terrain/field-tan.png');
+        this.game.load.image('island', './assets/images/terrain/island_bare.png');
+        this.game.load.image('field-blue', './assets/images/terrain/field-blue.png');
+        this.game.load.image('field-tan', './assets/images/terrain/field-tan.png');
 
         //Mobs
         this.game.load.spritesheet('goo', './assets/images/mobs/goo.png', 77, 72);
@@ -102,6 +104,7 @@ export default class extends Phaser.State {
         this.game.load.spritesheet('bow_off', './assets/images/avatar/bow_off.png', 96, 144);
         this.game.load.spritesheet('spear_off', './assets/images/avatar/spear_off.png', 96, 144);
 
+        this.game.load.audio('heathfield_music', ['assets/audio/pillage_the_village.mp3']);
 
 
         this.game.load.onFileComplete.add(this.fileComplete, this);
