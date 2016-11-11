@@ -30,7 +30,7 @@ class Game extends Phaser.Game {
         /***** VERSION NUMBER - UPDATING WILL WIPE PLAYER DATA *************
         /****
         /**/
-        this.version = '0.0.18'; //updated 9/6 8:45pm
+        this.version = '0.0.19'; //updated 9/6 8:45pm
         /**/
         /****
         *******************************************************************/
@@ -124,7 +124,6 @@ class Game extends Phaser.Game {
         this.scale.setUserScale(optimalRatio, optimalRatio, 0, 0);
     }
 
-    //function castleUI (){return true;}
     disableContextMenu(element) {
         element.oncontextmenu = function(e) {
             if (e){e.stopPropagation();}

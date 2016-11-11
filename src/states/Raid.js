@@ -148,7 +148,7 @@ export default class extends Phaser.State {
 
             introTween.onComplete.add(()=>{
                 if(this.currentEnemy.boss && this.dungeon.enemiesLeft == 1 && this.currentEnemy.message && !this.dungeon.heardMessage){
-                    new Dialogue(this.game, this, 'ok', this.currentEnemy.message, ()=>{
+                    new Dialogue(this.game, this, 'ok', null, this.currentEnemy.message, ()=>{
                         this.dungeon.heardMessage = true;
                         this.battlePaused = false;
                     });

@@ -132,29 +132,29 @@ export default class MainNavigation{
     }
 
     openScrollShop(){
-        new Dialogue(this.game, this.gameState, 'bool', 'Drag scrolls here from your\n inventory to have them\nidentified. You know how\nscrolls work right?', (reply)=>{
+        new Dialogue(this.game, this.gameState, 'bool', 'scrollkeeper', 'Drag scrolls here from your inventory to have them identified. You know how scrolls work right?', (reply)=>{
             if(reply == 'yes'){
-                new Dialogue(this.game, this.gameState, 'ok', 'Great!\nCome back when you have\nan unknwon scroll!', ()=>{});
+                new Dialogue(this.game, this.gameState, 'ok', 'scrollkeeper', 'Great! Come back when you have an unknwon scroll!', ()=>{});
             } else if(reply == 'no'){
-                new Dialogue(this.game, this.gameState, 'ok', 'Once I\'ve identified them,\nyou can use them to gain\nmagical effects that will\naid you in battle.', ()=>{});
+                new Dialogue(this.game, this.gameState, 'ok', 'scrollkeeper', 'Once I\'ve identified them, you can use them to gain magical effects that will aid you in battle.', ()=>{});
             }
         });
     }
 
     openPotionShop(){
         console.log('openning potion shop...');
-        new Dialogue(this.game, this.gameState, 'bool', 'Buy a potion for 50 gold?', (reply)=>{
+        new Dialogue(this.game, this.gameState, 'bool', 'potionkeeper', 'Buy a potion for 50 gold?', (reply)=>{
             if(reply == 'yes'){
                 if(this.game.player.gold > 49){
                     this.game.player.gold -= 50;
                     this.game.player.potions += 1;
-                    new Dialogue(this.game, this.gameState, 'ok', 'Here you go!\n(1 potion was added)', ()=>{});
+                    new Dialogue(this.game, this.gameState, 'ok', 'potionkeeper', 'Here you go! (1 potion was added)', ()=>{});
                 } else {
                     let short = 50 - this.game.player.gold;
-                    new Dialogue(this.game, this.gameState, 'ok', `Looks like your short about\n${short} gold.`, ()=>{});
+                    new Dialogue(this.game, this.gameState, 'ok', 'potionkeeper', `Looks like your short about ${short} gold.`, ()=>{});
                 }
             } else {
-                new Dialogue(this.game, this.gameState, 'ok', 'Come back if you change your mind.', ()=>{});
+                new Dialogue(this.game, this.gameState, 'ok', 'potionkeeper', 'Come back if you change your mind.', ()=>{});
             }
         });
     }
@@ -179,14 +179,14 @@ export default class MainNavigation{
             });
 
             if(!equippedGear){
-                new Dialogue(this.game, this.gameState, 'ok', 'You should equip\nsomething before raiding...', ()=>{});
+                new Dialogue(this.game, this.gameState, 'ok', 'shopkeeper', 'You should equip something before raiding...', ()=>{});
             } else {
                 if(this.game.player.latestUnlockedDungeon >= dungeon.level){
                     if(this.game.player.battleStats.currentHealth > 1){
                         this.game.state.start('Raid', true, false, dungeon);
                     }
                 } else {
-                    new Dialogue(this.game, this.gameState, 'ok', 'Your shit\'s too weak son.', ()=>{});
+                    new Dialogue(this.game, this.gameState, 'ok', 'shopkeeper', 'Your shit\'s too weak son.', ()=>{});
                 }
             }
         }

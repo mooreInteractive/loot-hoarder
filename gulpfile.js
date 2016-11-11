@@ -4,7 +4,7 @@ var csv2json = require('gulp-csv2json');
 var rename = require('gulp-rename');
 
 gulp.task('deploy', () => {
-    return gulp.src(['./dist/**/*', './index.html', './lb.html', './assets/images/*', './assets/fonts/*'], {base: '.'})
+    return gulp.src(['./dist/**/*', './index.html', './lb.html', './assets/images/**/*', './assets/fonts/*'], {base: '.'})
         .pipe(sftp({
             host: 'ftp.moore-interactive.net',
             auth: 'ftpcreds',

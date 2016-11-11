@@ -470,7 +470,7 @@ export default class extends Phaser.State {
         } else if(this.currentDungeon.level == 3 && this.game.player.latestUnlockedDungeon > 3){
             if(item.name == 'Unknown Scroll'){
                 let cost = 100;
-                new Dialogue(this.game, this, 'bool', `You wish to identify this\nscroll for ${cost} gold?`, (reply)=>{
+                new Dialogue(this.game, this, 'bool', 'scrollkeeper', `You wish to identify this\nscroll for ${cost} gold?`, (reply)=>{
                     if(reply == 'yes'){
                         if(this.game.player.gold > cost-1){
                             console.log('identify scroll...');
@@ -480,12 +480,12 @@ export default class extends Phaser.State {
                             this.game.player.savePlayerData();
                         } else {
                             let short = cost - this.game.player.gold;
-                            new Dialogue(this.game, this, 'ok', `You're short about\n${short} gold.`, ()=>{});
+                            new Dialogue(this.game, this, 'ok', 'scrollkeeper', `You're short about\n${short} gold.`, ()=>{});
                         }
                     }
                 });
             } else {
-                new Dialogue(this.game, this, 'ok', 'This scroll is already\nIdentified.', ()=>{});
+                new Dialogue(this.game, this, 'ok', 'scrollkeeper', 'This scroll is already\nIdentified.', ()=>{});
             }
             this.returnItemToOrigin(currentSprite, item);
         }
