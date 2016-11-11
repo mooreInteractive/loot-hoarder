@@ -26,7 +26,7 @@ export default class extends Phaser.State {
 
         //let Pixel24Black = {font: 'Press Start 2P', fontSize: 36, fill: '#000000' };
         let Pixel24White = {font: 'Press Start 2P', fontSize: 36, fill: '#898989' };
-        let Pixel36Blue = {font: 'Press Start 2P', fontSize: 42, fill: '#CDCDCD' };
+        let Pixel36Blue = {font: 'Press Start 2P', fontSize: 42, fill: '#527ee5' };
         let Pixel16Black = {font: 'Press Start 2P', fontSize: 16, fill: '#000000' };
 
         //Player Stats
