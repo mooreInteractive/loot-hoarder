@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import * as StoryFunctions from './StoryFunctions';
+import StoryObserver from '../observers/story_observer';
 import Dialogue from '../components/Dialogue';
 
 export default class MainNavigation{
@@ -114,21 +114,20 @@ export default class MainNavigation{
     openInventory(){
         if(this.gameState.key != 'Inventory'){
             this.gameState.state.start('Inventory');
+            StoryObserver.notify(this.game, this.gameState, this.game.player, 'CLICK_INVENTORY');
         }
     }
 
     openMain(){
         if(this.gameState.key != 'MainMenu'){
             this.gameState.state.start('MainMenu');
+            StoryObserver.notify(this.game, this.gameState, this.game.player, 'CLICK_MAIN');
         }
     }
 
     openShop(){
-        if(!this.game.player.story.chapter1.rescuedShopKeep){
-            StoryFunctions.chapter1.shopNote(this.game, this.gameState);
-        } else {
-            console.log('Open The Shop ALREADY!');
-        }
+        StoryObserver.notify(this.game, this.gameState, this.game.player, 'CLICK_SHOP');
+        console.log('Open The Shop ALREADY!');
     }
 
     openScrollShop(){
@@ -179,6 +178,7 @@ export default class MainNavigation{
             });
 
             if(!equippedGear){
+                console.log('gamestate: ', this.gameState);
                 new Dialogue(this.game, this.gameState, 'ok', 'You should equip\nsomething before raiding...', ()=>{});
             } else {
                 if(this.game.player.latestUnlockedDungeon >= dungeon.level){

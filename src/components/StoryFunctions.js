@@ -8,6 +8,7 @@ export let saveStory = (story) => {
 
 export let chapter1 = {
     shopNote: (game, gameState) => {
+        console.log('story gameState:', gameState);
         if(game.player.story.chapter1.foundSecondNote){
             new Dialogue(game, gameState, 'ok', 'Don\'t forget you can sell\nloot from your inventory\nscreen here until I get back', ()=>{});
         } else {
