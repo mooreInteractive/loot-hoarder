@@ -78,6 +78,18 @@ export default class extends Phaser.State {
 
         this.game.music = this.game.add.audio('heathfield_music');
         this.game.music.loopFull();
+        let savedMute = false;
+        if(localStorage){
+            let mute = localStorage.getItem('loot-hoarder-music');
+            if(mute != null){
+                if(mute == 'true'){
+                    savedMute = true;
+                }
+            }
+        }
         this.game.music.play();
+        if(savedMute){
+            this.game.music.mute = true;
+        }
     }
 }

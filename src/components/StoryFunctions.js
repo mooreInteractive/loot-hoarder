@@ -10,15 +10,15 @@ export let chapter1 = {
     shopNote: (game, gameState) => {
         console.log('story gameState:', gameState);
         if(game.player.story.chapter1.foundSecondNote){
-            new Dialogue(game, gameState, 'ok', 'Don\'t forget you can sell\nloot from your inventory\nscreen here until I get back', ()=>{});
+            new Dialogue(game, gameState, 'ok', 'shopkeeper', 'Don\'t forget you can sell loot from your inventory screen here until I get back', ()=>{});
         } else {
             switch(game.player.story.chapter1.timesCheckedShop){
-            case 0: new Dialogue(game, gameState, 'ok', 'Back in 5 minutes!\nSell items from your\ninventory here until I\nget back.', ()=>{});
+            case 0: new Dialogue(game, gameState, 'ok', 'shopkeeper', 'Back in 5 minutes! Sell items from your inventory here until I get back.', ()=>{});
                 break;
-            case 1: new Dialogue(game, gameState, 'ok', 'Maybe 20 minutes...', ()=>{});
+            case 1: new Dialogue(game, gameState, 'ok', 'shopkeeper', 'Maybe 20 minutes...', ()=>{});
                 break;
             case 2:
-            default: new Dialogue(game, gameState, 'ok', 'Actually, I might need some\nhelp at the southern-most\nranch.', ()=>{});
+            default: new Dialogue(game, gameState, 'ok', 'shopkeeper', 'Actually, I might need some help at the southern-most ranch.', ()=>{});
                 break;
             }
             game.player.story.chapter1.timesCheckedShop += 1;
@@ -36,7 +36,7 @@ export let chapter1 = {
 
     readNote: (game, gameState, cb) => {
         let story = game.player.story;
-        new Dialogue(game, gameState, 'ok', 'What I need is in the\ntown on the dirt cliffs.\nCome find me.', ()=>{
+        new Dialogue(game, gameState, 'ok', 'shopkeeper', 'What I need is in the town on the dirt cliffs. Come find me.', ()=>{
             story.chapter1.foundSecondNote = true;
             saveStory(story);
             cb();
@@ -45,15 +45,15 @@ export let chapter1 = {
 
     RescuedShopKeep: (game, gameState) => {
         let story = game.player.story;
-        new Dialogue(game, gameState, 'ok', 'Thanks for rescuing me!\nIt seems the towns folk are\nreturning to their shops!', ()=>{
+        new Dialogue(game, gameState, 'ok', 'shopkeeper', 'Thanks for rescuing me! It seems the towns folk are returning to their shops!', ()=>{
             story.chapter1.RescuedShopKeep = true;
             saveStory(story);
         });
     },
 
     FirstDungeonBeat: (game, gameState) => {
-        new Dialogue(game, gameState, 'ok', 'Thanks for clearing my town!\nI\'m going to charge ahead,\nand try to help some others.', ()=>{
-            new Dialogue(game, gameState, 'ok', 'Feel Free to drop items you\ndon\'t want anymore in my\nshop for what they\'re\nworth. I trust you.', ()=>{});
+        new Dialogue(game, gameState, 'ok', 'shopkeeper', 'Thanks for clearing my town!  I\'m going to charge ahead,  and try to help some others.', ()=>{
+            new Dialogue(game, gameState, 'ok', 'shopkeeper', 'Feel Free to drop items you  don\'t want anymore in my  shop for what they\'re  worth. I trust you.', ()=>{});
         });
     }
 };

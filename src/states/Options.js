@@ -4,7 +4,7 @@ import MainNavigation from '../components/MainNavigation';
 let credits = [
     {text: 'Loxmyth - Avatar/Enemies Art', link: 'http://loxmyth.com'},
     {text: 'Nick Heathfield - Music', link: 'http://nickheathfield.co.uk'},
-    {text: 'Buch(OGA) - overworld tiles', link: 'http://opengameart.org/users/buch'},
+    {text: 'Buch(OGA) - overworld, portraits', link: 'http://opengameart.org/users/buch'},
     {text: 'Bevouliin(OGA) - battle backgrounds', link: 'http://bevouliin.com/'},
     {text: 'Kenney (Asset Jesus) - Buttons Art', link: 'http://kenney.nl'}
 ];
@@ -74,6 +74,9 @@ export default class extends Phaser.State {
         this.game.music.mute = !this.game.music.mute;
         this.musicOn.visible = !this.game.music.mute;
         this.musicOff.visible = this.game.music.mute;
+        if(localStorage){
+            localStorage.setItem('loot-hoarder-music', this.game.music.mute);
+        }
     }
 
 }
