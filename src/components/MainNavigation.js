@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import * as StoryFunctions from './StoryFunctions';
 import Dialogue from '../components/Dialogue';
 
 export default class MainNavigation{
@@ -124,11 +123,12 @@ export default class MainNavigation{
     }
 
     openShop(){
-        if(!this.game.player.story.chapter1.rescuedShopKeep){
-            StoryFunctions.chapter1.shopNote(this.game, this.gameState);
-        } else {
-            console.log('Open The Shop ALREADY!');
-        }
+        this.game.storyEvents.notify(this.game, this.gameState, this.game.player, 'CLICK_SHOP');
+        // if(!this.game.player.story.chapter1.rescuedShopKeep){
+        //     StoryFunctions.chapter1.shopNote(this.game, this.gameState);
+        // } else {
+        //     console.log('Open The Shop ALREADY!');
+        // }
     }
 
     openScrollShop(){

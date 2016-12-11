@@ -12,6 +12,7 @@ import Raid from './states/Raid';
 import LootView from './states/LootView';
 import Tools from './tools';
 import * as Story from './data/story';
+import StoryObserver from './observers/story_observer';
 import * as DungeonData from './data/dungeons';
 
 import Player from './Player';
@@ -59,6 +60,7 @@ class Game extends Phaser.Game {
         //Loot Hoarder Variables
         this.player = new Player(playerData, this.version, playerStory);
         this.loot = [];
+        this.storyEvents = new StoryObserver();
 
         //save new game data
         if(localStorage){
