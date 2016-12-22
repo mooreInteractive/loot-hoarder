@@ -6,6 +6,7 @@ import * as StoryFunctions from '../components/StoryFunctions';
 
 export default class extends Phaser.State {
     init (dungeon) {
+        this.showLoot = this.showLoot.bind(this);
         this.inventoryOpen = false;
         this.game.player.savePlayerData();
         this.dungeon = dungeon;
@@ -98,6 +99,21 @@ export default class extends Phaser.State {
         this.enDmgText.fill = '#1313CD';
         this.enDmgText.visible = false;
 
+        //post-battle
+        let fullBlack = this.add.bitmapData(768, 1080);
+        fullBlack.ctx.beginPath();
+        fullBlack.ctx.rect(0, 0, 768, 1080);
+        fullBlack.ctx.fillStyle = '#000000';
+        fullBlack.ctx.fill();
+
+        this.backdrop = this.add.sprite(0, 0, fullBlack);
+        this.backdrop.alpha = 0;
+
+        this.chest = this.add.sprite(this.game.world.centerX, -500, 'basic_loot');
+        this.chest.anchor.setTo(0.5);
+        this.chest.angle = -15;
+        this.chest.animations.add('open', [0,1,2,3], 6);
+
         this.animateBattleStart();
 
     }
@@ -113,11 +129,24 @@ export default class extends Phaser.State {
             this.game.player.battling = false;
             this.game.state.start('MainMenu', true, false, this.passedEvent);
         };
+
         this.endAnimStarted = true;
         this.updateLogText('Battle has ended.');
         let avatarSettings = {x: this.dungeon.sprite.x, y: this.dungeon.sprite.y, scale: 1};
         let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
-        this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, endCB);
+
+        if(this.game.loot.length > 0){
+            this.showLoot();
+        } else {
+            this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, endCB);
+        }
+    }
+
+    showLoot(){
+        this.game.player.battling = false;
+        this.add.tween(this.backdrop).to( {alpha: 0.5}, 600, null, true);
+        let tween_CHEST = this.add.tween(this.chest).to( {angle: 0, y: this.game.world.centerY}, 600, Phaser.Easing.Bounce.Out, true);
+        tween_CHEST.onComplete.addOnce(()=>{ this.game.state.start('LootView', true, false); });
     }
 
     updateLogText(logText){

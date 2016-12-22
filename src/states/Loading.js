@@ -24,6 +24,7 @@ export default class extends Phaser.State {
         this.game.load.spritesheet('hud_main', './assets/images/hud_character.png', 276, 100);
         this.game.load.image('hud_loot', './assets/images/hud_loot.png');
         this.game.load.image('inv_bg', './assets/images/INV.png');
+        this.game.load.spritesheet('basic_loot', './assets/images/ui/basicLootChest.png', 384, 384);
 
         //Portraits
         this.game.load.spritesheet('portraits', './assets/images/portraits/sheet.png', 32, 48);

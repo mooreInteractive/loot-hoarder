@@ -3,8 +3,8 @@ import MainNavigation from '../components/MainNavigation';
 import LootList from '../components/LootList';
 
 export default class extends Phaser.State {
-    init (currDungeon) {
-        this.currentDungeon = currDungeon;
+    init () {
+        this.currentDungeon = this.game.dungeons[this.game.player.currentDungeon];
     }
 
     create () {
