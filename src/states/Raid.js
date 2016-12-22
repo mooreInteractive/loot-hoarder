@@ -3,6 +3,7 @@ import * as Forge from '../items/Forge';
 import Avatar from '../components/Avatar';
 import Dialogue from '../components/Dialogue';
 import * as StoryFunctions from '../components/StoryFunctions';
+import randomColor from 'randomcolor';
 
 export default class extends Phaser.State {
     init (dungeon) {
@@ -83,21 +84,18 @@ export default class extends Phaser.State {
             }
         });
 
-        this.dmgText = this.add.text(this.game.world.centerX - 200, this.game.world.centerY + 100, '');
-        this.dmgText.font = 'Press Start 2P';
-        this.dmgText.fontSize = 32;
-        this.dmgText.stroke = '#FFFFFF';
-        this.dmgText.strokeThickness = 2;
+        let fontStyles = {font: 'Press Start 2P', stroke: '#FFFFFF', fontSize: 32};
+        this.dmgText = this.add.text(this.game.world.centerX - 200, this.game.world.centerY + 100, '', fontStyles);
         this.dmgText.fill = '#CD1313';
         this.dmgText.visible = false;
+        this.dmgText.stroke = '#FFFFFF';
+        this.dmgText.strokeThickness = 2;
 
-        this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY + 100, '');
-        this.enDmgText.font = 'Press Start 2P';
-        this.enDmgText.fontSize = 32;
-        this.enDmgText.stroke = '#FFFFFF';
-        this.enDmgText.strokeThickness = 2;
+        this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY + 100, '', fontStyles);
         this.enDmgText.fill = '#1313CD';
         this.enDmgText.visible = false;
+        this.enDmgText.stroke = '#FFFFFF';
+        this.enDmgText.strokeThickness = 2;
 
         //post-battle
         let fullBlack = this.add.bitmapData(768, 1080);
@@ -112,7 +110,14 @@ export default class extends Phaser.State {
         this.chest = this.add.sprite(this.game.world.centerX, -500, 'basic_loot');
         this.chest.anchor.setTo(0.5);
         this.chest.angle = -15;
-        this.chest.animations.add('open', [0,1,2,3], 6);
+        this.chest.animations.add('open', [0,1,2,3], 6, false);
+
+        let lootStyle = {font: '104px Musketeer', fill: '#FFFF00', align: 'center'};
+        this.getLootText = this.add.text(this.game.world.centerX, this.game.world.centerY + 175, 'LOOT!!!', lootStyle);
+        this.getLootText.anchor.setTo(0.5);
+        this.getLootText.stroke = '#000000';
+        this.getLootText.strokeThickness = 12;
+        this.getLootText.visible = false;
 
         this.animateBattleStart();
 
@@ -146,7 +151,18 @@ export default class extends Phaser.State {
         this.game.player.battling = false;
         this.add.tween(this.backdrop).to( {alpha: 0.5}, 600, null, true);
         let tween_CHEST = this.add.tween(this.chest).to( {angle: 0, y: this.game.world.centerY}, 600, Phaser.Easing.Bounce.Out, true);
-        tween_CHEST.onComplete.addOnce(()=>{ this.game.state.start('LootView', true, false); });
+
+        tween_CHEST.onComplete.addOnce(()=>{
+            this.getLootText.visible = true;
+            this.chest.inputEnabled = true;
+            this.chest.input.useHandCursor = true;
+            this.chest.events.onInputDown.add(() =>{
+                let anim = this.chest.animations.play('open', 3, false);
+                anim.onComplete.add(()=>{
+                    this.game.state.start('LootView', true, false);
+                });
+            }, this);
+        });
     }
 
     updateLogText(logText){
@@ -384,6 +400,10 @@ export default class extends Phaser.State {
                 this.frameCount -= 1;
                 if(this.frameCount <= -120){
                     this.animateBattleEnd();
+                }
+            } else {
+                if(this.frameCount%5 == 0){
+                    this.getLootText.fill = randomColor({luminosity: 'dark', hue: 'yellow'});
                 }
             }
         } else {
