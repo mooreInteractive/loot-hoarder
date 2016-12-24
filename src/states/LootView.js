@@ -10,7 +10,6 @@ export default class extends Phaser.State {
     create () {
         this.mainNav = new MainNavigation(this.game, this);
         this.lootList = new LootList(this.game, this);
-        this.lootList.updateLootTextAndButtons();
     }
 
     update(){

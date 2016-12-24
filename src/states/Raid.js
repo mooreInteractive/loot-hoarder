@@ -4,6 +4,8 @@ import Avatar from '../components/Avatar';
 import Dialogue from '../components/Dialogue';
 import * as StoryFunctions from '../components/StoryFunctions';
 import randomColor from 'randomcolor';
+import LootList from '../components/LootList';
+//import LootParticle from '../components/particle';
 
 export default class extends Phaser.State {
     init (dungeon) {
@@ -113,11 +115,28 @@ export default class extends Phaser.State {
         this.chest.animations.add('open', [0,1,2,3], 6, false);
 
         let lootStyle = {font: '104px Musketeer', fill: '#FFFF00', align: 'center'};
-        this.getLootText = this.add.text(this.game.world.centerX, this.game.world.centerY + 175, 'LOOT!!!', lootStyle);
+        this.getLootText = this.add.text(this.game.world.centerX, this.game.world.centerY + 175, 'LOOT DROP!', lootStyle);
         this.getLootText.anchor.setTo(0.5);
         this.getLootText.stroke = '#000000';
         this.getLootText.strokeThickness = 12;
         this.getLootText.visible = false;
+
+        //particles
+        this.emitter = this.game.add.emitter(this.chest.x, this.chest.y, 5000);
+
+        this.emitter.width = 424;
+        this.emitter.height = 192;
+
+        //  Here is the important line. This will tell the Emitter to emit our custom MonsterParticle class instead of a normal Particle object.
+        //this.emitter.particleClass = LootParticle;
+
+        this.emitter.makeParticles(['part_sm_yellow', 'part_med_yellow', 'part_lg_yellow', 'part_sm_purple', 'part_med_purple', 'part_lg_purple']);
+
+        // this.emitter.minParticleSpeed.set(0, 300);
+        // this.emitter.maxParticleSpeed.set(0, 400);
+        this.emitter.setRotation(0, 0);
+        this.emitter.setScale(1.5, 2.5, 1.5, 2.5, 3000, Phaser.Easing.Quintic.Out, true);
+        this.emitter.gravity = -100;
 
         this.animateBattleStart();
 
@@ -148,6 +167,8 @@ export default class extends Phaser.State {
     }
 
     showLoot(){
+        //start particles before drop
+        this.emitter.start(false, 0, 50);
         this.game.player.battling = false;
         this.add.tween(this.backdrop).to( {alpha: 0.5}, 600, null, true);
         let tween_CHEST = this.add.tween(this.chest).to( {angle: 0, y: this.game.world.centerY}, 600, Phaser.Easing.Bounce.Out, true);
@@ -157,9 +178,12 @@ export default class extends Phaser.State {
             this.chest.inputEnabled = true;
             this.chest.input.useHandCursor = true;
             this.chest.events.onInputDown.add(() =>{
+                this.emitter.frequency = 1;
+                this.emitter.gravity = -400;
                 let anim = this.chest.animations.play('open', 3, false);
                 anim.onComplete.add(()=>{
-                    this.game.state.start('LootView', true, false);
+                    this.lootList = new LootList(this.game, this, {}, '#FFFFFF');
+                    //this.game.state.start('LootView', true, false);
                 });
             }, this);
         });
@@ -402,7 +426,9 @@ export default class extends Phaser.State {
                     this.animateBattleEnd();
                 }
             } else {
-                if(this.frameCount%5 == 0){
+                //keep the particles with the chest, vertically
+                this.emitter.y = this.chest.y;
+                if(this.frameCount%10 == 0){
                     this.getLootText.fill = randomColor({luminosity: 'dark', hue: 'yellow'});
                 }
             }

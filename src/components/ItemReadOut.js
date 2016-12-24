@@ -1,11 +1,12 @@
 export default class ItemReadOut{
-    constructor(game, gameState, item, settings){
+    constructor(game, gameState, item, settings, color='#000000'){
         this.game = game;
         this.gameState = gameState;
         this.item = item;
         this.settings = settings;
+        this.textColor = color;
 
-        let Oswald24Black = {font: 'Oswald', fontSize: 22, fill: '#000000'};
+        let Oswald24Black = {font: 'Oswald', fontSize: 22, fill: this.textColor};
         this.lootText = this.gameState.add.text(this.settings.x, this.settings.y, '', Oswald24Black);
         this.lootText.lineSpacing = -5;
 

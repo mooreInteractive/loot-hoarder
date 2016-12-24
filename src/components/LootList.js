@@ -4,15 +4,18 @@ import ItemReadOut from './ItemReadOut';
 import * as StoryFunctions from './StoryFunctions';
 
 export default class LootList{
-    constructor(game, gameState){
+    constructor(game, gameState, color='#000000'){
         this.game = game;
         this.loot = game.loot;
         this.gameState = gameState;
         this.keptLoot = false;
+        this.textColor = color;
 
         this.lootKeepBtns = [];
         this.lootSellBtns = [];
         this.lootReadOuts = [];
+
+        this.updateLootTextAndButtons();
     }
 
     cleanUpLootButtons(){
@@ -69,7 +72,7 @@ export default class LootList{
             let itemOffsetHeight = (110*index);
             let buttonsY = 230 + itemOffsetHeight;
 
-            this.lootReadOuts.push(new ItemReadOut(this.game, this.gameState, item, {x:this.game.world.centerX - 150, y:200 + itemOffsetHeight}));
+            this.lootReadOuts.push(new ItemReadOut(this.game, this.gameState, item, {x:this.game.world.centerX - 150, y:200 + itemOffsetHeight}, this.textColor));
 
             if(item.type != 'special'){
                 //add a couple buttons for this item
@@ -148,6 +151,6 @@ export default class LootList{
 
     resolveStoryFunction(loot, item){
         loot.splice(loot.indexOf(item), 1);
-        this.updateLootTextAndButtons(loot);
+        this.updateLootTextAndButtons();
     }
 }

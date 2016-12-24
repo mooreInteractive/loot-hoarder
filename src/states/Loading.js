@@ -9,6 +9,14 @@ export default class extends Phaser.State {
         let text = this.add.text(this.world.centerX, this.world.centerY+45, 'loading graphics', { font: '28px Tahoma', fill: '#000000', align: 'center' });
         text.anchor.setTo(0.5, 0.5);
 
+        //particle images
+        this.game.load.image('part_sm_purple', './assets/images/particles/small_purple.png');
+        this.game.load.image('part_med_purple', './assets/images/particles/med_purple.png');
+        this.game.load.image('part_lg_purple', './assets/images/particles/lg_purple.png');
+        this.game.load.image('part_sm_yellow', './assets/images/particles/small_yellow.png');
+        this.game.load.image('part_med_yellow', './assets/images/particles/med_yellow.png');
+        this.game.load.image('part_lg_yellow', './assets/images/particles/lg_yellow.png');
+
         //Button Backgrounds
         this.game.load.image('blueButton', './assets/images/blue_button00.png');
         this.game.load.image('greenButton', './assets/images/green_button00.png');
