@@ -30,11 +30,9 @@ export default class ItemReadOut{
             this.lootText.text = this.item.desc;
         } else{
             if(this.item.magic.effect.attribute != null){
-                this.lootText.fill = '#1313AB';
-            } else if(this.item.type == 'misc'){
-                this.lootText.fill = '#670067';
+                this.lootText.fill = '#1113DE';
             } else {
-                this.lootText.fill = '#000000';
+                this.lootText.fill = this.textColor;
             }
 
             if(this.item.ac != null){//Armor

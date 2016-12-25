@@ -112,7 +112,7 @@ export default class extends Phaser.State {
         this.chest = this.add.sprite(this.game.world.centerX, -500, 'basic_loot');
         this.chest.anchor.setTo(0.5);
         this.chest.angle = -15;
-        this.chest.animations.add('open', [0,1,2,3], 6, false);
+        this.chest.animations.add('open');
 
         let lootStyle = {font: '104px Musketeer', fill: '#FFFF00', align: 'center'};
         this.getLootText = this.add.text(this.game.world.centerX, this.game.world.centerY + 175, 'LOOT DROP!', lootStyle);
@@ -135,7 +135,7 @@ export default class extends Phaser.State {
         // this.emitter.minParticleSpeed.set(0, 300);
         // this.emitter.maxParticleSpeed.set(0, 400);
         this.emitter.setRotation(0, 0);
-        this.emitter.setScale(1.5, 2.5, 1.5, 2.5, 3000, Phaser.Easing.Quintic.Out, true);
+        this.emitter.setScale(1, 2.5, 1, 2.5, 1000, Phaser.Easing.Quintic.Out, false);
         this.emitter.gravity = -100;
 
         this.animateBattleStart();
@@ -180,9 +180,16 @@ export default class extends Phaser.State {
             this.chest.events.onInputDown.add(() =>{
                 this.emitter.frequency = 1;
                 this.emitter.gravity = -400;
-                let anim = this.chest.animations.play('open', 3, false);
+                //this.emitter.setScale(1, 10, 1, 10, 6000, Phaser.Easing.Quintic.Out, false);
+                this.emitter.width = 768;
+                let anim = this.chest.animations.play('open', 15, false);
                 anim.onComplete.add(()=>{
-                    this.lootList = new LootList(this.game, this, {}, '#FFFFFF');
+                    this.add.tween(this.backdrop).to( {alpha: 0.8}, 600, null, true);
+                    this.add.tween(this.getLootText).to( {y: this.game.world.centerY + 475}, 600, Phaser.Easing.Bounce.Out, true);
+                    let tween_CHEST_DOWN = this.add.tween(this.chest).to( {y: this.game.world.centerY + 300}, 600, Phaser.Easing.Bounce.Out, true);
+                    tween_CHEST_DOWN.onComplete.addOnce(()=>{
+                        this.lootList = new LootList(this.game, this, '#FFFFFF');
+                    });
                     //this.game.state.start('LootView', true, false);
                 });
             }, this);
