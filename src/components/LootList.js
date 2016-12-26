@@ -70,9 +70,9 @@ export default class LootList{
 
         loot.forEach((item, index) => {
             let itemOffsetHeight = (110*index);
-            let buttonsY = 230 + itemOffsetHeight;
+            let buttonsY = 130 + itemOffsetHeight;
 
-            this.lootReadOuts.push(new ItemReadOut(this.game, this.gameState, item, {x:this.game.world.centerX - 150, y:200 + itemOffsetHeight}, this.textColor));
+            this.lootReadOuts.push(new ItemReadOut(this.game, this.gameState, item, {x:this.game.world.centerX - 150, y:100 + itemOffsetHeight}, this.textColor));
 
             if(item.type != 'special'){
                 //add a couple buttons for this item
