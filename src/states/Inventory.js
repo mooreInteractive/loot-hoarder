@@ -396,8 +396,10 @@ export default class extends Phaser.State {
             this.mainNav.startedDraggingItem();
         }
         if(equipped){
+            this.game.world.bringToTop(this.equippedItemsGroup);
             utils.unequipItem(this.game.player, item);
         } else {
+            this.game.world.bringToTop(this.inventoryItemsGroup);
             utils.removeItemFromBackpack(this.game.player.backpack, item);
         }
     }

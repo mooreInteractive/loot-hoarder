@@ -29,11 +29,11 @@ export default class ItemReadOut{
             console.log('item', this.item);
             this.lootText.text = this.item.desc;
         } else{
-            if(this.item.magic.effect.attribute != null){
-                this.lootText.fill = '#1113DE';
-            } else {
-                this.lootText.fill = this.textColor;
-            }
+            // if(this.item.magic.effect.attribute != null){
+            //     this.lootText.fill = '#1113DE';
+            // } else {
+            //     this.lootText.fill = this.textColor;
+            // }
 
             if(this.item.ac != null){//Armor
                 this.lootText.text += `[${this.item.level}] ${this.item.name} \n`;

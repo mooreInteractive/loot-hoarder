@@ -32,7 +32,11 @@ export default class extends Phaser.State {
         this.game.load.spritesheet('hud_main', './assets/images/hud_character.png', 276, 100);
         this.game.load.image('hud_loot', './assets/images/hud_loot.png');
         this.game.load.image('inv_bg', './assets/images/INV.png');
+        this.game.load.image('main_nav_bg', './assets/images/ui/main_nav_bg.png');
         this.game.load.spritesheet('basic_loot', './assets/images/ui/chest_anim.png', 384, 384);
+        this.game.load.spritesheet('raid_shop_slider', './assets/images/ui/raid_shop_slider.png', 258, 234);
+        this.game.load.spritesheet('inventory_btn', './assets/images/ui/inventory.png', 60, 60);
+        this.game.load.spritesheet('world_btn', './assets/images/ui/world.png', 60, 60);
 
         //Portraits
         this.game.load.spritesheet('portraits', './assets/images/portraits/sheet.png', 32, 48);

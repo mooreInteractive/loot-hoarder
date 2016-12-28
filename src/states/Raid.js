@@ -136,10 +136,10 @@ export default class extends Phaser.State {
         itemBlack.ctx.fillStyle = '#000000';
         itemBlack.ctx.fill();
 
-        this.itemBackdrop = this.add.sprite(0, 100, itemBlack);
+        this.itemBackdrop = this.add.sprite(0, 90, itemBlack);
         this.itemBackdrop.alpha = 0;
 
-        this.lootTitle = this.add.text(30, 45, 'Items Dropped:');
+        this.lootTitle = this.add.text(30, 40, 'Items Dropped:');
         this.lootTitle.font = 'Press Start 2P';
         this.lootTitle.fontSize = 28;
         this.lootTitle.fill = '#E6E6E8';

@@ -1,6 +1,7 @@
 export let dungeons = [
     {
         level: 1,
+        name: 'Weapon Shop',
         enemiesAmount: 6,
         enemiesLeft: 6,
         miniBoss: 2,
@@ -24,6 +25,7 @@ export let dungeons = [
     },
     {
         level: 2,
+        name: 'Potion Shop',
         enemiesAmount: 6,
         enemiesLeft: 6,
         miniBoss: 3,
@@ -47,6 +49,7 @@ export let dungeons = [
     },
     {
         level: 3,
+        name: 'Scroll Shop',
         enemiesAmount: 7,
         enemiesLeft: 7,
         miniBoss: 3,
@@ -71,6 +74,7 @@ export let dungeons = [
     },
     {
         level: 4,
+        name: 'Midfort',
         enemiesAmount: 10,
         enemiesLeft: 10,
         miniBoss: 4,
@@ -98,6 +102,7 @@ export let dungeons = [
     },
     {
         level: 5,
+        name: 'Clifftown',
         enemiesAmount: 12,
         enemiesLeft: 12,
         miniBoss: 4,
@@ -127,6 +132,7 @@ export let dungeons = [
     },
     {
         level: 6,
+        name: 'Cricket Cave',
         enemiesAmount: 12,
         enemiesLeft: 12,
         miniBoss: 4,
@@ -156,6 +162,7 @@ export let dungeons = [
     },
     {
         level: 7,
+        name: 'Woodwatch',
         enemiesAmount: 12,
         enemiesLeft: 12,
         miniBoss: 4,
@@ -185,6 +192,7 @@ export let dungeons = [
     },
     {
         level: 8,
+        name: 'Cap Castle',
         enemiesAmount: 12,
         enemiesLeft: 12,
         miniBoss: 4,
@@ -214,6 +222,7 @@ export let dungeons = [
     },
     {
         level: 9,
+        name: 'Norfort',
         enemiesAmount: 12,
         enemiesLeft: 12,
         miniBoss: 4,
@@ -243,6 +252,7 @@ export let dungeons = [
     },
     {
         level: 10,
+        name: 'Dragon Cave',
         enemiesAmount: 12,
         enemiesLeft: 12,
         miniBoss: 4,

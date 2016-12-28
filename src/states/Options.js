@@ -16,7 +16,7 @@ export default class extends Phaser.State {
         new MainNavigation(this.game, this);
 
         //clear data button
-        this.clearDataBtn = new Phaser.Button(this.game, this.game.world.centerX, 800, 'redButton', this.clearPlayerData, this);
+        this.clearDataBtn = new Phaser.Button(this.game, this.game.world.centerX, 700, 'redButton', this.clearPlayerData, this);
         this.clearDataBtn.anchor.setTo(0.5);
         this.clearDataBtn.scale.setTo(2,2);
         this.game.add.existing(this.clearDataBtn);
@@ -35,7 +35,7 @@ export default class extends Phaser.State {
         let textStyle = {fontSize: 24, font: 'Press Start 2P', fill: '#000000'};
         let smallTextStyle = {fontSize: 18, font: 'Press Start 2P', fill: '#000000'};
 
-        this.clearBtnText = this.add.text(this.game.world.centerX, 800, 'Clear Game Data', textStyle);
+        this.clearBtnText = this.add.text(this.game.world.centerX, 700, 'Clear Game Data', textStyle);
         this.clearBtnText.anchor.setTo(0.5);
 
         this.musicText = this.add.text(this.game.world.centerX - 50, 110, 'Music on/off:', textStyle);
