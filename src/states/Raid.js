@@ -112,7 +112,7 @@ export default class extends Phaser.State {
         this.chest = this.add.sprite(this.game.world.centerX, -500, 'basic_loot');
         this.chest.anchor.setTo(0.5);
         this.chest.angle = -15;
-        this.chest.animations.add('open', [0,1,2,3], 6, false);
+        this.chest.animations.add('open');
 
         let lootStyle = {font: '104px Musketeer', fill: '#FFFF00', align: 'center'};
         this.getLootText = this.add.text(this.game.world.centerX, this.game.world.centerY + 175, 'LOOT DROP!', lootStyle);
@@ -180,7 +180,7 @@ export default class extends Phaser.State {
             this.chest.events.onInputDown.add(() =>{
                 this.emitter.frequency = 1;
                 this.emitter.gravity = -400;
-                let anim = this.chest.animations.play('open', 3, false);
+                let anim = this.chest.animations.play('open', 15, false);
                 anim.onComplete.add(()=>{
                     this.lootList = new LootList(this.game, this, {}, '#FFFFFF');
                     //this.game.state.start('LootView', true, false);
