@@ -12,38 +12,48 @@ export default class StoryObserver{
         this.clickInventory = this.clickInventory.bind(this);
         this.clickMain = this.clickMain.bind(this);
         this.clickRaid = this.clickRaid.bind(this);
+        this.startGame = this.startGame.bind(this);
     }
 
-    notify(game, gameState, entity, event){
+    notify(gameState, event){
         switch(event){
-        case 'CLICK_SHOP': this.clickShop(gameState, entity);
+        case 'START_GAME': this.startGame(gameState);
             break;
-        case 'CLICK_INVENTORY': this.clickInventory(gameState, entity);
+        case 'CLICK_SHOP': this.clickShop(gameState);
             break;
-        case 'CLICK_MAIN': this.clickMain(gameState, entity);
+        case 'CLICK_INVENTORY': this.clickInventory(gameState);
             break;
-        case 'CLICK_RAID': this.clickRaid(gameState, entity);
+        case 'CLICK_MAIN': this.clickMain(gameState);
+            break;
+        case 'CLICK_RAID': this.clickRaid(gameState);
         }
     }
 
     //event handlers - story gate logic
-    clickShop(gameState, player){
-        if(!player.story.chapter1.rescuedShopKeep){
+    clickShop(gameState){
+        if(!gameState.game.player.story.chapter1.rescuedShopKeep){
             StoryFunctions.chapter1.shopNote(gameState.game, gameState);
         } else {
             console.log('Open The Shop ALREADY!');
         }
     }
 
-    clickInventory(gameState, player){
-        console.log('observed inventory click', player);
+    clickInventory(gameState){
+        console.log('observed inventory click', gameState.game.player);
     }
 
-    clickMain(gameState, player){
-        console.log('observed main click', player);
+    clickMain(gameState){
+        console.log('observed main click', gameState.game.player);
     }
-    clickRaid(gameState, player){
-        console.log('observed raid click', player);
+
+    clickRaid(gameState){
+        console.log('observed raid click', gameState.game.player);
+    }
+
+    startGame(gameState){
+        if(!gameState.game.player.story.chapter1.start){
+            StoryFunctions.chapter1.welcome(gameState.game, gameState);
+        }
     }
 
 }

@@ -39,8 +39,8 @@ export default class extends Phaser.State {
         if(this.passedEvent != null){
             StoryFunctions.chapter1[this.passedEvent.name](this.game, this);
         }
-
-
+        //Send Event to Start Game
+        this.game.storyEvents.notify(this, 'START_GAME');
     }
 
     createMap(){

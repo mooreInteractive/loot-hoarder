@@ -65,7 +65,7 @@ export default class MainNavigation{
     }
 
     openShop(){
-        this.game.storyEvents.notify(this.game, this.gameState, this.game.player, 'CLICK_SHOP');
+        this.game.storyEvents.notify(this.gameState, 'CLICK_SHOP');
     }
 
     openScrollShop(){
