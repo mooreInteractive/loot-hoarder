@@ -5,12 +5,11 @@ export const setResponsiveWidth = (sprite, percent, parent) => {
 };
 
 export const tryToPlaceItemInBackpack = (item, items, backpack) => {
-    let invSlots = backpack;
     let itemPlaced = false;
-    for(let y = 0; y < invSlots.length; y++){
-        let row = invSlots[y];
+    for(let y = 0; y < backpack.length; y++){
+        let row = backpack[y];
         for(let x = 0; x < row.length; x++){
-            itemPlaced = placeItemInSlot(invSlots, items, item, {x,y});
+            itemPlaced = placeItemInSlot(backpack, items, item, {x,y});
             if(itemPlaced){break;}
         }
         if(itemPlaced){break;}
@@ -90,10 +89,11 @@ export const unequipItem = (player, item) => {
 };
 
 export const removeItemFromBackpack = (backpack, item) => {
+    console.log('removing item:', item);
     item.shape.forEach((irow, iy) => {
         irow.forEach((icol, ix) => {
             if(icol === 1){
-                //console.log('--removing from backpack: ', item.inventorySlot.y + iy, item.inventorySlot.x + ix);
+                console.log('--removing from backpack: ', item.inventorySlot.y + iy, item.inventorySlot.x + ix);
                 backpack[item.inventorySlot.y + iy][item.inventorySlot.x + ix].invItem = -1;
                 backpack[item.inventorySlot.y + iy][item.inventorySlot.x + ix].sprite.tint = 0xFFFFFF;
             }

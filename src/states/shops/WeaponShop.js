@@ -4,6 +4,7 @@ import * as Utils from '../../utils';
 import * as Forge from '../../items/Forge';
 import ItemReadOut from '../../components/ItemReadOut';
 import MainNavigation from '../../components/MainNavigation';
+import Dialogue from '../../components/Dialogue';
 
 export default class extends Phaser.State {
     init(){
@@ -146,23 +147,52 @@ export default class extends Phaser.State {
         console.log('Buying Item:', this.selsectedItem);
         if(this.game.player.gold >= sellValue){
             console.log('Player has enough gold...');
-            let placed = Utils.tryToPlaceItemInBackpack(this.selectedItem, this.game.player.inventory, this.game.player.backpack);
+            let soldItem = JSON.parse(JSON.stringify(this.selectedItem));
+            let placed = Utils.tryToPlaceItemInBackpack(soldItem, this.game.player.inventory, this.game.player.backpack);
 
             if(placed){
-                console.log('...SOLD!');
-                this.game.player.gold -= sellValue;
-                this.items.splice(this.items.indexOf(this.selectedItem), 1);
+                //buyGrid
                 Utils.removeItemFromBackpack(this.backpack, this.selectedItem);
-                //TODO - add to player backpack on the sell grid...
                 this.buyGrid.itemsGroup.remove(this.selectedSprite);
                 this.selectedSprite.destroy();
+
+                //sell grid
+                this.sellGrid.addItemSprite(soldItem);
+
+                //this
+                this.items.splice(this.items.indexOf(this.selectedItem), 1);
                 this.resetSelectedItem();
+
+                //player
+                this.game.player.gold -= sellValue;
+                this.game.player.savePlayerData();//save game here since gold and inventory updated
             } else {
-                console.log('No Space in Inventory!');
+                new Dialogue(this.game, this, 'ok', 'shopkeeper', 'Uhh, You don\'t have space in your inventory to carry that!', ()=>{});
             }
         } else {
-            console.log('Player does NOT have enough gold! :(');
+            new Dialogue(this.game, this, 'ok', 'shopkeeper', 'Hehe, You don\'t have enough coin for that purchase mate!', ()=>{});
         }
+    }
+
+    sellSelectedItem(){
+        new Dialogue(this.game, this, 'bool', 'shopkeeper', `Are you sure you want to sell me '${this.selectedItem.name}' for ${this.selectedItem.value} gold?`, (reply)=>{
+            if(reply == 'yes'){
+                //ItemGrid
+                //buyGrid
+                Utils.removeItemFromBackpack(this.game.player.backpack, this.selectedItem);
+                this.sellGrid.itemsGroup.remove(this.selectedSprite);
+                this.selectedSprite.destroy();
+
+                //player
+                let inv = this.game.player.inventory;
+                inv.splice(inv.indexOf(this.selectedItem), 1);
+                this.game.player.gold += this.selectedItem.value;
+                this.game.player.savePlayerData();
+
+                //this
+                this.resetSelectedItem();
+            }
+        });
     }
 
     selectItemToBuy(sprite, item){
