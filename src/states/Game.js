@@ -38,8 +38,9 @@ export default class extends Phaser.State {
         this.title.strokeThickness = 12;
 
 
-        let playStyle = {font: '50px Press Start 2P', fill: '#111111'};
-        this.banner = this.add.text(this.game.world.centerX, this.game.world.centerY+350, 'Play', playStyle);
+        let playStyle = {font: '42px Press Start 2P', fill: '#111111'};
+        let playType = this.game.player.exp > 0 ? 'Continue' : 'New Game';
+        this.banner = this.add.text(this.game.world.centerX, this.game.world.centerY+350, playType, playStyle);
         this.banner.anchor.setTo(0.5);
         this.banner.inputEnabled = true;
         this.banner.events.onInputDown.add(this.playClicked, this);

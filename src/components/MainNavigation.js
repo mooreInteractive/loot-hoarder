@@ -41,12 +41,14 @@ export default class MainNavigation{
         this.cityNameText.anchor.setTo(0.5);
 
         //Inv Button
-        this.inventoryBtn = new Phaser.Button(this.game, 140, this.game.world.height - 70, 'inventory_btn', this.openInventory, this);
+        let invBtnFrame = this.gameState.key == 'Inventory' ? 1 : 0;
+        this.inventoryBtn = new Phaser.Button(this.game, 140, this.game.world.height - 70, 'inventory_btn', this.openInventory, this, invBtnFrame, invBtnFrame, invBtnFrame);
         this.inventoryBtn.anchor.setTo(0.5);
         this.game.add.existing(this.inventoryBtn);
 
         //World Button
-        this.worldBtn = new Phaser.Button(this.game, 210, this.game.world.height - 70, 'world_btn', this.openMain, this);
+        let worldBtnFrame = this.gameState.key == 'MainMenu' ? 1 : 0;
+        this.worldBtn = new Phaser.Button(this.game, 210, this.game.world.height - 70, 'world_btn', this.openMain, this, worldBtnFrame, worldBtnFrame, worldBtnFrame);
         this.worldBtn.anchor.setTo(0.5);
         this.game.add.existing(this.worldBtn);
 
@@ -65,7 +67,8 @@ export default class MainNavigation{
     }
 
     openShop(){
-        this.game.storyEvents.notify(this.gameState, 'CLICK_SHOP');
+        this.gameState.state.start('WeaponShop');
+        //this.game.storyEvents.notify(this.gameState, 'CLICK_SHOP');
     }
 
     openScrollShop(){

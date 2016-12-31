@@ -4,11 +4,18 @@ import MainNavigation from '../components/MainNavigation';
 import Avatar from '../components/Avatar';
 import ItemReadOut from '../components/ItemReadOut';
 import Dialogue from '../components/Dialogue';
+import ItemGrid from '../components/ItemGrid';
 
 export default class extends Phaser.State {
+    constructor(){
+        super();
+        this.startDrag = this.startDrag.bind(this);
+        this.stopDrag = this.stopDrag.bind(this);
+        this.selectItem = this.selectItem.bind(this);
+    }
+
     init () {
         this.inventorySprites = [];
-        this.inventoryGridSprite;
         this.selectedSprite = null;
         this.currentDungeon = this.game.dungeons[this.game.player.currentDungeon];
     }
@@ -16,11 +23,23 @@ export default class extends Phaser.State {
     preload () {
         this.add.image(0,0,'inv_bg');
 
+        //Avatar
         let avatarSettings = {x: 90, y: 85, scale: 1};
         let hpSettings = {x: 325, y: 100 };
         this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, true); //Need to call avatar.update()
 
-        this.inventoryGridBackground();
+        //Inventory Grid
+        this.invGridPos = {x: 59, y: 560};
+        this.invGrid = new ItemGrid(
+            this,
+            this.startDrag,
+            this.stopDrag,
+            this.selectItem,
+            this.game.player.inventory,
+            this.game.player.backpack,
+            this.invGridPos
+        );
+
         this.equippedGridBackground();
         this.drawInventoryItems();
 
@@ -33,13 +52,6 @@ export default class extends Phaser.State {
         this.playerInfo = this.add.text(180, 200, '', Pixel24White);
         this.playerInfo2 = this.add.text(470, 310, '', Pixel16Black);
 
-        //ItemReadOutBG
-        // let itemHoverBG = this.add.bitmapData(450, 110);
-        // itemHoverBG.ctx.beginPath();
-        // itemHoverBG.ctx.rect(0, 0, 450, 110);
-        // itemHoverBG.ctx.fillStyle = '#FFFFFF';
-        // itemHoverBG.ctx.fill();
-        // this.hoverItemBG = this.add.sprite(145, 430, itemHoverBG);
         //Item Read Out Text
         this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 155, y: 435});
 
@@ -233,81 +245,7 @@ export default class extends Phaser.State {
         return hitSlot;
     }
 
-    inventoryGridBackground(){
-        let width = 65*10; // example;
-        let height = 65*4; // example;
-        let bgbmd = this.game.add.bitmapData(width+10, height+10);
-        bgbmd.ctx.beginPath();
-        bgbmd.ctx.rect(0, 0, 1, 1);
-        bgbmd.ctx.fillStyle = '#131313';
-        bgbmd.ctx.fill();
-        this.inventoryGridSprite = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY+150, bgbmd);
-        this.inventoryGridSprite.anchor.setTo(0.5, 0.5);
-
-        let backpack = this.game.player.backpack;
-
-        for(let i=0; i< backpack.length; i++){
-            for(let j=0; j< backpack[i].length; j++){
-                let slot = backpack[i][j];
-                slot.bmd = this.game.add.bitmapData(64, 64);
-                slot.bmd.ctx.beginPath();
-                slot.bmd.ctx.rect(0, 0, 64, 64);
-                slot.bmd.ctx.fillStyle = '#ffffff';
-
-
-
-                slot.bmd.ctx.fill();
-
-                let offset = {x: ((65*j)+1), y:((65*i)+1)};
-                let x = (this.inventoryGridSprite.position.x - this.inventoryGridSprite.width/2) + offset.x + 5;
-                let y = (this.inventoryGridSprite.position.y - this.inventoryGridSprite.height/2) + offset.y + 5;
-                slot.sprite = this.game.add.sprite(x, y, slot.bmd);
-                if(backpack[i][j].invItem != -1){
-                    slot.sprite.tint = 0xCDCDCD;
-                }
-            }
-        }
-
-    }
-
-    addBackPackSprite(item, gridPos){
-        let drawnObject;
-        let width = item.shapeWidth*54;
-        let height = item.shapeHeight*54;
-        let bmd = this.game.add.bitmapData(width, height);
-
-        let invSlot = item.inventorySlot;
-        bmd.ctx.beginPath();
-        bmd.ctx.rect(0, 0, item.shapeWidth*54, item.shapeHeight*54);
-        bmd.ctx.fillStyle = '#ababab';
-        bmd.ctx.fill();
-        //console.log('--placing piece at x,y:', gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2));
-        if(item.sprite){
-            drawnObject = this.game.add.sprite(gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - (item.shapeWidth*54))/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - (item.shapeHeight*54))/2), item.sprite);
-        } else {
-            drawnObject = this.game.add.sprite(gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2), bmd);
-        }
-        drawnObject.inputEnabled = true;
-        drawnObject.input.enableDrag();
-        drawnObject.originalPosition = drawnObject.position.clone();
-        //console.log('-- invSprite events:', drawnObject.events);
-        drawnObject.events.onInputDown.add((drawnObject) => {
-            this.selectItem(drawnObject, item);
-        }, this);
-        drawnObject.events.onInputOver.add((drawnObject) => {
-            this.selectItem(drawnObject, item);
-        }, this);
-        drawnObject.events.onDragStop.add((drawnObject, mousePos) => {
-            this.stopDrag(drawnObject, item, gridPos, mousePos);
-        }, this);
-        drawnObject.events.onDragStart.add(function(sprite){
-            this.startDrag(sprite, item);
-        }, this);
-
-        this.inventoryItemsGroup.add(drawnObject);
-    }
-
-    addEquippedSprite(item, gridPos, key){
+    addEquippedSprite(item, key){
         let slotSprite = this.equippedSlots.children.filter((sprite) => {
             return sprite.type == key;
         })[0];
@@ -344,10 +282,10 @@ export default class extends Phaser.State {
             this.selectItem(drawnObject, item);
         }, this);
         drawnObject.events.onDragStop.add((drawnObject, mousePos) => {
-            this.stopDrag(drawnObject, item, gridPos, mousePos);
+            this.stopDrag(drawnObject, item, mousePos);
         }, this);
         drawnObject.events.onDragStart.add(function(sprite){
-            this.startDrag(sprite, item, true);
+            this.startDrag(sprite, item, this.equippedItemsGroup, true);
         }, this);
 
         this.equippedItemsGroup.add(drawnObject);
@@ -372,34 +310,27 @@ export default class extends Phaser.State {
     }
 
     drawInventoryItems(){
-        let gridPos = {x: this.inventoryGridSprite.position.x - this.inventoryGridSprite.width/2 + 5, y: this.inventoryGridSprite.position.y - this.inventoryGridSprite.height/2 + 5};
-        this.inventoryItemsGroup = this.game.add.group();
         this.equippedItemsGroup = this.game.add.group();
-
-        this.game.player.inventory.forEach((item) => {
-            this.addBackPackSprite(item, gridPos);
-        });
 
         Object.keys(this.game.player.equipped).forEach((key) => {
             let item = this.game.player.equipped[key];
             if(item){
-                this.addEquippedSprite(item, gridPos, key);
+                this.addEquippedSprite(item, key);
             }
         });
     }
 
-    startDrag(sprite, item, equipped=false){
+    startDrag(sprite, item, itemGroup=null, equipped=false){
         //console.log('-startDrag(sprite, item, equipped)', sprite, item, equipped);
         if(  (this.currentDungeon.level == 1 && this.game.player.latestUnlockedDungeon > 1) ||
             (item.type == 'misc' && this.currentDungeon.level == 3 && this.game.player.latestUnlockedDungeon > 3)
         ){
             this.mainNav.startedDraggingItem();
         }
+        this.game.world.bringToTop(itemGroup);
         if(equipped){
-            this.game.world.bringToTop(this.equippedItemsGroup);
             utils.unequipItem(this.game.player, item);
         } else {
-            this.game.world.bringToTop(this.inventoryItemsGroup);
             utils.removeItemFromBackpack(this.game.player.backpack, item);
         }
     }
@@ -408,9 +339,9 @@ export default class extends Phaser.State {
         let slot = null;
         if(
             mouse.x >= gridPos.x &&
-            mouse.x <= (gridPos.x + this.inventoryGridSprite.width) &&
+            mouse.x <= (gridPos.x + 650) &&
             mouse.y >= gridPos.y &&
-            mouse.y <= (gridPos.y + this.inventoryGridSprite.height)
+            mouse.y <= (gridPos.y + 260)
         ){
             // let insideX = mouse.x - gridPos.x;
             // let insideY = mouse.y - gridPos.y;
@@ -494,7 +425,8 @@ export default class extends Phaser.State {
 
     }
 
-    stopDrag(currentSprite, item, gridPos, mouse){
+    stopDrag(currentSprite, item, mouse){
+        let gridPos = this.invGridPos;
         this.mainNav.stoppedDraggingItem();
         //Getting Drop Zone
         let slot = this.mouseOverBackPackGrid(currentSprite, item, gridPos, mouse);
@@ -503,11 +435,12 @@ export default class extends Phaser.State {
 
         if(currentSprite.parent == this.equippedItemsGroup){
             if(slot){
-                let fits = utils.placeItemInSlot(this.game.player, item, slot);
+                let fits = utils.placeItemInSlot(this.game.player.backpack, this.game.player.inventory, item, slot);
                 if(fits){
-                    //console.log('------fits.');
+                    console.log('------fits.');
                     //utils.unequipItem(this.game.player, item);
-                    this.addBackPackSprite(item, gridPos);
+                    this.invGrid.addItemSprite(item);
+                    //this.addBackPackSprite(item);
                     currentSprite.destroy();
                 } else {
                     currentSprite.position.copyFrom(currentSprite.originalPosition);
@@ -516,7 +449,7 @@ export default class extends Phaser.State {
             } else if(equipSlot != undefined && equipSlot != false && this.game.player.equipped[equipSlot.type] == null){
                 // console.log('----on equip slot...');
                 utils.equipItem(this.game.player, item, equipSlot);
-                this.addEquippedSprite(item, gridPos, equipSlot.type);
+                this.addEquippedSprite(item, equipSlot.type);
                 currentSprite.destroy();
             } else if(shopSlot){
                 // console.log('----on shop Slot...');
@@ -529,7 +462,7 @@ export default class extends Phaser.State {
             // console.log('--dropping backPack Item...');
             if(slot){
                 // console.log('----on inventory slot...');
-                let fits = utils.placeItemInSlot(this.game.player, item, slot);
+                let fits = utils.placeItemInSlot(this.game.player.backpack, this.game.player.inventory, item, slot);
                 if(fits){
                     // console.log('------fits.');
                     currentSprite.originalPosition = currentSprite.position.clone();
@@ -540,7 +473,7 @@ export default class extends Phaser.State {
             } else if(equipSlot != undefined && equipSlot != false){
                 // console.log('----on equip slot...');
                 utils.equipItem(this.game.player, item, equipSlot);
-                this.addEquippedSprite(item, gridPos, equipSlot.type);
+                this.addEquippedSprite(item, equipSlot.type);
                 currentSprite.destroy();
             } else if(shopSlot){
                 // console.log('----on shop Slot...');
@@ -555,7 +488,7 @@ export default class extends Phaser.State {
 
     returnItemToOrigin(sprite, item){
         sprite.position.copyFrom(sprite.originalPosition);
-        utils.placeItemInSlot(this.game.player, item, item.inventorySlot);
+        utils.placeItemInSlot(this.game.player.backpack, this.game.player.inventory, item, item.inventorySlot);
     }
 
     update(){

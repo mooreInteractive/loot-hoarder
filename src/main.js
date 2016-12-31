@@ -10,6 +10,7 @@ import Options from './states/Options';
 import Inventory from './states/Inventory';
 import Raid from './states/Raid';
 import LootView from './states/LootView';
+import WeaponShop from './states/shops/WeaponShop';
 import Tools from './tools';
 import * as Story from './data/story';
 import StoryObserver from './observers/story_observer';
@@ -82,6 +83,7 @@ class Game extends Phaser.Game {
         this.state.add('Inventory', Inventory, false);
         this.state.add('Raid', Raid, false);
         this.state.add('LootView', LootView, false);
+        this.state.add('WeaponShop', WeaponShop, false);
 
         this.state.start('Boot');
     }

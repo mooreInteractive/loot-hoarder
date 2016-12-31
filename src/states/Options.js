@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import MainNavigation from '../components/MainNavigation';
+import Dialogue from '../components/Dialogue';
 
 let credits = [
     {text: 'Loxmyth - Avatar/Enemies Art', link: 'http://loxmyth.com'},
@@ -16,7 +17,7 @@ export default class extends Phaser.State {
         new MainNavigation(this.game, this);
 
         //clear data button
-        this.clearDataBtn = new Phaser.Button(this.game, this.game.world.centerX, 700, 'redButton', this.clearPlayerData, this);
+        this.clearDataBtn = new Phaser.Button(this.game, this.game.world.centerX, 700, 'redButton', this.checkToClearPlayerData, this);
         this.clearDataBtn.anchor.setTo(0.5);
         this.clearDataBtn.scale.setTo(2,2);
         this.game.add.existing(this.clearDataBtn);
@@ -56,6 +57,16 @@ export default class extends Phaser.State {
 
     creditClicked(index){
         window.open(credits[index].link, '_blank');
+    }
+
+    checkToClearPlayerData(){
+        new Dialogue(this.game, this, 'bool', null, 'Are you sure you want to erase all your saved data and progress?', (reply)=>{
+            if(reply == 'yes'){
+                this.clearPlayerData();
+            } else if(reply == 'no'){
+                console.log('that was a close one...');
+            }
+        });
     }
 
     clearPlayerData(){
