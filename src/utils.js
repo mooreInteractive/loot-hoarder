@@ -10,7 +10,7 @@ export const tryToPlaceItemInBackpack = (item, items, backpack) => {
     for(let y = 0; y < invSlots.length; y++){
         let row = invSlots[y];
         for(let x = 0; x < row.length; x++){
-            itemPlaced = placeItemInSlot(backpack, items, item, {x,y});
+            itemPlaced = placeItemInSlot(invSlots, items, item, {x,y});
             if(itemPlaced){break;}
         }
         if(itemPlaced){break;}

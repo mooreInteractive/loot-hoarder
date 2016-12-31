@@ -94,12 +94,13 @@ export default class ItemGrid {
         drawnObject.events.onInputDown.add((drawnObject) => {
             this.selectItem(drawnObject, item);
         }, this);
-        drawnObject.events.onInputOver.add((drawnObject) => {
-            this.selectItem(drawnObject, item);
-        }, this);
         //Drag n Drop fucntionality, optional, callbacks provided
         if(this.dragDrop){
             drawnObject.input.enableDrag();
+
+            drawnObject.events.onInputOver.add((drawnObject) => {
+                this.selectItem(drawnObject, item);
+            }, this);
 
             drawnObject.events.onDragStop.add((drawnObject, mousePos) => {
                 this.stopDrag(drawnObject, item, mousePos);

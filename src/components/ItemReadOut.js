@@ -22,6 +22,11 @@ export default class ItemReadOut{
         }
     }
 
+    clearItem(){
+        this.item = null;
+        this.lootText.text = '';
+    }
+
     drawItemText(){
         //clear it out
         this.lootText.text = '';

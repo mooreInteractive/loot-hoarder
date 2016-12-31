@@ -65,7 +65,7 @@ export default class LootList{
                         this.keptLoot = true;
                         this.updateLootTextAndButtons(loot);
                     } else {
-                        let placed = Utils.tryToPlaceItemInBackpack(item, this.game.player.backpack, this.game.player.inventory);
+                        let placed = Utils.tryToPlaceItemInBackpack(item, this.game.player.inventory, this.game.player.backpack);
                         if(placed){
                             loot.splice(loot.indexOf(item), 1);
                             this.keptLoot = true;
