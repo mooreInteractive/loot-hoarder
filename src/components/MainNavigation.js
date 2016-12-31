@@ -14,13 +14,17 @@ export default class MainNavigation{
         let shop2 = this.game.player.latestUnlockedDungeon > 2 && this.currentDungeon.level == 2;
         let shop3 = this.game.player.latestUnlockedDungeon > 3 && this.currentDungeon.level == 3;
         this.raidShopSetting = 'raid';
+        this.raidBtnAlpha = 1;
         let shopRaidInitialPos = this.game.world.height - 133; //raid
         if(shop1||shop2||shop3){
             shopRaidInitialPos = this.game.world.height - 211; //shop
             this.raidShopSetting = 'shop';
+            if(this.gameState.key == 'WeaponShop'){
+                this.raidBtnAlpha = 0.5;
+            }
         }
         this.raidBtn = new Phaser.Button(this.game, this.game.world.width - 306, shopRaidInitialPos, 'raid_shop_slider', this.raidCurrentDungeon, this);
-
+        this.raidBtn.alpha = this.raidBtnAlpha;
         let raidBtnBg = this.game.add.graphics(0,0);
         raidBtnBg.beginFill(0x000000);
         raidBtnBg.drawRect(this.game.world.width - 306, this.game.world.height - 133, 258, 78);

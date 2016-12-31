@@ -3,6 +3,7 @@ import ItemGrid from '../../components/ItemGrid';
 import * as Utils from '../../utils';
 import * as Forge from '../../items/Forge';
 import ItemReadOut from '../../components/ItemReadOut';
+import MainNavigation from '../../components/MainNavigation';
 
 export default class extends Phaser.State {
     init(){
@@ -18,6 +19,9 @@ export default class extends Phaser.State {
 
     create () {
         this.add.image(0,0,'field-blue');
+
+        this.mainNav = new MainNavigation(this.game, this, this.game.player.currentDungeon);
+
         this.Pixel36Black = {font: 'Press Start 2P', fontSize: 36, fill: '#000000' };
         this.Pixel36White = {font: 'Press Start 2P', fontSize: 36, fill: '#8989FF', align: 'center' };
         this.Pixel18Black = {font: 'Press Start 2P', fontSize: 18, fill: '#000000', align: 'center' };
@@ -47,8 +51,7 @@ export default class extends Phaser.State {
         this.createSellGrid();
 
         //player gold
-        let goldLabel = 'gold:' + this.game.player.gold;
-        this.playerGold = this.add.text(500, 15, goldLabel, this.Pixel36Black);
+        this.playerGold = this.add.text(500, 15, '', this.Pixel36Black);
 
         this.showBuyGrid();
     }
@@ -95,7 +98,7 @@ export default class extends Phaser.State {
         //sell item Button
         this.sellItemBtn = new Phaser.Button(this.game, 540, 425, 'yellowButton', this.sellSelectedItem, this);
         this.sellItemBtn.anchor.setTo(0.5);
-        this.add.existing(this.buyItemBtn);
+        this.add.existing(this.sellItemBtn);
         this.sellItemBtnText = this.add.text(540, 428, 'SELL ITEM', this.Pixel18Black);
         this.sellItemBtnText.anchor.setTo(0.5);
     }
@@ -199,6 +202,10 @@ export default class extends Phaser.State {
             [{invItem:-1},{invItem:-1},{invItem:-1},{invItem:-1},{invItem:-1},{invItem:-1},{invItem:-1},{invItem:-1},{invItem:-1},{invItem:-1}],
             [{invItem:-1},{invItem:-1},{invItem:-1},{invItem:-1},{invItem:-1},{invItem:-1},{invItem:-1},{invItem:-1},{invItem:-1},{invItem:-1}]]
         );
+    }
+
+    update(){
+        this.playerGold.text = 'gold:' + this.game.player.gold;
     }
 
 }
