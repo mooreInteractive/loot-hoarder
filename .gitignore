@@ -11,3 +11,7 @@ dist-prod
 
 # Optional npm cache directory
 .npm
+
+### Loot Hoarder Specifics ###
+# deployable zip file, created with gulp zip
+*.zip 

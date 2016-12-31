@@ -7,6 +7,11 @@ export let saveStory = (story) => {
 };
 
 export let chapter1 = {
+    welcome: (game, gameState) => {
+        new Dialogue(game, gameState, 'ok', 'shopkeeper', 'Hey kid! Help me raid this town and clear it of monsters. I don\'t know where they came from!', ()=>{
+            game.player.story.chapter1.start = true;
+        });
+    },
     shopNote: (game, gameState) => {
         console.log('story gameState:', gameState);
         if(game.player.story.chapter1.foundSecondNote){

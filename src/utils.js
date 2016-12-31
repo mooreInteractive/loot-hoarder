@@ -4,9 +4,23 @@ export const setResponsiveWidth = (sprite, percent, parent) => {
     sprite.height = sprite.texture.height - (sprite.texture.height * percentWidth / 100);
 };
 
-export const placeItemInSlot = (player, item, slot, placeNow = true) => {
-    let invSlots = player.backpack;
-    let itemInvIndex = player.inventory.indexOf(item);
+export const tryToPlaceItemInBackpack = (item, items, backpack) => {
+    let invSlots = backpack;
+    let itemPlaced = false;
+    for(let y = 0; y < invSlots.length; y++){
+        let row = invSlots[y];
+        for(let x = 0; x < row.length; x++){
+            itemPlaced = placeItemInSlot(backpack, items, item, {x,y});
+            if(itemPlaced){break;}
+        }
+        if(itemPlaced){break;}
+    }
+    return itemPlaced;
+};
+
+export const placeItemInSlot = (backpack, items, item, slot, placeNow = true) => {
+    let invSlots = backpack;
+    let itemInvIndex = items.indexOf(item);
     let validSlot = slot != null && slot.x > -1 && slot.y > -1;
     //console.log('--place Item slot:', slot, validSlot);
     if(validSlot && invSlots[slot.y][slot.x].invItem === -1){
@@ -33,7 +47,7 @@ export const placeItemInSlot = (player, item, slot, placeNow = true) => {
                         if(itemInvIndex > -1){
                             relSlot.invItem = itemInvIndex;
                         } else {
-                            relSlot.invItem = player.inventory.length;
+                            relSlot.invItem = items.length;
                         }
                         if(relSlot.sprite){relSlot.sprite.tint = 0xCDCDCD;}
                         if(firstSlot){
@@ -47,7 +61,7 @@ export const placeItemInSlot = (player, item, slot, placeNow = true) => {
             //console.log('--mm playerbackpack after adding item:', invSlots);
 
             if(itemInvIndex === -1){
-                player.inventory.push(item);
+                items.push(item);
             }
             return true;
         } else {

@@ -19,7 +19,7 @@ export default class extends Phaser.State {
         this.mainNav = new MainNavigation(this.game, this);
 
         let avatarSettings = {x: this.currentDungeon.sprite.x, y: this.currentDungeon.sprite.y, scale: 1};
-        let hpSettings = {x: 230, y: this.game.world.height - 160 };
+        let hpSettings = {x: 203, y: this.game.world.height - 160 };
         this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, true); //Need to call avatar.update() and avatar.render()
 
         //clear data button
@@ -39,8 +39,8 @@ export default class extends Phaser.State {
         if(this.passedEvent != null){
             StoryFunctions.chapter1[this.passedEvent.name](this.game, this);
         }
-
-
+        //Send Event to Start Game
+        this.game.storyEvents.notify(this, 'START_GAME');
     }
 
     createMap(){

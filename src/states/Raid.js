@@ -19,6 +19,7 @@ export default class extends Phaser.State {
         this.raidStarted = false;
         this.raidEnded = false;
         this.endAnimStarted = false;
+        this.showClearText = false;
 
         /* Restart Ads */
         let rand = Forge.rand(0,1000);
@@ -27,11 +28,13 @@ export default class extends Phaser.State {
 
     create () {
         //Backgrounds
-        let bg = 'field-tan';
+        this.add.image(0,0,'field-tan');
+        this.lightBG = this.add.image(0,0,'field-blue');
         if(this.dungeon.beaten){
-            bg = 'field-blue';
+            this.lightBG.alpha = 1;
+        } else {
+            this.lightBG.alpha = 0;
         }
-        this.add.image(0,0,bg);
 
 
         let avatarSettings = {x: this.dungeon.sprite.x - 50, y: this.dungeon.sprite.y + 25, scale: 2};
@@ -109,6 +112,32 @@ export default class extends Phaser.State {
         this.backdrop = this.add.sprite(0, 0, fullBlack);
         this.backdrop.alpha = 0;
 
+        let clearStyle = {font: '104px Musketeer', fill: '#0013FF', align: 'center'};
+        this.clearText = this.add.text(this.game.world.centerX, -175, 'Monsters\nCleared!', clearStyle);
+        this.clearText.anchor.setTo(0.5);
+        this.clearText.stroke = '#000000';
+        this.clearText.strokeThickness = 12;
+        this.clearText.visible = false;
+
+
+        let koQuote = Forge.rand(0,3);
+        let koString = 'You\'ve\nblacked out!';
+        switch(koQuote){
+        case 0: koString = 'You\'ve\nblacked out!';
+            break;
+        case 1: koString = 'You can no\nlonger fight!';
+            break;
+        case 2: koString = 'Your HP is\ndepleated!';
+            break;
+        case 3: koString = 'Go rest\nup kid!';
+            break;
+        }
+        let koStyle = {font: '84px Musketeer', fill: '#FF1313', align: 'center'};
+        this.koText = this.add.text(this.game.world.centerX, -175, koString, koStyle);
+        this.koText.anchor.setTo(0.5);
+        this.koText.stroke = '#000000';
+        this.koText.strokeThickness = 19;
+
         this.chest = this.add.sprite(this.game.world.centerX, -500, 'basic_loot');
         this.chest.anchor.setTo(0.5);
         this.chest.angle = -15;
@@ -127,6 +156,22 @@ export default class extends Phaser.State {
         this.emitter.width = 424;
         this.emitter.height = 192;
 
+        //Loot List overlay background
+        let itemBlack = this.add.bitmapData(768, 450);
+        itemBlack.ctx.beginPath();
+        itemBlack.ctx.rect(0, 0, 768, 450);
+        itemBlack.ctx.fillStyle = '#000000';
+        itemBlack.ctx.fill();
+
+        this.itemBackdrop = this.add.sprite(0, 90, itemBlack);
+        this.itemBackdrop.alpha = 0;
+
+        this.lootTitle = this.add.text(30, 40, 'Items Dropped:');
+        this.lootTitle.font = 'Press Start 2P';
+        this.lootTitle.fontSize = 28;
+        this.lootTitle.fill = '#E6E6E8';
+        this.lootTitle.alpha = 0;
+
         //  Here is the important line. This will tell the Emitter to emit our custom MonsterParticle class instead of a normal Particle object.
         //this.emitter.particleClass = LootParticle;
 
@@ -135,7 +180,7 @@ export default class extends Phaser.State {
         // this.emitter.minParticleSpeed.set(0, 300);
         // this.emitter.maxParticleSpeed.set(0, 400);
         this.emitter.setRotation(0, 0);
-        this.emitter.setScale(1.5, 2.5, 1.5, 2.5, 3000, Phaser.Easing.Quintic.Out, true);
+        this.emitter.setScale(1, 2.5, 1, 2.5, 1000, Phaser.Easing.Quintic.Out, false);
         this.emitter.gravity = -100;
 
         this.animateBattleStart();
@@ -159,18 +204,60 @@ export default class extends Phaser.State {
         let avatarSettings = {x: this.dungeon.sprite.x, y: this.dungeon.sprite.y, scale: 1};
         let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
 
-        if(this.game.loot.length > 0){
-            this.showLoot();
+        //type of ending
+        if(this.showClearText === true){//cleared dungeon, loot undetermined
+            this.clearDungeonAnimation(avatarSettings, hpSettings, endCB);
         } else {
-            this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, endCB);
+            this.KOAnimation(avatarSettings, hpSettings, endCB);
         }
+    }
+
+    KOAnimation(avatarSettings, hpSettings, endCB){
+        let clearTween = this.add.tween(this.koText).to( {y: this.game.world.centerY - 150}, 600, Phaser.Easing.Bounce.Out, true);
+        clearTween.onComplete.addOnce(()=>{
+            setTimeout(() => {
+                let clearTweenOut = this.add.tween(this.koText).to( {y: this.game.world.height + 250}, 600, Phaser.Easing.Bounce.Out, true);
+
+                clearTweenOut.onComplete.addOnce(() => {
+                    //after clear animation...
+                    if(this.game.loot.length > 0){//knocked out with loot
+                        this.showLoot();
+                    } else {//knocked out without loot
+                        this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, endCB);
+                    }
+                });
+            }, 1500);
+        });
+    }
+
+    clearDungeonAnimation(avatarSettings, hpSettings, endCB){
+        this.clearText.visible = true;
+        this.add.tween(this.lightBG).to( {alpha: 1}, 600, Phaser.Easing.Bounce.Out, true);
+        let clearTween = this.add.tween(this.clearText).to( {y: this.game.world.centerY - 150}, 600, Phaser.Easing.Bounce.Out, true);
+        clearTween.onComplete.addOnce(()=>{
+            setTimeout(() => {
+                let clearTweenOut = this.add.tween(this.clearText).to( {y: this.game.world.height + 250}, 600, Phaser.Easing.Bounce.Out, true);
+
+                clearTweenOut.onComplete.addOnce(() => {
+                    this.clearText.visible = false;
+                    //after clear animation...
+                    if(this.game.loot.length > 0){//knocked out with loot
+                        this.showLoot();
+                    } else {//knocked out without loot
+                        this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, endCB);
+                    }
+                });
+            }, 1200);
+        });
     }
 
     showLoot(){
         //start particles before drop
-        this.emitter.start(false, 0, 50);
+        this.emitter.start(false, 2000, 50);
         this.game.player.battling = false;
         this.add.tween(this.backdrop).to( {alpha: 0.5}, 600, null, true);
+        this.add.tween(this.logBackground).to( {alpha: 0}, 600, null, true);
+        this.add.tween(this.errorText).to( {alpha: 0}, 600, null, true);
         let tween_CHEST = this.add.tween(this.chest).to( {angle: 0, y: this.game.world.centerY}, 600, Phaser.Easing.Bounce.Out, true);
 
         tween_CHEST.onComplete.addOnce(()=>{
@@ -180,9 +267,18 @@ export default class extends Phaser.State {
             this.chest.events.onInputDown.add(() =>{
                 this.emitter.frequency = 1;
                 this.emitter.gravity = -400;
+                this.emitter.setScale(1, 4, 1, 4, 6000, Phaser.Easing.Quintic.Out, false);
+                this.emitter.width = 768;
                 let anim = this.chest.animations.play('open', 15, false);
                 anim.onComplete.add(()=>{
-                    this.lootList = new LootList(this.game, this, {}, '#FFFFFF');
+                    this.add.tween(this.backdrop).to( {alpha: 0.8}, 600, null, true);
+                    this.add.tween(this.getLootText).to( {y: this.game.world.centerY + 475}, 600, Phaser.Easing.Bounce.Out, true);
+                    let tween_CHEST_DOWN = this.add.tween(this.chest).to( {y: this.game.world.centerY + 300}, 600, Phaser.Easing.Bounce.Out, true);
+                    tween_CHEST_DOWN.onComplete.addOnce(()=>{
+                        this.add.tween(this.itemBackdrop).to( {alpha: 0.5}, 600, null, true);
+                        this.add.tween(this.lootTitle).to( {alpha: 1}, 600, null, true);
+                        this.lootList = new LootList(this.game, this, '#FFFFFF');
+                    });
                     //this.game.state.start('LootView', true, false);
                 });
             }, this);
@@ -360,6 +456,7 @@ export default class extends Phaser.State {
             dungeon.enemies.forEach((enemy, index)=>{
                 dungeon.currentEnemies[index] = JSON.parse(JSON.stringify(enemy));
             });
+            this.showClearText = true;
             dungeon.beaten = true;
             dungeon.enemiesLeft = dungeon.currentEnemies.length;
             let latest = this.game.player.latestUnlockedDungeon;
@@ -428,12 +525,21 @@ export default class extends Phaser.State {
             } else {
                 //keep the particles with the chest, vertically
                 this.emitter.y = this.chest.y;
-                if(this.frameCount%10 == 0){
-                    this.getLootText.fill = randomColor({luminosity: 'dark', hue: 'yellow'});
-                }
             }
         } else {
             this.frameCount += 1;
+        }
+
+        if(this.clearText.visible){
+            if(this.frameCount%15 == 0){
+                this.clearText.fill = randomColor({luminosity: 'bright', hue: 'blue'});
+            }
+        }
+        if(this.frameCount%15 == 0){
+            this.getLootText.fill = randomColor({luminosity: 'dark', hue: 'yellow'});
+        }
+        if(this.frameCount%15 == 0){
+            this.koText.fill = randomColor({luminosity: 'bright', hue: 'red'});
         }
 
         let enemySpeedStandIn = 60;

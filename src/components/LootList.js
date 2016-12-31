@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { placeItemInSlot } from '../utils';
+import * as Utils from '../utils';
 import ItemReadOut from './ItemReadOut';
 import * as StoryFunctions from './StoryFunctions';
 
@@ -34,26 +34,6 @@ export default class LootList{
         this.lootReadOuts = [];
     }
 
-    tryToPlaceItemInInventory(item){
-        let invSlots = this.game.player.backpack;
-        let itemPlaced = false;
-        for(let y = 0; y < invSlots.length; y++){
-            let row = invSlots[y];
-            for(let x = 0; x < row.length; x++){
-                itemPlaced = placeItemInSlot(this.game.player, item, {x,y});
-                if(itemPlaced){break;}
-            }
-            if(itemPlaced){break;}
-        }
-        if(itemPlaced === false){
-            if(this.gameState.errorText){
-                this.gameState.errorText.text = 'Inventory is Full.';
-                this.gameState.errorText.visible = true;
-            }
-        }
-        return itemPlaced;
-    }
-
     updateLootTextAndButtons(){
         this.game.saveLootData(this.game);
         this.game.player.savePlayerData();
@@ -70,9 +50,9 @@ export default class LootList{
 
         loot.forEach((item, index) => {
             let itemOffsetHeight = (110*index);
-            let buttonsY = 230 + itemOffsetHeight;
+            let buttonsY = 130 + itemOffsetHeight;
 
-            this.lootReadOuts.push(new ItemReadOut(this.game, this.gameState, item, {x:this.game.world.centerX - 150, y:200 + itemOffsetHeight}, this.textColor));
+            this.lootReadOuts.push(new ItemReadOut(this.game, this.gameState, item, {x:this.game.world.centerX - 150, y:100 + itemOffsetHeight}, this.textColor));
 
             if(item.type != 'special'){
                 //add a couple buttons for this item
@@ -85,11 +65,16 @@ export default class LootList{
                         this.keptLoot = true;
                         this.updateLootTextAndButtons(loot);
                     } else {
-                        let placed = this.tryToPlaceItemInInventory(item);
+                        let placed = Utils.tryToPlaceItemInBackpack(item, this.game.player.backpack, this.game.player.inventory);
                         if(placed){
                             loot.splice(loot.indexOf(item), 1);
                             this.keptLoot = true;
                             this.updateLootTextAndButtons(loot);
+                        } else {
+                            if(this.gameState.errorText){
+                                this.gameState.errorText.text = 'Inventory is Full.';
+                                this.gameState.errorText.visible = true;
+                            }
                         }
                     }
                 }, this);

@@ -115,7 +115,7 @@ class Player {
             'value': 1
         };
 
-        placeItemInSlot(this, item, {x:0,y:0});
+        placeItemInSlot(this.backpack, this.inventory, item, {x:0,y:0});
         this.savePlayerData();
     }
 
