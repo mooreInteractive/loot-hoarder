@@ -16,16 +16,24 @@ export default class extends Phaser.State {
         this.items = [];
         this.backpack = this.createBackpack();
         this.generateShopItems();
+
+        /* Restart Ads */
+        let rand = Forge.rand(0,1000);
+        document.querySelector('#lb').data = 'lb.html?rand='+rand;
     }
 
     create () {
         this.add.image(0,0,'field-blue');
+
+        this.buyBg = this.add.image(2,-21,'buy_bg');
+        this.sellBg = this.add.image(2,-21,'sell_bg');
 
         this.mainNav = new MainNavigation(this.game, this, this.game.player.currentDungeon);
 
         this.Pixel36Black = {font: 'Press Start 2P', fontSize: 36, fill: '#000000' };
         this.Pixel36White = {font: 'Press Start 2P', fontSize: 36, fill: '#8989FF', align: 'center' };
         this.Pixel18Black = {font: 'Press Start 2P', fontSize: 18, fill: '#000000', align: 'center' };
+        this.Pixel21Black = {font: 'Press Start 2P', fontSize: 21, fill: '#000000', align: 'center' };
 
         //Item Readout
         this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 155, y: 385});
@@ -33,16 +41,22 @@ export default class extends Phaser.State {
         this.invGridPos = {x: 59, y: 560};
 
         //buy and sell tab Buttons
-        this.buyBtn = new Phaser.Button(this.game, 150, 525, 'greyButton', this.showBuyGrid, this);
+        let buyBmd = this.add.bitmapData(90, 49);
+        // buyBmd.ctx.beginPath();
+        // buyBmd.ctx.rect(0, 0, 90, 49);
+        // buyBmd.ctx.fillStyle = '#131313';
+        // buyBmd.ctx.fill();
+        this.buyBtn = new Phaser.Button(this.game, 105, 530, buyBmd, this.showBuyGrid, this);
         this.buyBtn.anchor.setTo(0.5);
         this.add.existing(this.buyBtn);
-        this.buyBtnText = this.add.text(150, 528, 'BUY', this.Pixel36Black);
+        this.buyBtnText = this.add.text(105, 535, 'BUY', this.Pixel21Black);
         this.buyBtnText.anchor.setTo(0.5);
 
-        this.sellBtn = new Phaser.Button(this.game, 350, 525, 'greyButton', this.showSellGrid, this);
+        let sellBmd = this.add.bitmapData(92, 50);
+        this.sellBtn = new Phaser.Button(this.game, 207, 530, sellBmd, this.showSellGrid, this);
         this.sellBtn.anchor.setTo(0.5);
         this.add.existing(this.sellBtn);
-        this.sellBtnText = this.add.text(350, 528, 'SELL', this.Pixel36Black);
+        this.sellBtnText = this.add.text(207, 535, 'SELL', this.Pixel21Black);
         this.sellBtnText.anchor.setTo(0.5);
 
         //buy grid
@@ -52,7 +66,8 @@ export default class extends Phaser.State {
         this.createSellGrid();
 
         //player gold
-        this.playerGold = this.add.text(500, 15, '', this.Pixel36Black);
+        this.playerGold = this.add.text(600, 535, '', this.Pixel21Black);
+        this.playerGold.anchor.setTo(0.5);
 
         this.showBuyGrid();
     }
@@ -108,12 +123,16 @@ export default class extends Phaser.State {
         this.buyGrid.show();
         this.sellGrid.hide();
         this.resetSelectedItem();
+        this.buyBg.visible = true;
+        this.sellBg.visible = false;
     }
 
     showSellGrid(){
         this.buyGrid.hide();
         this.sellGrid.show();
         this.resetSelectedItem();
+        this.buyBg.visible = false;
+        this.sellBg.visible = true;
     }
 
     resetSelectedItem(){

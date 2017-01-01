@@ -14,6 +14,7 @@ export default class extends Phaser.State {
         this.game.player.savePlayerData();
         this.dungeon = dungeon;
         this.frameCount = 1;
+        this.droppedGold = 0;
         this.currentEnemy = null;
         this.game.player.battling = true;
         this.raidStarted = false;
@@ -127,7 +128,7 @@ export default class extends Phaser.State {
             break;
         case 1: koString = 'You can no\nlonger fight!';
             break;
-        case 2: koString = 'Your HP is\ndepleated!';
+        case 2: koString = 'Your HP is\ndepleted!';
             break;
         case 3: koString = 'Go rest\nup kid!';
             break;
@@ -277,7 +278,7 @@ export default class extends Phaser.State {
                     tween_CHEST_DOWN.onComplete.addOnce(()=>{
                         this.add.tween(this.itemBackdrop).to( {alpha: 0.5}, 600, null, true);
                         this.add.tween(this.lootTitle).to( {alpha: 1}, 600, null, true);
-                        this.lootList = new LootList(this.game, this, '#FFFFFF');
+                        this.lootList = new LootList(this.game, this, '#FFFFFF', this.droppedGold);
                     });
                     //this.game.state.start('LootView', true, false);
                 });
@@ -407,7 +408,8 @@ export default class extends Phaser.State {
                 let goldChance = Forge.rand(0,100);
                 if(goldChance > 65){
                     let goldDrop = Math.floor(lootChance / 10);
-                    this.game.player.gold += goldDrop;
+                    //this.game.player.gold += goldDrop;
+                    this.droppedGold += goldDrop;
                     this.updateLogText(`Dropped ${goldDrop} gold.`);
                 }
             }

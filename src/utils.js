@@ -89,11 +89,9 @@ export const unequipItem = (player, item) => {
 };
 
 export const removeItemFromBackpack = (backpack, item) => {
-    console.log('removing item:', item);
     item.shape.forEach((irow, iy) => {
         irow.forEach((icol, ix) => {
             if(icol === 1){
-                console.log('--removing from backpack: ', item.inventorySlot.y + iy, item.inventorySlot.x + ix);
                 backpack[item.inventorySlot.y + iy][item.inventorySlot.x + ix].invItem = -1;
                 backpack[item.inventorySlot.y + iy][item.inventorySlot.x + ix].sprite.tint = 0xFFFFFF;
             }

@@ -76,7 +76,7 @@ export default class extends Phaser.State {
         this.potionButton.visible = this.game.player.potions > 0;
         this.add.existing(this.potionButton);
 
-        this.potionText = this.add.text(85, 210, `x${this.game.player.potions}`, Pixel16Black);
+        this.potionText = this.add.text(65, 210, `x${this.game.player.potions}`, Pixel16Black);
         this.potionText.visible = this.game.player.potions > 1;
 
         this.itemActionButton = new Phaser.Button(this.game, 665, 485, 'greyButton', this.useItem, this);

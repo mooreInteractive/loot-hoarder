@@ -4,18 +4,42 @@ import ItemReadOut from './ItemReadOut';
 import * as StoryFunctions from './StoryFunctions';
 
 export default class LootList{
-    constructor(game, gameState, color='#000000'){
+    constructor(game, gameState, color='#000000', gold=0){
         this.game = game;
         this.loot = game.loot;
         this.gameState = gameState;
         this.keptLoot = false;
         this.textColor = color;
+        this.gold = gold;
 
         this.lootKeepBtns = [];
         this.lootSellBtns = [];
         this.lootReadOuts = [];
 
+        this.pullOutPotions();
+        this.addGoldToPlayerInventory(this.gold);
+
+        this.addPotionLabel();
+
         this.updateLootTextAndButtons();
+    }
+
+    pullOutPotions(){
+        this.potions = 0;
+        this.loot.forEach((item, index)=> {
+            if(item.name == 'Health Potion'){
+                this.addPotionToPlayerInvetory(item, index);
+                this.potions += 1;
+            }
+        });
+    }
+
+    addPotionLabel(){
+        this.gameState.add.image(600, 25, 'potion');
+        let potionTextStyle = {font: 'Press Start 2P', fontSize: '22px', fill: '#FFFFFF'};
+        this.potionText = this.gameState.add.text(655, 55, ('x'+this.potions), potionTextStyle);
+
+        this.goldText = this.gameState.add.text(600, 85, `gold:${this.gold}`, potionTextStyle);
     }
 
     cleanUpLootButtons(){
@@ -32,6 +56,17 @@ export default class LootList{
         this.lootKeepBtns = [];
         this.lootSellBtns = [];
         this.lootReadOuts = [];
+    }
+
+    addGoldToPlayerInventory(amount){
+        this.game.player.gold += amount;
+    }
+
+    addPotionToPlayerInvetory(item, index){
+        this.game.player.potions += 1;
+        this.loot.splice(index, 1);
+        this.keptLoot = true;
+        this.updateLootTextAndButtons(this.loot);
     }
 
     updateLootTextAndButtons(){
@@ -59,22 +94,15 @@ export default class LootList{
 
                 let addBtn = new Phaser.Button(this.game, this.game.world.centerX - 310, buttonsY, 'blueButton', () => {
                     console.log('--clicked keep, loot, item', loot, item);
-                    if(item.name == 'Health Potion'){
-                        this.game.player.potions += 1;
+                    let placed = Utils.tryToPlaceItemInBackpack(item, this.game.player.inventory, this.game.player.backpack);
+                    if(placed){
                         loot.splice(loot.indexOf(item), 1);
                         this.keptLoot = true;
                         this.updateLootTextAndButtons(loot);
                     } else {
-                        let placed = Utils.tryToPlaceItemInBackpack(item, this.game.player.inventory, this.game.player.backpack);
-                        if(placed){
-                            loot.splice(loot.indexOf(item), 1);
-                            this.keptLoot = true;
-                            this.updateLootTextAndButtons(loot);
-                        } else {
-                            if(this.gameState.errorText){
-                                this.gameState.errorText.text = 'Inventory is Full.';
-                                this.gameState.errorText.visible = true;
-                            }
+                        if(this.gameState.errorText){
+                            this.gameState.errorText.text = 'Inventory is Full.';
+                            this.gameState.errorText.visible = true;
                         }
                     }
                 }, this);
