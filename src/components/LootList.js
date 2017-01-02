@@ -35,11 +35,11 @@ export default class LootList{
     }
 
     addPotionLabel(){
-        this.gameState.add.image(600, 25, 'potion');
+        this.gameState.add.image(600, 125, 'potion');
         let potionTextStyle = {font: 'Press Start 2P', fontSize: '22px', fill: '#FFFFFF'};
-        this.potionText = this.gameState.add.text(655, 55, ('x'+this.potions), potionTextStyle);
+        this.potionText = this.gameState.add.text(665, 155, ('x'+this.potions), potionTextStyle);
 
-        this.goldText = this.gameState.add.text(600, 85, `gold:${this.gold}`, potionTextStyle);
+        this.goldText = this.gameState.add.text(600, 195, `gold:${this.gold}`, potionTextStyle);
     }
 
     cleanUpLootButtons(){

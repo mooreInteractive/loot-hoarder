@@ -13,9 +13,22 @@ export default class extends Phaser.State {
         this.selectedSprite;
         this.selectedItem;
 
-        this.items = [];
-        this.backpack = this.createBackpack();
-        this.generateShopItems();
+        this.items = this.game.shopItems;
+        let time = Math.floor((new Date).getTime()/1000);
+        let refreshTime = parseInt(this.game.lastShopRefresh) + 14400;
+        if(refreshTime <= time || this.items.length == 0){
+            this.game.lastShopRefresh = time;
+            if(localStorage){
+                localStorage.setItem('loot-hoarder-shop-time', time);
+            }
+
+            this.items = [];
+            this.backpack = this.createBackpack();
+            this.generateShopItems();
+        } else {
+            this.backpack = this.createBackpack();
+            this.addItemsToBackpack();
+        }
 
         /* Restart Ads */
         let rand = Forge.rand(0,1000);
@@ -25,8 +38,8 @@ export default class extends Phaser.State {
     create () {
         this.add.image(0,0,'field-blue');
 
-        this.buyBg = this.add.image(2,-21,'buy_bg');
-        this.sellBg = this.add.image(2,-21,'sell_bg');
+        this.buyBg = this.add.image(2,-71,'buy_bg');
+        this.sellBg = this.add.image(2,-71,'sell_bg');
 
         this.mainNav = new MainNavigation(this.game, this, this.game.player.currentDungeon);
 
@@ -36,9 +49,9 @@ export default class extends Phaser.State {
         this.Pixel21Black = {font: 'Press Start 2P', fontSize: 21, fill: '#000000', align: 'center' };
 
         //Item Readout
-        this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 155, y: 385});
+        this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 155, y: 335});
 
-        this.invGridPos = {x: 59, y: 560};
+        this.invGridPos = {x: 59, y: 510};
 
         //buy and sell tab Buttons
         let buyBmd = this.add.bitmapData(90, 49);
@@ -46,17 +59,17 @@ export default class extends Phaser.State {
         // buyBmd.ctx.rect(0, 0, 90, 49);
         // buyBmd.ctx.fillStyle = '#131313';
         // buyBmd.ctx.fill();
-        this.buyBtn = new Phaser.Button(this.game, 105, 530, buyBmd, this.showBuyGrid, this);
+        this.buyBtn = new Phaser.Button(this.game, 105, 480, buyBmd, this.showBuyGrid, this);
         this.buyBtn.anchor.setTo(0.5);
         this.add.existing(this.buyBtn);
-        this.buyBtnText = this.add.text(105, 535, 'BUY', this.Pixel21Black);
+        this.buyBtnText = this.add.text(105, 485, 'BUY', this.Pixel21Black);
         this.buyBtnText.anchor.setTo(0.5);
 
         let sellBmd = this.add.bitmapData(92, 50);
-        this.sellBtn = new Phaser.Button(this.game, 207, 530, sellBmd, this.showSellGrid, this);
+        this.sellBtn = new Phaser.Button(this.game, 207, 480, sellBmd, this.showSellGrid, this);
         this.sellBtn.anchor.setTo(0.5);
         this.add.existing(this.sellBtn);
-        this.sellBtnText = this.add.text(207, 535, 'SELL', this.Pixel21Black);
+        this.sellBtnText = this.add.text(207, 485, 'SELL', this.Pixel21Black);
         this.sellBtnText.anchor.setTo(0.5);
 
         //buy grid
@@ -66,8 +79,12 @@ export default class extends Phaser.State {
         this.createSellGrid();
 
         //player gold
-        this.playerGold = this.add.text(600, 535, '', this.Pixel21Black);
+        this.playerGold = this.add.text(600, 485, '', this.Pixel21Black);
         this.playerGold.anchor.setTo(0.5);
+
+        //shop refresh timer text
+        this.shopTimer = this.add.text(384, 805, '', this.Pixel21Black);
+        this.shopTimer.anchor.setTo(0.5);
 
         this.showBuyGrid();
     }
@@ -86,13 +103,13 @@ export default class extends Phaser.State {
 
         //buy price
 
-        this.buyPrice = this.add.text(470, 310, '', this.Pixel36White);
+        this.buyPrice = this.add.text(470, 260, '', this.Pixel36White);
 
         //buy item Button
-        this.buyItemBtn = new Phaser.Button(this.game, 540, 425, 'redButton', this.buySelectedItem, this);
+        this.buyItemBtn = new Phaser.Button(this.game, 540, 375, 'redButton', this.buySelectedItem, this);
         this.buyItemBtn.anchor.setTo(0.5);
         this.add.existing(this.buyItemBtn);
-        this.buyItemBtnText = this.add.text(540, 428, 'BUY ITEM', this.Pixel18Black);
+        this.buyItemBtnText = this.add.text(540, 378, 'BUY ITEM', this.Pixel18Black);
         this.buyItemBtnText.anchor.setTo(0.5);
     }
 
@@ -109,13 +126,13 @@ export default class extends Phaser.State {
         );
 
         //sell price
-        this.sellPrice = this.add.text(470, 310, '', this.Pixel36White);
+        this.sellPrice = this.add.text(470, 260, '', this.Pixel36White);
 
         //sell item Button
-        this.sellItemBtn = new Phaser.Button(this.game, 540, 425, 'yellowButton', this.sellSelectedItem, this);
+        this.sellItemBtn = new Phaser.Button(this.game, 540, 375, 'yellowButton', this.sellSelectedItem, this);
         this.sellItemBtn.anchor.setTo(0.5);
         this.add.existing(this.sellItemBtn);
-        this.sellItemBtnText = this.add.text(540, 428, 'SELL ITEM', this.Pixel18Black);
+        this.sellItemBtnText = this.add.text(540, 378, 'SELL ITEM', this.Pixel18Black);
         this.sellItemBtnText.anchor.setTo(0.5);
     }
 
@@ -157,8 +174,17 @@ export default class extends Phaser.State {
             if(!placed){
                 break;
             }
-            //Utils.placeItemInSlot(this.backpack, this.items, item, null);
         }
+        this.game.shopItems = this.items;
+        if(localStorage){
+            localStorage.setItem('loot-hoarder-shop', JSON.stringify(this.items));
+        }
+    }
+
+    addItemsToBackpack(){
+        this.items.forEach((item) => {
+            Utils.tryToPlaceItemInBackpack(item, this.items, this.backpack);
+        });
     }
 
     buySelectedItem(){
@@ -185,6 +211,12 @@ export default class extends Phaser.State {
                 //player
                 this.game.player.gold -= sellValue;
                 this.game.player.savePlayerData();//save game here since gold and inventory updated
+
+                //game shop Data
+                this.game.shopItems = this.items;
+                if(localStorage){
+                    localStorage.setItem('loot-hoarder-shop', JSON.stringify(this.items));
+                }
             } else {
                 new Dialogue(this.game, this, 'ok', 'shopkeeper', 'Uhh, You don\'t have space in your inventory to carry that!', ()=>{});
             }
@@ -255,6 +287,11 @@ export default class extends Phaser.State {
 
     update(){
         this.playerGold.text = 'gold:' + this.game.player.gold;
+
+        let time = Math.floor((new Date).getTime()/1000);
+        let refreshTime = parseInt(this.game.lastShopRefresh) + 14400;
+        this.timeLeft = refreshTime - time;
+        this.shopTimer.text = `Shop inventory refresh: ${Utils.convertSecondsToTimeWithHours(this.timeLeft)}`;
     }
 
 }

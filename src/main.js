@@ -50,13 +50,19 @@ class Game extends Phaser.Game {
         let playerStory = Story.Story;
         if(localStorage){
             playerData = JSON.parse(localStorage.getItem('loot-hoarder-player'));
-            playerClock = JSON.parse(localStorage.getItem('loot-hoarder-clock'));
+            playerClock = JSON.parse(localStorage.getItem('loot-hoarder-clock')) ||  Math.floor((new Date).getTime()/1000);
             let story = localStorage.getItem('loot-hoarder-story');
             if(story != null){
                 playerStory = JSON.parse(story);
             }
+
+            //shop data
+            this.lastShopRefresh = localStorage.getItem('loot-hoarder-shop-time') || playerClock;
+            this.shopItems = JSON.parse(localStorage.getItem('loot-hoarder-shop')) || [];
         } else {
             playerClock = Math.floor((new Date).getTime()/1000);
+            this.lastShopRefresh = playerClock;
+            this.shopItems = [];
         }
         //Loot Hoarder Variables
         this.player = new Player(playerData, this.version, playerStory);

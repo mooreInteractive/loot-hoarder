@@ -112,6 +112,22 @@ export const convertSecondsToTime = (seconds) => {
     return timeString;
 };
 
+export const convertSecondsToTimeWithHours = (seconds) => {
+    let timeString = '00:00:00';
+    let hours = Math.floor(seconds/3600);
+    let minutes = seconds/60 > 59 ? Math.floor((seconds%3600)/60) : Math.floor(seconds/60);
+    let secondsLeft = seconds%60 < 10 ? '0'+seconds%60 : seconds%60;
+
+    if(hours < 0 ){hours = '';}
+    if(minutes < 10 ){minutes = '0'+minutes;}
+    if(minutes <= 0 ){minutes = '00';}
+    if(seconds%0 <= 0){secondsLeft = '00';}
+
+    timeString = `${hours}${hours ? ':' : ''}${minutes}:${secondsLeft}`;
+
+    return timeString;
+};
+
 export const identifyScroll = (scroll) => {
     scroll.name = scroll.hiddenName;
     scroll.description = scroll.hiddenDescription;
