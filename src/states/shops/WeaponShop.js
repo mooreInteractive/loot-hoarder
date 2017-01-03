@@ -49,6 +49,13 @@ export default class extends Phaser.State {
         this.Pixel21Black = {font: 'Press Start 2P', fontSize: 21, fill: '#000000', align: 'center' };
 
         //Item Readout
+        let itemBmd = this.add.bitmapData(500, 120);
+        itemBmd.ctx.beginPath();
+        itemBmd.ctx.rect(0, 0, 500, 120);
+        itemBmd.ctx.fillStyle = '#F6F6F7';
+        itemBmd.ctx.fill();
+        this.add.sprite(145, 325, itemBmd);
+
         this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 155, y: 335});
 
         this.invGridPos = {x: 59, y: 510};
@@ -101,15 +108,12 @@ export default class extends Phaser.State {
             false
         );
 
-        //buy price
-
-        this.buyPrice = this.add.text(470, 260, '', this.Pixel36White);
-
         //buy item Button
-        this.buyItemBtn = new Phaser.Button(this.game, 540, 375, 'redButton', this.buySelectedItem, this);
+        this.buyItemBtn = new Phaser.Button(this.game, 540, 380, 'redButton', this.buySelectedItem, this);
         this.buyItemBtn.anchor.setTo(0.5);
+        this.buyItemBtn.scale.setTo(1,2);
         this.add.existing(this.buyItemBtn);
-        this.buyItemBtnText = this.add.text(540, 378, 'BUY ITEM', this.Pixel18Black);
+        this.buyItemBtnText = this.add.text(540, 383, 'BUY ITEM', this.Pixel18Black);
         this.buyItemBtnText.anchor.setTo(0.5);
     }
 
@@ -125,14 +129,12 @@ export default class extends Phaser.State {
             false
         );
 
-        //sell price
-        this.sellPrice = this.add.text(470, 260, '', this.Pixel36White);
-
         //sell item Button
-        this.sellItemBtn = new Phaser.Button(this.game, 540, 375, 'yellowButton', this.sellSelectedItem, this);
+        this.sellItemBtn = new Phaser.Button(this.game, 540, 380, 'yellowButton', this.sellSelectedItem, this);
         this.sellItemBtn.anchor.setTo(0.5);
+        this.sellItemBtn.scale.setTo(1,2);
         this.add.existing(this.sellItemBtn);
-        this.sellItemBtnText = this.add.text(540, 378, 'SELL ITEM', this.Pixel18Black);
+        this.sellItemBtnText = this.add.text(540, 383, 'SELL ITEM', this.Pixel18Black);
         this.sellItemBtnText.anchor.setTo(0.5);
     }
 
@@ -154,8 +156,6 @@ export default class extends Phaser.State {
 
     resetSelectedItem(){
         this.itemReadOut.clearItem();
-        this.sellPrice.text = '';
-        this.buyPrice.text = '';
         this.selectedSprite = null;
         this.selectedItem = null;
 
@@ -255,7 +255,8 @@ export default class extends Phaser.State {
         this.selectedItem = item;
         this.itemReadOut.updateItem(item);
 
-        this.buyPrice.text = 'cost\n' + Math.ceil(item.value*1.15);
+        let cost = Math.ceil(item.value*1.15) > 0 ? Math.ceil(item.value*1.15) : 1;
+        this.buyItemBtnText.text = `BUY ITEM\n${cost}g`;
 
         this.buyItemBtn.visible = true;
         this.buyItemBtnText.visible = true;
@@ -270,7 +271,7 @@ export default class extends Phaser.State {
         this.selectedItem = item;
         this.itemReadOut.updateItem(item);
 
-        this.sellPrice.text = 'worth\n' + item.value;
+        this.sellItemBtnText.text = `SELL ITEM\n${item.value}g`;
 
         this.sellItemBtn.visible = true;
         this.sellItemBtnText.visible = true;

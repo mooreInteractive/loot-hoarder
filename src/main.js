@@ -11,6 +11,7 @@ import Inventory from './states/Inventory';
 import Raid from './states/Raid';
 import LootView from './states/LootView';
 import WeaponShop from './states/shops/WeaponShop';
+import ScrollShop from './states/shops/ScrollShop';
 import Tools from './tools';
 import * as Story from './data/story';
 import StoryObserver from './observers/story_observer';
@@ -32,7 +33,7 @@ class Game extends Phaser.Game {
         /***** VERSION NUMBER - UPDATING WILL WIPE PLAYER DATA *************
         /****
         /**/
-        this.version = '0.0.21'; //updated 9/6 8:45pm
+        this.version = '0.0.22'; //updated 9/6 8:45pm
         /**/
         /****
         *******************************************************************/
@@ -90,6 +91,7 @@ class Game extends Phaser.Game {
         this.state.add('Raid', Raid, false);
         this.state.add('LootView', LootView, false);
         this.state.add('WeaponShop', WeaponShop, false);
+        this.state.add('ScrollShop', ScrollShop, false);
 
         this.state.start('Boot');
     }

@@ -3,7 +3,6 @@ import * as utils from '../utils';
 import MainNavigation from '../components/MainNavigation';
 import Avatar from '../components/Avatar';
 import ItemReadOut from '../components/ItemReadOut';
-import Dialogue from '../components/Dialogue';
 import ItemGrid from '../components/ItemGrid';
 
 export default class extends Phaser.State {
@@ -321,12 +320,6 @@ export default class extends Phaser.State {
     }
 
     startDrag(sprite, item, itemGroup=null, equipped=false){
-        //console.log('-startDrag(sprite, item, equipped)', sprite, item, equipped);
-        if(  (this.currentDungeon.level == 1 && this.game.player.latestUnlockedDungeon > 1) ||
-            (item.type == 'misc' && this.currentDungeon.level == 3 && this.game.player.latestUnlockedDungeon > 3)
-        ){
-            this.mainNav.startedDraggingItem();
-        }
         this.game.world.bringToTop(itemGroup);
         if(equipped){
             utils.unequipItem(this.game.player, item);
@@ -371,67 +364,11 @@ export default class extends Phaser.State {
         return slot;
     }
 
-    mouseOverShop(mouse){
-        if((this.currentDungeon.level == 1 && this.game.player.latestUnlockedDungeon > 1) ||
-            (this.currentDungeon.level == 3 && this.game.player.latestUnlockedDungeon > 3)
-        ){
-            let shop = {x:this.game.world.width - 200, y:this.game.world.height - 90, width: 190*1.8, height: 49*3};
-
-            if( //Dropping on the Shop
-                mouse.x >= (shop.x - shop.width * 0.5) &&
-                mouse.x <= ((shop.x - shop.width * 0.5) + shop.width) &&
-                mouse.y >= (shop.y - shop.height * 0.5) &&
-                mouse.y <= ((shop.y - shop.height * 0.5) + shop.height)
-            ){
-                console.log('onshop...');
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    shopAction(currentSprite, item){
-        if(this.currentDungeon.level == 1 && this.game.player.latestUnlockedDungeon > 1){
-            this.game.player.gold += item.value;
-            let itemIndex = this.game.player.inventory.indexOf(item);
-            if(itemIndex > -1){
-                this.game.player.inventory.splice(itemIndex, 1);
-            }
-            currentSprite.destroy();
-            this.game.player.savePlayerData();
-        } else if(this.currentDungeon.level == 3 && this.game.player.latestUnlockedDungeon > 3){
-            if(item.name == 'Unknown Scroll'){
-                let cost = 100;
-                new Dialogue(this.game, this, 'bool', 'scrollkeeper', `You wish to identify this\nscroll for ${cost} gold?`, (reply)=>{
-                    if(reply == 'yes'){
-                        if(this.game.player.gold > cost-1){
-                            console.log('identify scroll...');
-                            this.game.player.gold -= cost;
-                            utils.identifyScroll(item);
-                            this.selectItem(currentSprite, item);
-                            this.game.player.savePlayerData();
-                        } else {
-                            let short = cost - this.game.player.gold;
-                            new Dialogue(this.game, this, 'ok', 'scrollkeeper', `You're short about\n${short} gold.`, ()=>{});
-                        }
-                    }
-                });
-            } else {
-                new Dialogue(this.game, this, 'ok', 'scrollkeeper', 'This scroll is already\nIdentified.', ()=>{});
-            }
-            this.returnItemToOrigin(currentSprite, item);
-        }
-
-    }
-
     stopDrag(currentSprite, item, mouse){
         let gridPos = this.invGridPos;
-        this.mainNav.stoppedDraggingItem();
         //Getting Drop Zone
         let slot = this.mouseOverBackPackGrid(currentSprite, item, gridPos, mouse);
         let equipSlot = this.mouseOverEquipmentSlot(mouse, item);
-        let shopSlot = this.mouseOverShop(mouse);
 
         if(currentSprite.parent == this.equippedItemsGroup){
             if(slot){
@@ -451,9 +388,6 @@ export default class extends Phaser.State {
                 utils.equipItem(this.game.player, item, equipSlot);
                 this.addEquippedSprite(item, equipSlot.type);
                 currentSprite.destroy();
-            } else if(shopSlot){
-                // console.log('----on shop Slot...');
-                this.shopAction(currentSprite, item);
             } else {
                 currentSprite.position.copyFrom(currentSprite.originalPosition);
                 utils.equipItem(this.game.player, item, {type: item.inventorySlot});
@@ -475,9 +409,6 @@ export default class extends Phaser.State {
                 utils.equipItem(this.game.player, item, equipSlot);
                 this.addEquippedSprite(item, equipSlot.type);
                 currentSprite.destroy();
-            } else if(shopSlot){
-                // console.log('----on shop Slot...');
-                this.shopAction(currentSprite, item);
             } else {
                 // console.log('----on nothing, return to origin...');
                 this.returnItemToOrigin(currentSprite, item);

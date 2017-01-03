@@ -39,6 +39,7 @@ export default class extends Phaser.State {
         this.game.load.spritesheet('world_btn', './assets/images/ui/world.png', 60, 60);
         this.game.load.image('buy_bg', './assets/images/ui/shop_rough_buy.png');
         this.game.load.image('sell_bg', './assets/images/ui/shop_rough_sell.png');
+        this.game.load.image('scroll_shop_bg', './assets/images/ui/scroll_shop.png');
 
         //Portraits
         this.game.load.spritesheet('portraits', './assets/images/portraits/sheet.png', 32, 48);

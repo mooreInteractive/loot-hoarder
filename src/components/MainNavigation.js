@@ -76,13 +76,14 @@ export default class MainNavigation{
     }
 
     openScrollShop(){
-        new Dialogue(this.game, this.gameState, 'bool', 'scrollkeeper', 'Drag scrolls here from your inventory to have them identified. You know how scrolls work right?', (reply)=>{
-            if(reply == 'yes'){
-                new Dialogue(this.game, this.gameState, 'ok', 'scrollkeeper', 'Great! Come back when you have an unknwon scroll!', ()=>{});
-            } else if(reply == 'no'){
-                new Dialogue(this.game, this.gameState, 'ok', 'scrollkeeper', 'Once I\'ve identified them, you can use them to gain magical effects that will aid you in battle.', ()=>{});
-            }
-        });
+        this.gameState.state.start('ScrollShop');
+        // new Dialogue(this.game, this.gameState, 'bool', 'scrollkeeper', 'Drag scrolls here from your inventory to have them identified. You know how scrolls work right?', (reply)=>{
+        //     if(reply == 'yes'){
+        //         new Dialogue(this.game, this.gameState, 'ok', 'scrollkeeper', 'Great! Come back when you have an unknwon scroll!', ()=>{});
+        //     } else if(reply == 'no'){
+        //         new Dialogue(this.game, this.gameState, 'ok', 'scrollkeeper', 'Once I\'ve identified them, you can use them to gain magical effects that will aid you in battle.', ()=>{});
+        //     }
+        // });
     }
 
     openPotionShop(){
@@ -136,14 +137,6 @@ export default class MainNavigation{
         }
     }
 
-    startedDraggingItem(){
-        this.draggingItem = true;
-    }
-
-    stoppedDraggingItem(){
-        this.draggingItem = false;
-    }
-
     animateRaidShopButtonTo(yPos){
         this.gameState.add.tween(this.raidBtn).to( {y: yPos}, 600, Phaser.Easing.Bounce.Out, true);
     }
@@ -151,19 +144,11 @@ export default class MainNavigation{
     moveToShop(){
         this.animateRaidShopButtonTo(this.game.world.height - 211);
         this.raidShopSetting = 'shop';
-        console.log('move to shop');
-    }
-
-    moveToSell(){
-        this.animateRaidShopButtonTo(this.game.world.height - 289);
-        this.raidShopSetting = 'sell';
-        console.log('move to sell');
     }
 
     moveToRaid(){
         this.animateRaidShopButtonTo(this.game.world.height - 133);
         this.raidShopSetting = 'raid';
-        console.log('move to raid');
     }
 
     update(currDungeon=null){
@@ -180,11 +165,7 @@ export default class MainNavigation{
             let shop2 = this.game.player.latestUnlockedDungeon > 2 && this.currentDungeon.level == 2;
             let shop3 = this.game.player.latestUnlockedDungeon > 3 && this.currentDungeon.level == 3;
             if(shop1||shop2||shop3){
-                if(this.draggingItem){
-                    if(this.raidShopSetting !== 'sell'){this.moveToSell();}
-                } else {
-                    if(this.raidShopSetting !== 'shop'){this.moveToShop();}
-                }
+                if(this.raidShopSetting !== 'shop'){this.moveToShop();}
             } else {
                 if(currHealth > 1 && this.currentDungeon.level <= this.game.player.latestUnlockedDungeon){
                     this.raidBtn.alpha = 1;
