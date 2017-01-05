@@ -250,52 +250,77 @@ export default class extends Phaser.State {
         })[0];
 
         let drawnObject;
+        let drawnBackground;
         let width = item.shapeWidth*27;
         let height = item.shapeHeight*27;
-        let bmd = this.game.add.bitmapData(width, height);
+        let itemGroup = this.add.group();
 
+        let bmd = this.game.add.bitmapData(width, height);
         bmd.ctx.beginPath();
         bmd.ctx.rect(0, 0, item.shapeWidth*27, item.shapeHeight*27);
         bmd.ctx.fillStyle = '#ababab';
         bmd.ctx.fill();
+
+        let spritePos = {
+            x: this.equippedSlots.position.x + slotSprite.position.x + ((slotSprite.width - item.shapeWidth*27)/2),
+            y: this.equippedSlots.position.y + slotSprite.position.y + ((slotSprite.height - (item.shapeHeight*27))/2)
+        };
+
+        drawnBackground = this.game.add.sprite(spritePos.x, spritePos.y, bmd);
+
         //console.log('--placing piece at x,y:', gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2));
         if(item.sprite){
-            drawnObject = this.game.add.sprite(this.equippedSlots.position.x + slotSprite.position.x + ((slotSprite.width - item.shapeWidth*27)/2), this.equippedSlots.position.y + slotSprite.position.y + ((slotSprite.height - (item.shapeHeight*27))/2), item.sprite);
+            console.log('sprite:', item.sprite);
+            let newSpriteOffset = {
+                y: item.sprite == 'axes' ? 16.5 : 0,
+                x: item.sprite == 'axes' ? 3 : 0
+            }; //TODO
+            drawnObject = this.game.add.sprite(spritePos.x+newSpriteOffset.x, spritePos.y+newSpriteOffset.y, item.sprite);
             drawnObject.scale.x = 0.5;
             drawnObject.scale.y = 0.5;
+            if(item.sprite == 'axes'){
+                console.log('item frame:', item, item.frame);
+                drawnObject.frame = item.frame;
+            }
         } else {
-            drawnObject = this.game.add.sprite(this.equippedSlots.position.x + slotSprite.position.x + ((slotSprite.width - 27*item.shapeWidth)/2), this.equippedSlots.position.y + slotSprite.position.y + ((slotSprite.height - 27*item.shapeHeight)/2), bmd);
+            drawnObject = this.game.add.sprite(spritePos.x, spritePos.y, bmd);
         }
 
+        ([drawnBackground, drawnObject]).forEach((sprite) => {
+            itemGroup.add(sprite);
+            sprite.inputEnabled = true;
+            sprite.input.enableDrag();
+            sprite.originalPosition = drawnObject.position.clone();
 
-        drawnObject.inputEnabled = true;
-        drawnObject.input.enableDrag();
-        drawnObject.originalPosition = drawnObject.position.clone();
-        //console.log('-- invSprite events:', drawnObject.events);
-        drawnObject.events.onInputDown.add(() => {
-            //this.hoverInvItem(drawnObject, mousePos, item);
-            this.selectItem(drawnObject, item);
-        }, this);
-        drawnObject.events.onInputOver.add(() => {
-            //this.hoverInvItem(drawnObject, mousePos, item);
-            this.selectItem(drawnObject, item);
-        }, this);
-        drawnObject.events.onDragStop.add((drawnObject, mousePos) => {
-            this.stopDrag(drawnObject, item, mousePos);
-        }, this);
-        drawnObject.events.onDragStart.add(function(sprite){
-            this.startDrag(sprite, item, this.equippedItemsGroup, true);
-        }, this);
+            sprite.events.onInputDown.add((sprite) => {
+                //this.hoverInvItem(drawnObject, mousePos, item);
+                this.selectItem(sprite, item);
+            }, this);
+            sprite.events.onInputOver.add((sprite) => {
+                //this.hoverInvItem(drawnObject, mousePos, item);
+                this.selectItem(sprite, item);
+            }, this);
+            sprite.events.onDragStop.add((sprite, mousePos) => {
+                this.stopDrag(sprite, item, mousePos);
+            }, this);
+            sprite.events.onDragStart.add(function(sprite){
+                this.startDrag(sprite, item, this.equippedItemsGroup, true);
+            }, this);
+        });
 
-        this.equippedItemsGroup.add(drawnObject);
+
+        this.equippedItemsGroup.add(itemGroup);
     }
 
     selectItem(sprite, item){
+        let spriteGroup = sprite.parent;
+        //item sprite
         if(this.selectedSprite != null){
-            this.selectedSprite.tint = 0xffffff;
+            this.selectedSprite.setAll('tint', 0xffffff);
         }
-        this.selectedSprite = sprite;
-        this.selectedSprite.tint = 0xe5e5FF;
+        this.selectedSprite = spriteGroup;
+        this.selectedSprite.setAll('tint', 0xe5e5FF);
+        //item object
         this.selectedItem = item;
         this.itemReadOut.updateItem(item);
         if(item.type === 'misc' && item.identified === true){
@@ -320,6 +345,8 @@ export default class extends Phaser.State {
     }
 
     startDrag(sprite, item, itemGroup=null, equipped=false){
+        this.dragging = true;
+        this.draggingSprite = sprite;
         this.game.world.bringToTop(itemGroup);
         if(equipped){
             utils.unequipItem(this.game.player, item);
@@ -365,20 +392,22 @@ export default class extends Phaser.State {
     }
 
     stopDrag(currentSprite, item, mouse){
+        this.dragging = false;
+        this.draggingSprite = null;
         let gridPos = this.invGridPos;
         //Getting Drop Zone
         let slot = this.mouseOverBackPackGrid(currentSprite, item, gridPos, mouse);
         let equipSlot = this.mouseOverEquipmentSlot(mouse, item);
 
-        if(currentSprite.parent == this.equippedItemsGroup){
+        if(currentSprite.parent.parent == this.equippedItemsGroup){
             if(slot){
                 let fits = utils.placeItemInSlot(this.game.player.backpack, this.game.player.inventory, item, slot);
                 if(fits){
-                    console.log('------fits.');
+                    //console.log('------fits.');
                     //utils.unequipItem(this.game.player, item);
                     this.invGrid.addItemSprite(item);
                     //this.addBackPackSprite(item);
-                    currentSprite.destroy();
+                    currentSprite.parent.destroy();
                 } else {
                     currentSprite.position.copyFrom(currentSprite.originalPosition);
                     utils.equipItem(this.game.player, item, {type: item.inventorySlot});
@@ -387,7 +416,7 @@ export default class extends Phaser.State {
                 // console.log('----on equip slot...');
                 utils.equipItem(this.game.player, item, equipSlot);
                 this.addEquippedSprite(item, equipSlot.type);
-                currentSprite.destroy();
+                currentSprite.parent.destroy();
             } else {
                 currentSprite.position.copyFrom(currentSprite.originalPosition);
                 utils.equipItem(this.game.player, item, {type: item.inventorySlot});
@@ -408,7 +437,7 @@ export default class extends Phaser.State {
                 // console.log('----on equip slot...');
                 utils.equipItem(this.game.player, item, equipSlot);
                 this.addEquippedSprite(item, equipSlot.type);
-                currentSprite.destroy();
+                currentSprite.parent.destroy();
             } else {
                 // console.log('----on nothing, return to origin...');
                 this.returnItemToOrigin(currentSprite, item);
@@ -418,7 +447,8 @@ export default class extends Phaser.State {
     }
 
     returnItemToOrigin(sprite, item){
-        sprite.position.copyFrom(sprite.originalPosition);
+        sprite.parent.setAll('position', sprite.originalPosition.clone());
+        //sprite.position.copyFrom(sprite.originalPosition);
         utils.placeItemInSlot(this.game.player.backpack, this.game.player.inventory, item, item.inventorySlot);
     }
 
@@ -431,6 +461,11 @@ export default class extends Phaser.State {
         this.potionText.text = `x${this.game.player.potions}`;
         this.potionButton.visible = this.game.player.potions > 0;
         this.potionText.visible = this.game.player.potions > 1;
+
+        if(this.dragging){
+            //bring both sprites in the sprite group on the drag.
+            this.selectedSprite.setAll('position', this.draggingSprite.position.clone());
+        }
     }
 
 }

@@ -71,10 +71,12 @@ export default class ItemGrid {
     }
 
     addItemSprite(item){
-        let drawnObject;
+        let drawnObject, drawnBackground;
         let width = item.shapeWidth*54;
         let height = item.shapeHeight*54;
         let bmd = this.gameState.add.bitmapData(width, height);
+
+        let itemGroup = this.gameState.add.group();
 
         let invSlot = item.inventorySlot;
         bmd.ctx.beginPath();
@@ -82,35 +84,57 @@ export default class ItemGrid {
         bmd.ctx.fillStyle = '#ababab';
         bmd.ctx.fill();
         //console.log('--placing piece at x,y:', gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2));
+
+        let spritePos = {
+            x: this.position.x + (65*invSlot.x)+((65*item.shapeWidth - (item.shapeWidth*54))/2),
+            y:this.position.y + (65*invSlot.y)+((65*item.shapeHeight - (item.shapeHeight*54))/2)
+        };
+
+        drawnBackground = this.gameState.add.sprite(spritePos.x, spritePos.y, bmd);
+
         if(item.sprite){
-            drawnObject = this.gameState.add.sprite(this.position.x + (65*invSlot.x)+((65*item.shapeWidth - (item.shapeWidth*54))/2), this.position.y + (65*invSlot.y)+((65*item.shapeHeight - (item.shapeHeight*54))/2), item.sprite);
+            let newSpriteOffset = {
+                y: item.sprite == 'axes' ? 33 : 0,
+                x: item.sprite == 'axes' ? 6 : 0
+            }; //TODO
+            drawnObject = this.gameState.add.sprite(spritePos.x+newSpriteOffset.x, spritePos.y+newSpriteOffset.y, item.sprite);
+            if(item.sprite == 'axes'){
+                console.log('item frame:', item, item.frame, drawnObject);
+                drawnObject.frame = item.frame;
+            }
         } else {
-            drawnObject = this.gameState.add.sprite(this.position.x + (65*invSlot.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2), this.position.y + (65*invSlot.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2), bmd);
+            drawnObject = this.gameState.add.sprite(spritePos.x, spritePos.y, bmd);
         }
-        drawnObject.inputEnabled = true;
-        drawnObject.originalPosition = drawnObject.position.clone();
+
 
         //- Item Sprite Mouse Events
-        drawnObject.events.onInputDown.add((drawnObject) => {
-            this.selectItem(drawnObject, item);
-        }, this);
-        //Drag n Drop fucntionality, optional, callbacks provided
-        if(this.dragDrop){
-            drawnObject.input.enableDrag();
+        ([drawnBackground, drawnObject]).forEach((sprite) => {
+            sprite.inputEnabled = true;
+            sprite.originalPosition = sprite.position.clone();
+            itemGroup.add(sprite);
 
-            drawnObject.events.onInputOver.add((drawnObject) => {
-                this.selectItem(drawnObject, item);
+            sprite.events.onInputDown.add((sprite) => {
+                this.selectItem(sprite, item);
             }, this);
+            //Drag n Drop fucntionality, optional, callbacks provided
+            if(this.dragDrop){
+                sprite.input.enableDrag();
 
-            drawnObject.events.onDragStop.add((drawnObject, mousePos) => {
-                this.stopDrag(drawnObject, item, mousePos);
-            }, this);
-            drawnObject.events.onDragStart.add(function(sprite){
-                this.startDrag(sprite, item, this.itemsGroup);
-            }, this);
-        }
+                sprite.events.onInputOver.add((sprite) => {
+                    this.selectItem(sprite, item);
+                }, this);
 
-        this.itemsGroup.add(drawnObject);
+                sprite.events.onDragStop.add((sprite, mousePos) => {
+                    this.stopDrag(sprite, item, mousePos);
+                }, this);
+
+                sprite.events.onDragStart.add(function(sprite){
+                    this.startDrag(sprite, item, this.itemsGroup);
+                }, this);
+            }
+        });
+
+        this.itemsGroup.add(itemGroup);
     }
 
 }

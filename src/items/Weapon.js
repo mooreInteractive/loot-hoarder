@@ -60,8 +60,9 @@ export function build(levelMin, levelMax) {
 
     weapon.name = newWeapon.name;
     weapon.weight = parseInt(newWeapon.weight);
-    weapon.dmg.min = dmgMin;
-    weapon.dmg.max = dmgMax;
+    weapon.frame = parseInt(newWeapon.frame);
+    weapon.dmg.min = parseInt(dmgMin);
+    weapon.dmg.max = parseInt(dmgMax);
     weapon.value = parseInt(newWeapon.value);
     weapon.crit = {};
     weapon.crit.multiplier = critMultiplier;
@@ -81,7 +82,7 @@ export function build(levelMin, levelMax) {
         weapon.shapeHeight = 3;
         break;
     case 'axe':
-        weapon.sprite = 'axe0';
+        weapon.sprite = 'axes';
         weapon.shape = Constants.shapes.shape2x3;
         weapon.shapeWidth = 2;
         weapon.shapeHeight = 3;
