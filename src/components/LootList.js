@@ -26,12 +26,13 @@ export default class LootList{
 
     pullOutPotions(){
         this.potions = 0;
-        this.loot.forEach((item, index)=> {
-            if(item.name == 'Health Potion'){
-                this.addPotionToPlayerInvetory(item, index);
+        for(let i = 0; i < this.loot.length; i++){
+            if(this.loot[i].name == 'Health Potion'){
+                this.addPotionToPlayerInvetory(this.loot[i], i);
                 this.potions += 1;
+                i--;
             }
-        });
+        }
     }
 
     addPotionLabel(){

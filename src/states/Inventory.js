@@ -392,8 +392,7 @@ export default class extends Phaser.State {
     }
 
     stopDrag(currentSprite, item, mouse){
-        this.dragging = false;
-        this.draggingSprite = null;
+        console.log('item sprite group:', this.selectedSprite);
         let gridPos = this.invGridPos;
         //Getting Drop Zone
         let slot = this.mouseOverBackPackGrid(currentSprite, item, gridPos, mouse);
@@ -443,13 +442,33 @@ export default class extends Phaser.State {
                 this.returnItemToOrigin(currentSprite, item);
             }
         }
+
+        this.alignItemWithBg();
+        this.dragging = false;
+        this.draggingSprite = null;
         // console.log('--after stopDrag player.inv, backpack, equipped:', this.game.player.inventory, this.game.player.backpack, this.game.player.equipped);
     }
 
     returnItemToOrigin(sprite, item){
-        sprite.parent.setAll('position', sprite.originalPosition.clone());
-        //sprite.position.copyFrom(sprite.originalPosition);
+        //sprite.parent.setAll('position', sprite.originalPosition.clone());
+        sprite.position.copyFrom(sprite.originalPosition);
         utils.placeItemInSlot(this.game.player.backpack, this.game.player.inventory, item, item.inventorySlot);
+    }
+
+    alignItemWithBg(){
+        //bring both sprites in the sprite group on the drag.
+        let bg = this.selectedSprite.children[0];
+        let item = this.selectedSprite.children[1];
+        if(item.key == 'axes'){
+            console.log('dragginSprite:', this.draggingSprite.key);
+            if(typeof this.draggingSprite.key === 'string'){
+                bg.position.x = this.draggingSprite.position.x - 6;
+                bg.position.y = this.draggingSprite.y - 33;
+            } else {
+                item.position.x = bg.position.x + 6;
+                item.position.y = bg.position.y + 33;
+            }
+        }
     }
 
     update(){
@@ -463,8 +482,7 @@ export default class extends Phaser.State {
         this.potionText.visible = this.game.player.potions > 1;
 
         if(this.dragging){
-            //bring both sprites in the sprite group on the drag.
-            this.selectedSprite.setAll('position', this.draggingSprite.position.clone());
+            this.alignItemWithBg();
         }
     }
 
