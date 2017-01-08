@@ -80,6 +80,9 @@ export const equipItem = (player, item, slot) => {
         player.inventory.splice(itemInInv, 1);
     }
     player.updateBattleStats();
+
+    /* track equipped */
+    window._trackEvent('gane_items', 'equip_item', item.name);
 };
 
 export const unequipItem = (player, item) => {

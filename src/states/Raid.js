@@ -25,6 +25,9 @@ export default class extends Phaser.State {
         /* Restart Ads */
         let rand = Forge.rand(0,1000);
         document.querySelector('#lb').data = 'lb.html?rand='+rand;
+
+        /* track google event */
+        window._trackEvent('game_states', 'start_raid');
     }
 
     create () {
