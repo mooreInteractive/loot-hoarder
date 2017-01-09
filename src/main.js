@@ -69,6 +69,7 @@ class Game extends Phaser.Game {
         this.player = new Player(playerData, this.version, playerStory);
         this.loot = [];
         this.storyEvents = new StoryObserver();
+        this.dialogueOpen = false;
 
         //save new game data
         if(localStorage){

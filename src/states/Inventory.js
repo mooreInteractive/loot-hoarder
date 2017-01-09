@@ -272,8 +272,8 @@ export default class extends Phaser.State {
         if(item.sprite){
             console.log('sprite:', item.sprite);
             let newSpriteOffset = {
-                y: item.sprite == 'axes' ? 16.5 : 0,
-                x: item.sprite == 'axes' ? 3 : 0
+                y: item.sprite == 'axes' ? 33 : 0,
+                x: item.sprite == 'axes' ? 6 : 0
             }; //TODO
             drawnObject = this.game.add.sprite(spritePos.x+newSpriteOffset.x, spritePos.y+newSpriteOffset.y, item.sprite);
             drawnObject.scale.x = 0.5;
@@ -392,7 +392,6 @@ export default class extends Phaser.State {
     }
 
     stopDrag(currentSprite, item, mouse){
-        console.log('item sprite group:', this.selectedSprite);
         let gridPos = this.invGridPos;
         //Getting Drop Zone
         let slot = this.mouseOverBackPackGrid(currentSprite, item, gridPos, mouse);
@@ -426,8 +425,10 @@ export default class extends Phaser.State {
                 // console.log('----on inventory slot...');
                 let fits = utils.placeItemInSlot(this.game.player.backpack, this.game.player.inventory, item, slot);
                 if(fits){
-                    // console.log('------fits.');
-                    currentSprite.originalPosition = currentSprite.position.clone();
+                    //currentSprite.originalPosition = currentSprite.position.clone();
+                    currentSprite.parent.children.forEach((sprite) => {
+                        sprite.originalPosition = sprite.position.clone();
+                    });
                 } else {
                     // console.log('------doesnt fit, return to origin');
                     this.returnItemToOrigin(currentSprite, item);
@@ -443,7 +444,7 @@ export default class extends Phaser.State {
             }
         }
 
-        this.alignItemWithBg();
+        //this.alignItemWithBg2();
         this.dragging = false;
         this.draggingSprite = null;
         // console.log('--after stopDrag player.inv, backpack, equipped:', this.game.player.inventory, this.game.player.backpack, this.game.player.equipped);
@@ -457,17 +458,30 @@ export default class extends Phaser.State {
 
     alignItemWithBg(){
         //bring both sprites in the sprite group on the drag.
+        console.log('this.draggingSprite.key:', this.draggingSprite.key, this.selectedSprite);
         let bg = this.selectedSprite.children[0];
         let item = this.selectedSprite.children[1];
         if(item.key == 'axes'){
-            console.log('dragginSprite:', this.draggingSprite.key);
-            if(typeof this.draggingSprite.key === 'string'){
+            if(this.draggingSprite.key === 'axes'){
                 bg.position.x = this.draggingSprite.position.x - 6;
                 bg.position.y = this.draggingSprite.y - 33;
             } else {
+                console.log('item:', item);
                 item.position.x = bg.position.x + 6;
                 item.position.y = bg.position.y + 33;
             }
+        }
+    }
+
+    alignItemWithBg2(){
+        //bring both sprites in the sprite group on the drag.
+        console.log('this.draggingSprite.key:', this.draggingSprite.key, this.selectedSprite);
+        let bg = this.selectedSprite.children[0];
+        let item = this.selectedSprite.children[1];
+        if(item.key == 'axes'){
+            console.log('item:', item);
+            item.position.x = bg.position.x + 6;
+            item.position.y = bg.position.y + 33;
         }
     }
 

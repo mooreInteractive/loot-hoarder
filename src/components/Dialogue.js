@@ -16,39 +16,42 @@ export default class Dialogue{
 
         this.diaOrigin = {x: this.game.world.centerX, y: this.game.world.centerY - (this.diaHeight)};
 
-        //Dialogue Background
-        let diaBG = this.gameState.add.bitmapData(this.diaWidth, this.diaHeight);
-        diaBG.ctx.beginPath();
-        diaBG.ctx.rect(0, 0, this.diaWidth, this.diaHeight);
-        diaBG.ctx.fillStyle = '#000000';
-        diaBG.ctx.fill();
-        diaBG.ctx.beginPath();
-        diaBG.ctx.rect(20, 20, this.diaWidth-40, this.diaHeight-40);
-        diaBG.ctx.fillStyle = '#FFFFFF';
-        diaBG.ctx.fill();
+        if(this.game.dialogueOpen == false){
+            this.game.dialogueOpen = true;
+            //Dialogue Background
+            let diaBG = this.gameState.add.bitmapData(this.diaWidth, this.diaHeight);
+            diaBG.ctx.beginPath();
+            diaBG.ctx.rect(0, 0, this.diaWidth, this.diaHeight);
+            diaBG.ctx.fillStyle = '#000000';
+            diaBG.ctx.fill();
+            diaBG.ctx.beginPath();
+            diaBG.ctx.rect(20, 20, this.diaWidth-40, this.diaHeight-40);
+            diaBG.ctx.fillStyle = '#FFFFFF';
+            diaBG.ctx.fill();
 
-        this.dialogueBG = this.gameState.add.sprite(this.diaOrigin.x, this.diaOrigin.y, diaBG);
-        this.dialogueBG.anchor.setTo(0.5);
+            this.dialogueBG = this.gameState.add.sprite(this.diaOrigin.x, this.diaOrigin.y, diaBG);
+            this.dialogueBG.anchor.setTo(0.5);
 
-        //portrait
-        let portraitOffset = 25;
-        if(this.portrait){
-            let spriteFrame = this.getCurrentPortrait(this.portrait);
+            //portrait
+            let portraitOffset = 25;
+            if(this.portrait){
+                let spriteFrame = this.getCurrentPortrait(this.portrait);
 
-            this.portraitImage = this.gameState.add.image(this.diaOrigin.x - this.diaWidth/2 + 20, this.diaOrigin.y - this.diaHeight/2, 'portraits', spriteFrame);
-            this.portraitImage.scale.setTo(2);
-            portraitOffset = 95;
+                this.portraitImage = this.gameState.add.image(this.diaOrigin.x - this.diaWidth/2 + 20, this.diaOrigin.y - this.diaHeight/2, 'portraits', spriteFrame);
+                this.portraitImage.scale.setTo(2);
+                portraitOffset = 95;
+            }
+
+            switch(this.diaType){
+            case 'ok': this.createOKButton();
+                break;
+            case 'bool': this.createBoolButtons();
+                break;
+            }
+            //OK Button Text
+            let okTextStyle = {font: 'Press Start 2P', fontSize: 18, fill: '#111111', align: 'left', wordWrap: true, wordWrapWidth: (548 - portraitOffset)};
+            this.dialogueText = this.gameState.add.text(this.diaOrigin.x - (this.diaWidth/2) + portraitOffset, this.diaOrigin.y - this.diaHeight/2 + 25, diaText, okTextStyle);
         }
-
-        switch(this.diaType){
-        case 'ok': this.createOKButton();
-            break;
-        case 'bool': this.createBoolButtons();
-            break;
-        }
-        //OK Button Text
-        let okTextStyle = {font: 'Press Start 2P', fontSize: 18, fill: '#111111', align: 'left', wordWrap: true, wordWrapWidth: (548 - portraitOffset)};
-        this.dialogueText = this.gameState.add.text(this.diaOrigin.x - (this.diaWidth/2) + portraitOffset, this.diaOrigin.y - this.diaHeight/2 + 25, diaText, okTextStyle);
     }
 
     //These portraits line up to the spritesheet 'portraits'
@@ -104,6 +107,8 @@ export default class Dialogue{
             this.portraitImage.destroy();
         }
 
+        this.game.dialogueOpen = false;
+
         //Callback to opener
         this.endCB();
     }
@@ -139,6 +144,8 @@ export default class Dialogue{
         if(this.portraitImage){
             this.portraitImage.destroy();
         }
+
+        this.game.dialogueOpen = false;
 
         //Callback to opener
         this.endCB(response);

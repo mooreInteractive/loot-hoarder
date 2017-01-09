@@ -28,7 +28,10 @@ export const placeItemInSlot = (backpack, items, item, slot, placeNow = true) =>
         item.shape.forEach((irow, iy) => {
             irow.forEach((icol, ix) => {
                 if(icol === 1){
-                    if(!invSlots[slot.y + iy] || !invSlots[slot.y + iy][slot.x + ix]){ itemFits = false; return false; }
+                    if(!invSlots[slot.y + iy] || !invSlots[slot.y + iy][slot.x + ix]){
+                        itemFits = false;
+                        return false;
+                    }
                     if(invSlots[slot.y + iy][slot.x + ix].invItem != -1){
                         itemFits = false;
                     }
