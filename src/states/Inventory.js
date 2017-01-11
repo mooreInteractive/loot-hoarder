@@ -392,7 +392,7 @@ export default class extends Phaser.State {
         let slot = this.mouseOverBackPackGrid(currentSprite, item, gridPos, mouse);
         let equipSlot = this.mouseOverEquipmentSlot(mouse, item);
 
-        if(currentSprite.parent.parent == this.equippedItemsGroup){
+        if(currentSprite.parent == this.equippedItemsGroup){
             if(slot){
                 let fits = utils.placeItemInSlot(this.game.player.backpack, this.game.player.inventory, item, slot);
                 if(fits){
