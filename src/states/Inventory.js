@@ -253,7 +253,6 @@ export default class extends Phaser.State {
         let drawnBackground;
         let width = item.shapeWidth*27;
         let height = item.shapeHeight*27;
-        let itemGroup = this.add.group();
 
         let bmd = this.game.add.bitmapData(width, height);
         bmd.ctx.beginPath();
@@ -272,10 +271,10 @@ export default class extends Phaser.State {
         if(item.sprite){
             console.log('sprite:', item.sprite);
             let newSpriteOffset = {
-                y: item.sprite == 'axes' ? 33 : 0,
-                x: item.sprite == 'axes' ? 6 : 0
+                y: item.sprite == 'axes' ? 16.5 : 0,
+                x: item.sprite == 'axes' ? 3 : 0
             }; //TODO
-            drawnObject = this.game.add.sprite(spritePos.x+newSpriteOffset.x, spritePos.y+newSpriteOffset.y, item.sprite);
+            drawnObject = drawnBackground.addChild(this.game.make.sprite(newSpriteOffset.x, newSpriteOffset.y, item.sprite));
             drawnObject.scale.x = 0.5;
             drawnObject.scale.y = 0.5;
             if(item.sprite == 'axes'){
@@ -283,11 +282,10 @@ export default class extends Phaser.State {
                 drawnObject.frame = item.frame;
             }
         } else {
-            drawnObject = this.game.add.sprite(spritePos.x, spritePos.y, bmd);
+            drawnObject = drawnBackground.addChild(this.game.make.sprite(spritePos.x, spritePos.y, bmd));
         }
 
-        ([drawnBackground, drawnObject]).forEach((sprite) => {
-            itemGroup.add(sprite);
+        ([drawnBackground]).forEach((sprite) => {
             sprite.inputEnabled = true;
             sprite.input.enableDrag();
             sprite.originalPosition = drawnObject.position.clone();
@@ -309,17 +307,16 @@ export default class extends Phaser.State {
         });
 
 
-        this.equippedItemsGroup.add(itemGroup);
+        this.equippedItemsGroup.add(drawnBackground);
     }
 
     selectItem(sprite, item){
-        let spriteGroup = sprite.parent;
         //item sprite
         if(this.selectedSprite != null){
-            this.selectedSprite.setAll('tint', 0xffffff);
+            this.selectedSprite.tint = '0xffffff';
         }
-        this.selectedSprite = spriteGroup;
-        this.selectedSprite.setAll('tint', 0xe5e5FF);
+        this.selectedSprite = sprite;
+        this.selectedSprite.tint = '0xe5e5FF';
         //item object
         this.selectedItem = item;
         this.itemReadOut.updateItem(item);
@@ -345,8 +342,6 @@ export default class extends Phaser.State {
     }
 
     startDrag(sprite, item, itemGroup=null, equipped=false){
-        this.dragging = true;
-        this.draggingSprite = sprite;
         this.game.world.bringToTop(itemGroup);
         if(equipped){
             utils.unequipItem(this.game.player, item);
@@ -405,7 +400,7 @@ export default class extends Phaser.State {
                     //utils.unequipItem(this.game.player, item);
                     this.invGrid.addItemSprite(item);
                     //this.addBackPackSprite(item);
-                    currentSprite.parent.destroy();
+                    currentSprite.destroy();
                 } else {
                     currentSprite.position.copyFrom(currentSprite.originalPosition);
                     utils.equipItem(this.game.player, item, {type: item.inventorySlot});
@@ -414,7 +409,7 @@ export default class extends Phaser.State {
                 // console.log('----on equip slot...');
                 utils.equipItem(this.game.player, item, equipSlot);
                 this.addEquippedSprite(item, equipSlot.type);
-                currentSprite.parent.destroy();
+                currentSprite.destroy();
             } else {
                 currentSprite.position.copyFrom(currentSprite.originalPosition);
                 utils.equipItem(this.game.player, item, {type: item.inventorySlot});
@@ -425,10 +420,7 @@ export default class extends Phaser.State {
                 // console.log('----on inventory slot...');
                 let fits = utils.placeItemInSlot(this.game.player.backpack, this.game.player.inventory, item, slot);
                 if(fits){
-                    //currentSprite.originalPosition = currentSprite.position.clone();
-                    currentSprite.parent.children.forEach((sprite) => {
-                        sprite.originalPosition = sprite.position.clone();
-                    });
+                    currentSprite.originalPosition = currentSprite.position.clone();
                 } else {
                     // console.log('------doesnt fit, return to origin');
                     this.returnItemToOrigin(currentSprite, item);
@@ -437,16 +429,13 @@ export default class extends Phaser.State {
                 // console.log('----on equip slot...');
                 utils.equipItem(this.game.player, item, equipSlot);
                 this.addEquippedSprite(item, equipSlot.type);
-                currentSprite.parent.destroy();
+                currentSprite.destroy();
             } else {
                 // console.log('----on nothing, return to origin...');
                 this.returnItemToOrigin(currentSprite, item);
             }
         }
 
-        //this.alignItemWithBg2();
-        this.dragging = false;
-        this.draggingSprite = null;
         // console.log('--after stopDrag player.inv, backpack, equipped:', this.game.player.inventory, this.game.player.backpack, this.game.player.equipped);
     }
 
@@ -454,35 +443,6 @@ export default class extends Phaser.State {
         //sprite.parent.setAll('position', sprite.originalPosition.clone());
         sprite.position.copyFrom(sprite.originalPosition);
         utils.placeItemInSlot(this.game.player.backpack, this.game.player.inventory, item, item.inventorySlot);
-    }
-
-    alignItemWithBg(){
-        //bring both sprites in the sprite group on the drag.
-        console.log('this.draggingSprite.key:', this.draggingSprite.key, this.selectedSprite);
-        let bg = this.selectedSprite.children[0];
-        let item = this.selectedSprite.children[1];
-        if(item.key == 'axes'){
-            if(this.draggingSprite.key === 'axes'){
-                bg.position.x = this.draggingSprite.position.x - 6;
-                bg.position.y = this.draggingSprite.y - 33;
-            } else {
-                console.log('item:', item);
-                item.position.x = bg.position.x + 6;
-                item.position.y = bg.position.y + 33;
-            }
-        }
-    }
-
-    alignItemWithBg2(){
-        //bring both sprites in the sprite group on the drag.
-        console.log('this.draggingSprite.key:', this.draggingSprite.key, this.selectedSprite);
-        let bg = this.selectedSprite.children[0];
-        let item = this.selectedSprite.children[1];
-        if(item.key == 'axes'){
-            console.log('item:', item);
-            item.position.x = bg.position.x + 6;
-            item.position.y = bg.position.y + 33;
-        }
     }
 
     update(){
@@ -494,10 +454,6 @@ export default class extends Phaser.State {
         this.potionText.text = `x${this.game.player.potions}`;
         this.potionButton.visible = this.game.player.potions > 0;
         this.potionText.visible = this.game.player.potions > 1;
-
-        if(this.dragging){
-            this.alignItemWithBg();
-        }
     }
 
 }

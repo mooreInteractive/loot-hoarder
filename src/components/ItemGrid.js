@@ -76,8 +76,6 @@ export default class ItemGrid {
         let height = item.shapeHeight*54;
         let bmd = this.gameState.add.bitmapData(width, height);
 
-        let itemGroup = this.gameState.add.group();
-
         let invSlot = item.inventorySlot;
         bmd.ctx.beginPath();
         bmd.ctx.rect(0, 0, item.shapeWidth*54, item.shapeHeight*54);
@@ -97,21 +95,20 @@ export default class ItemGrid {
                 y: item.sprite == 'axes' ? 33 : 0,
                 x: item.sprite == 'axes' ? 6 : 0
             }; //TODO
-            drawnObject = this.gameState.add.sprite(spritePos.x+newSpriteOffset.x, spritePos.y+newSpriteOffset.y, item.sprite);
+            drawnObject = drawnBackground.addChild(this.gameState.make.sprite(newSpriteOffset.x, newSpriteOffset.y, item.sprite));
             if(item.sprite == 'axes'){
                 console.log('item frame:', item, item.frame, drawnObject);
                 drawnObject.frame = item.frame;
             }
         } else {
-            drawnObject = this.gameState.add.sprite(spritePos.x, spritePos.y, bmd);
+            drawnObject = drawnBackground.addChild(this.gameState.make.sprite(spritePos.x, spritePos.y, bmd));
         }
 
 
         //- Item Sprite Mouse Events
-        ([drawnBackground, drawnObject]).forEach((sprite) => {
+        ([drawnBackground]).forEach((sprite) => {
             sprite.inputEnabled = true;
             sprite.originalPosition = sprite.position.clone();
-            itemGroup.add(sprite);
 
             sprite.events.onInputDown.add((sprite) => {
                 this.selectItem(sprite, item);
@@ -134,7 +131,7 @@ export default class ItemGrid {
             }
         });
 
-        this.itemsGroup.add(itemGroup);
+        this.itemsGroup.add(drawnBackground);
     }
 
 }

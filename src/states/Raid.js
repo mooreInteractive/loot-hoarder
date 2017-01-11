@@ -27,7 +27,7 @@ export default class extends Phaser.State {
         document.querySelector('#lb').data = 'lb.html?rand='+rand;
 
         /* track google event */
-        window._trackEvent('game_states', 'start_raid');
+        window.ga('send', 'event', 'game_states', 'raid', 'start');
     }
 
     create () {
