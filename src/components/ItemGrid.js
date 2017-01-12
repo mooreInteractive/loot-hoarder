@@ -1,3 +1,5 @@
+let newSpriteSets = ['swords', 'axes'];
+
 export default class ItemGrid {
     constructor(gameState, startDrag, stopDrag, selectItem, items, backpack, pos={x: 0, y: 0}, dragDrop=true){
         this.gameState = gameState;
@@ -90,14 +92,15 @@ export default class ItemGrid {
 
         drawnBackground = this.gameState.add.sprite(spritePos.x, spritePos.y, bmd);
 
+        let useNewSprite = (newSpriteSets).indexOf(item.sprite) > -1;
+
         if(item.sprite){
             let newSpriteOffset = {
-                y: item.sprite == 'axes' ? 33 : 0,
-                x: item.sprite == 'axes' ? 6 : 0
+                y: useNewSprite ? 33 : 0,
+                x: useNewSprite ? 6 : 0
             }; //TODO
             drawnObject = drawnBackground.addChild(this.gameState.make.sprite(newSpriteOffset.x, newSpriteOffset.y, item.sprite));
-            if(item.sprite == 'axes'){
-                console.log('item frame:', item, item.frame, drawnObject);
+            if(useNewSprite){
                 drawnObject.frame = item.frame;
             }
         } else {

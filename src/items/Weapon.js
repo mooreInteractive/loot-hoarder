@@ -76,9 +76,9 @@ export function build(levelMin, levelMax) {
         weapon.shapeHeight = 3;
         break;
     case 'sword':
-        weapon.sprite = 'sword2';
-        weapon.shape = Constants.shapes.shape1x3;
-        weapon.shapeWidth = 1;
+        weapon.sprite = 'swords';
+        weapon.shape = Constants.shapes.shape2x3;
+        weapon.shapeWidth = 2;
         weapon.shapeHeight = 3;
         break;
     case 'axe':
