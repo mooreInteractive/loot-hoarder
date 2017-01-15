@@ -5,7 +5,7 @@ var rename = require('gulp-rename');
 var zip = require('gulp-zip');
 
 gulp.task('deploy', () => {
-    return gulp.src(['./dist/**/*', './index.html', './lb.html', './assets/images/**/*', './assets/fonts/*'], {base: '.'})
+    return gulp.src(['./dist/**/*', './index.html', './lb.html', './assets/*', './assets/images/**/*', './assets/fonts/*'], {base: '.'})
         .pipe(sftp({
             host: 'ftp.moore-interactive.net',
             auth: 'ftpcreds',
