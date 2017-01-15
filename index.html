@@ -43,13 +43,23 @@
             width: 728px;
             height: 90px;
         }
+
+        @media only screen and (max-width : 727px){
+            iframe, object{
+                width: 320px;
+                height: 100px;
+            }
+        }
+
+
+
     </style>
 </head>
 
 <body>
 
     <div id="content"></div>
-    <object id="lb" border="0" data="lb.html"></object>
+    <object id="lb" style="width: 100%;" border="0" data="lb.html"></object>
 
     <script src="dist/bundle.js"></script>
     <script>
