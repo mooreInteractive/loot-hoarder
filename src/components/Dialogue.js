@@ -32,6 +32,9 @@ export default class Dialogue{
             this.dialogueBG = this.gameState.add.sprite(this.diaOrigin.x, this.diaOrigin.y, diaBG);
             this.dialogueBG.anchor.setTo(0.5);
 
+            this.dialogueBG.inputEnabled = true;
+            this.dialogueBG.input.priorityId = 1;
+
             //portrait
             let portraitOffset = 25;
             if(this.portrait){
@@ -90,6 +93,7 @@ export default class Dialogue{
         //Dialogue OK Button
         this.okBtn = new Phaser.Button(this.game, this.diaOrigin.x + this.diaWidth/2 - 120, this.diaOrigin.y + this.diaHeight/2 - 50, 'blueButton', this.okBtnPressed, this);
         this.okBtn.anchor.setTo(0.5);
+        this.okBtn.input.priorityId = 2;
         this.gameState.add.existing(this.okBtn);
         //OK Button Text
         let okTextStyle = {font: 'Press Start 2P', fontSize: 28, fill: '#111111', align: 'center'};
@@ -118,6 +122,7 @@ export default class Dialogue{
         //NO Button
         this.noBtn = new Phaser.Button(this.game, this.diaOrigin.x-150, this.diaOrigin.y + this.diaHeight/2 - 50, 'redButton', this.boolBtnPressed.bind(this, 'no'), this);
         this.noBtn.anchor.setTo(0.5);
+        this.noBtn.input.priorityId = 2;
         this.gameState.add.existing(this.noBtn);
         //NO Button Text
         let noTextStyle = {font: 'Oswald', fontSize: 28, fill: '#111111', align: 'center'};
@@ -127,6 +132,7 @@ export default class Dialogue{
         //YES Button
         this.yesBtn = new Phaser.Button(this.game, this.diaOrigin.x+150, this.diaOrigin.y + this.diaHeight/2 - 50, 'blueButton', this.boolBtnPressed.bind(this, 'yes'), this);
         this.yesBtn.anchor.setTo(0.5);
+        this.yesBtn.input.priorityId = 2;
         this.gameState.add.existing(this.yesBtn);
         //YES Button Text
         this.yesText = this.gameState.add.text(this.diaOrigin.x+150, this.diaOrigin.y + this.diaHeight/2 - 50, 'YES', noTextStyle);
