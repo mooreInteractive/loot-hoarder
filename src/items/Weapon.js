@@ -70,9 +70,9 @@ export function build(levelMin, levelMax) {
 
     switch(newWeapon.spriteType){
     case 'spear':
-        weapon.sprite = 'spear0';
-        weapon.shape = Constants.shapes.shape1x3;
-        weapon.shapeWidth = 1;
+        weapon.sprite = 'misc_weap';
+        weapon.shape = Constants.shapes.shape2x3;
+        weapon.shapeWidth = 2;
         weapon.shapeHeight = 3;
         break;
     case 'sword':
@@ -88,13 +88,13 @@ export function build(levelMin, levelMax) {
         weapon.shapeHeight = 3;
         break;
     case 'dagger':
-        weapon.sprite = 'shank0';
-        weapon.shape = Constants.shapes.shape1x2;
-        weapon.shapeWidth = 1;
+        weapon.sprite = 'misc_weap';
+        weapon.shape = Constants.shapes.shape2x2;
+        weapon.shapeWidth = 2;
         weapon.shapeHeight = 2;
         break;
     case 'bow':
-        weapon.sprite = 'bow0';
+        weapon.sprite = 'misc_weap';
         weapon.shape = Constants.shapes.shape2x3;
         weapon.shapeWidth = 2;
         weapon.shapeHeight = 3;

@@ -104,14 +104,15 @@ class Player {
                 }
             },
             'shape': [
-                [1,0,0,0],
-                [1,0,0,0],
+                [1,1,0,0],
+                [1,1,0,0],
                 [0,0,0,0],
                 [0,0,0,0]],
-            'shapeWidth': 1,
+            'shapeWidth': 2,
             'shapeHeight': 2,
             'inventorySlot': {x:0, y:0},
-            'sprite': 'shank0',
+            'sprite': 'misc_weap',
+            'frame': 12,
             'value': 1
         };
 

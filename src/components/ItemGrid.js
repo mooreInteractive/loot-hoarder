@@ -1,4 +1,4 @@
-let newSpriteSets = ['swords', 'axes'];
+let newSpriteSets = ['swords', 'axes', 'misc_weap'];
 
 export default class ItemGrid {
     constructor(gameState, startDrag, stopDrag, selectItem, items, backpack, pos={x: 0, y: 0}, dragDrop=true){
@@ -95,8 +95,9 @@ export default class ItemGrid {
         let useNewSprite = (newSpriteSets).indexOf(item.sprite) > -1;
 
         if(item.sprite){
+            let offsets = item.shapeHeight > 2 ? 33 : 0;
             let newSpriteOffset = {
-                y: useNewSprite ? 33 : 0,
+                y: useNewSprite ? offsets : 0,
                 x: useNewSprite ? 6 : 0
             }; //TODO
             drawnObject = drawnBackground.addChild(this.gameState.make.sprite(newSpriteOffset.x, newSpriteOffset.y, item.sprite));

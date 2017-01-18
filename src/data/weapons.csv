@@ -1,62 +1,62 @@
 level,name,dmg,crit,weight,durability,value,twoHanded,spriteType,frame
-1,Hand Crossbow,1d4,90/x2,2,6,100,FALSE,bow,0
-1,Dagger,1d4,90/x2,1,6,2,FALSE,dagger,0
-1,Wood Stake,1d4,x2,1,4,0,FALSE,dagger,0
-1,Shortspear,1d6,x2,3,6,1,FALSE,spear,0
-1,Quarter Staff,2d6,x2,4,4,0,TRUE,spear,0
+1,Hand Crossbow,1d4,90/x2,2,6,100,FALSE,bow,18
+1,Dagger,1d4,90/x2,1,6,2,FALSE,dagger,13
+1,Wood Stake,1d4,x2,1,4,0,FALSE,dagger,12
+1,Shortspear,1d6,x2,3,6,1,FALSE,spear,25
+1,Quarter Staff,2d6,x2,4,4,0,TRUE,spear,24
 1,Broken Short Sword,1d6,90/x2,4,6,2,FALSE,sword,6
 1,Worn Short Sword,1d6+1,x2,4,7,4,FALSE,sword,7
 1,Dull Long Sword,1d6,85/x2,5,6,6,FALSE,sword,12
 1,Broken Machete,1d6,x3,3,4,3,FALSE,sword,24
 2,Light Hammer,1d4,x2,2,6,1,FALSE,axe,6
-2,LongSpear,1d6,x3,9,8,5,TRUE,spear,0
+2,LongSpear,1d6,x3,9,8,5,TRUE,spear,26
 2,Short Sword,1d6+2,90/x2,5,8,8,FALSE,sword,8
 2,Machete,1d6+1,90/x2,3,8,4,FALSE,sword,25
 3,Hatchet,1d6,x2,2,8,8,FALSE,axe,19
 3,Hand Axe,1d6,x3,3,8,6,FALSE,axe,18
-3,Short Bow,1d6,x3,2,10,30,TRUE,bow,0
-3,Compound Short Bow,1d6+1,x3,2,12,75,TRUE,bow,0
-3,Punch Dagger,1d4,x3,1,8,8,FALSE,dagger,0
-3,Kukri,1d4,85/x2,2,8,8,FALSE,dagger,0
-3,Spear,1d8,x3,6,8,2,TRUE,spear,0
-3,Javelin,1d6,x2,2,10,1,FALSE,spear,0
+3,Short Bow,1d6,x3,2,10,30,TRUE,bow,18
+3,Compound Short Bow,1d6+1,x3,2,12,75,TRUE,bow,20
+3,Punch Dagger,1d4,x3,1,8,8,FALSE,dagger,13
+3,Kukri,1d4,85/x2,2,8,8,FALSE,dagger,14
+3,Spear,1d8,x3,6,8,2,TRUE,spear,26
+3,Javelin,1d6,x2,2,10,1,FALSE,spear,26
 3,Long Sword,1d8,90/x2,6,10,6,FALSE,sword,13
 4,Battle Axe,1d8,x3,6,10,10,FALSE,axe,0
 4,Heavy Pick,1d6,x4,6,10,8,TRUE,axe,12
-4,Light Crossbow,1d8,90/x2,4,12,35,FALSE,bow,0
-4,Long Bow,1d8,x3,3,14,75,TRUE,bow,0
-4,Trident,1d8,x2,4,10,15,FALSE,spear,0
-4,Boar Spear,1d8,x2,8,18,5,TRUE,spear,0
+4,Light Crossbow,1d8,90/x2,4,12,35,FALSE,bow,19
+4,Long Bow,1d8,x3,3,14,75,TRUE,bow,19
+4,Trident,1d8,x2,4,10,15,FALSE,spear,27
+4,Boar Spear,1d8,x2,8,18,5,TRUE,spear,27
 4,Scimitar,1d8+1,x2,4,12,8,FALSE,sword,23
 5,War Hammer,1d8,x3,5,15,12,TRUE,axe,14
-5,Light Repeating Crossbow,1d8,90/x2,6,14,250,TRUE,bow,0
-5,Heavy Repeating Crossbow,1d10,90/x2,12,14,400,TRUE,bow,0
-5,Glaive,1d10,x3,10,12,8,TRUE,spear,0
-5,Guisarme,2d4,x3,12,12,9,TRUE,spear,0
+5,Light Repeating Crossbow,1d8,90/x2,6,14,250,TRUE,bow,20
+5,Heavy Repeating Crossbow,1d10,90/x2,12,14,400,TRUE,bow,21
+5,Glaive,1d10,x3,10,12,8,TRUE,spear,26
+5,Guisarme,2d4,x3,12,12,9,TRUE,spear,25
 5,Falchion,1d8+2,x2,5,14,12,FALSE,sword,23
-6,Heavy Crossbow,1d10,90/x2,8,16,50,FALSE,bow,0
-6,Compound Long Bow,1d8+1,x3,3,16,100,TRUE,bow,0
-6,Starknife,1d4+1,x3,3,12,10,FALSE,dagger,0
-6,Kama,1d6,x2,2,12,10,FALSE,dagger,0
-6,Halbred,1d10,x3,12,15,10,TRUE,spear,0
-6,Bardiche,1d10,90/x2,14,15,13,TRUE,spear,0
+6,Heavy Crossbow,1d10,90/x2,8,16,50,FALSE,bow,22
+6,Compound Long Bow,1d8+1,x3,3,16,100,TRUE,bow,23
+6,Starknife,1d4+1,x3,3,12,10,FALSE,dagger,16
+6,Kama,1d6,x2,2,12,10,FALSE,dagger,15
+6,Halbred,1d10,x3,12,15,10,TRUE,spear,25
+6,Bardiche,1d10,90/x2,14,15,13,TRUE,spear,28
 6,Great Sword,1d12,x3,10,16,18,TRUE,sword,2
-7,Bayonet,1d6,x2,1,18,15,FALSE,dagger,0
-7,Sword Breaker,1d6+1,90/x3,3,24,24,FALSE,dagger,0
-7,Lance,1d8,x3,10,18,10,TRUE,spear,0
-7,Bill,1d8,x3,11,20,11,TRUE,spear,0
+7,Bayonet,1d6,x2,1,18,15,FALSE,dagger,16
+7,Sword Breaker,1d6+1,90/x3,3,24,24,FALSE,dagger,17
+7,Lance,1d8,x3,10,18,10,TRUE,spear,25
+7,Bill,1d8,x3,11,20,11,TRUE,spear,26
 7,Bastard Sword,1d10,x2,12,18,24,TRUE,sword,9
 8,Great Axe,1d12,x3,12,18,20,TRUE,axe,2
 8,Dwarven War Axe,1d10,x3,8,18,30,FALSE,axe,24
-8,Double Crossbow,1d8,90/x2,18,20,300,TRUE,bow,0
-8,Ranseur,2d4,x3,12,20,10,TRUE,spear,0
+8,Double Crossbow,1d8,90/x2,18,20,300,TRUE,bow,24
+8,Ranseur,2d4,x3,12,20,10,TRUE,spear,27
 8,Cleaver,2d6,90/x2,8,20,30,FALSE,sword,25
 9,Orc Double Axe,2d8,x3,15,22,60,TRUE,axe,8
-9,Spiked Chain,2d4,x2,10,22,25,FALSE,spear,0
-9,Bec de Corbin,1d10,x3,12,20,15,TRUE,spear,0
-9,Glaive-Guisarme,1d10,x3,10,22,12,TRUE,spear,0
+9,Spiked Chain,2d4,x2,10,22,25,FALSE,spear,27
+9,Bec de Corbin,1d10,x3,12,20,15,TRUE,spear,28
+9,Glaive-Guisarme,1d10,x3,10,22,12,TRUE,spear,29
 9,Rapier,2d6,x3,6,22,45,FALSE,sword,13
 10,Gnome Hooked Hammer,2d6,x4,6,24,20,TRUE,axe,13
 10,Lucerne Hammer,1d12,x3,12,24,15,TRUE,axe,16
-10,Dwarven Urgrosh,2d8,x3,12,24,50,TRUE,spear,0
+10,Dwarven Urgrosh,2d8,x3,12,24,50,TRUE,spear,20
 10,Mountain Death Blade,2d8,85/x2,8,24,80,FALSE,sword,11

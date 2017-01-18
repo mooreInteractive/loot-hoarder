@@ -5,7 +5,7 @@ import Avatar from '../components/Avatar';
 import ItemReadOut from '../components/ItemReadOut';
 import ItemGrid from '../components/ItemGrid';
 
-let newSpriteSets = ['swords', 'axes'];
+let newSpriteSets = ['swords', 'axes', 'misc_weap'];
 
 export default class extends Phaser.State {
     constructor(){
@@ -273,8 +273,9 @@ export default class extends Phaser.State {
         //console.log('--placing piece at x,y:', gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2));
         if(item.sprite){
             console.log('sprite:', item.sprite);
+            let offsets = item.shapeHeight > 2 ? 16.5 : 0;
             let newSpriteOffset = {
-                y: useNewSprite ? 16.5 : 0,
+                y: useNewSprite ? offsets : 0,
                 x: useNewSprite ? 3 : 0
             }; //TODO
             drawnObject = drawnBackground.addChild(this.game.make.sprite(newSpriteOffset.x, newSpriteOffset.y, item.sprite));
