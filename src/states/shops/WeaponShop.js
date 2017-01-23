@@ -5,6 +5,7 @@ import * as Forge from '../../items/Forge';
 import ItemReadOut from '../../components/ItemReadOut';
 import MainNavigation from '../../components/MainNavigation';
 import Dialogue from '../../components/Dialogue';
+import Avatar from '../../components/Avatar';
 
 export default class extends Phaser.State {
     init(){
@@ -12,6 +13,7 @@ export default class extends Phaser.State {
         this.selectItemToSell = this.selectItemToSell.bind(this);
         this.selectedSprite;
         this.selectedItem;
+        this.game.dialogueOpen = false;
 
         this.items = this.game.shopItems;
         let time = Math.floor((new Date).getTime()/1000);
@@ -42,6 +44,10 @@ export default class extends Phaser.State {
         this.sellBg = this.add.image(2,-71,'sell_bg');
 
         this.mainNav = new MainNavigation(this.game, this, this.game.player.currentDungeon);
+
+        let avatarSettings = {x: 200, y: 150, scale: 2};
+        let hpSettings = {x: 203, y: this.game.world.height - 160 };
+        this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, true); //Need to call avatar.update()
 
         this.Pixel36Black = {font: 'Press Start 2P', fontSize: 36, fill: '#000000' };
         this.Pixel36White = {font: 'Press Start 2P', fontSize: 36, fill: '#8989FF', align: 'center' };
@@ -293,6 +299,8 @@ export default class extends Phaser.State {
         let refreshTime = parseInt(this.game.lastShopRefresh) + 14400;
         this.timeLeft = refreshTime - time;
         this.shopTimer.text = `Shop inventory refresh: ${Utils.convertSecondsToTimeWithHours(this.timeLeft)}`;
+
+        this.avatar.update();
     }
 
 }

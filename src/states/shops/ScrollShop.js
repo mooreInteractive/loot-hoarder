@@ -5,12 +5,14 @@ import * as Forge from '../../items/Forge';
 import ItemReadOut from '../../components/ItemReadOut';
 import MainNavigation from '../../components/MainNavigation';
 import Dialogue from '../../components/Dialogue';
+import Avatar from '../../components/Avatar';
 
 export default class extends Phaser.State {
     init(){
         this.selectItem = this.selectItem.bind(this);
         this.selectedSprite;
         this.selectedItem;
+        this.game.dialogueOpen = false;
 
         /* Restart Ads */
         let rand = Forge.rand(0,1000);
@@ -24,6 +26,10 @@ export default class extends Phaser.State {
         this.sellBg = this.add.image(2,-71,'scroll_shop_bg');
 
         this.mainNav = new MainNavigation(this.game, this, this.game.player.currentDungeon);
+
+        let avatarSettings = {x: 200, y: 150, scale: 2};
+        let hpSettings = {x: 203, y: this.game.world.height - 160 };
+        this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, true); //Need to call avatar.update()
 
         this.Pixel36Black = {font: 'Press Start 2P', fontSize: 36, fill: '#000000' };
         this.Pixel36White = {font: 'Press Start 2P', fontSize: 36, fill: '#8989FF', align: 'center' };
@@ -119,6 +125,7 @@ export default class extends Phaser.State {
 
     update(){
         this.playerGold.text = 'gold:' + this.game.player.gold;
+        this.avatar.update();
     }
 
 }

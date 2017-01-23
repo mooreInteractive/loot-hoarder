@@ -21,7 +21,7 @@ export default class extends Phaser.State {
 
         let avatarSettings = {x: this.currentDungeon.sprite.x, y: this.currentDungeon.sprite.y, scale: 1};
         let hpSettings = {x: 203, y: this.game.world.height - 160 };
-        this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, true); //Need to call avatar.update() and avatar.render()
+        this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, true); //Need to call avatar.update()
 
         //clear data button
         this.optionsBtn = new Phaser.Button(this.game, this.game.world.width - 118, 0, 'optionsBanner', this.viewOptions, this);

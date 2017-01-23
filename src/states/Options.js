@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import MainNavigation from '../components/MainNavigation';
 import Dialogue from '../components/Dialogue';
+import Avatar from '../components/Avatar';
 
 let credits = [
     {text: 'Loxmyth - Avatar/Enemies Art', link: 'http://loxmyth.com'},
@@ -17,6 +18,10 @@ export default class extends Phaser.State {
 
     create () {
         new MainNavigation(this.game, this);
+
+        let avatarSettings = {x: -200, y: -200, scale: 0.1};
+        let hpSettings = {x: 203, y: this.game.world.height - 160 };
+        this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, true); //Need to call avatar.update()
 
         //clear data button
         this.clearDataBtn = new Phaser.Button(this.game, this.game.world.centerX, 700, 'redButton', this.checkToClearPlayerData, this);
@@ -90,6 +95,10 @@ export default class extends Phaser.State {
         if(localStorage){
             localStorage.setItem('loot-hoarder-music', this.game.music.mute);
         }
+    }
+
+    update(){
+        this.avatar.update();
     }
 
 }
