@@ -21,6 +21,7 @@ export default class extends Phaser.State {
         this.raidEnded = false;
         this.endAnimStarted = false;
         this.showClearText = false;
+        this.game.dialogueOpen = false;
 
         /* Restart Ads */
         let rand = Forge.rand(0,1000);

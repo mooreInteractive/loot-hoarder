@@ -8,6 +8,7 @@ export default class extends Phaser.State {
         this.inventoryOpen = false;
         this.game.player.savePlayerData();
         this.passedEvent = passedEvent;
+        this.game.dialogueOpen = false;
     }
 
     create () {

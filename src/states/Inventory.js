@@ -19,6 +19,7 @@ export default class extends Phaser.State {
         this.inventorySprites = [];
         this.selectedSprite = null;
         this.currentDungeon = this.game.dungeons[this.game.player.currentDungeon];
+        this.game.dialogueOpen = false;
     }
 
     preload () {

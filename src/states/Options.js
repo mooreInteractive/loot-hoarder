@@ -11,7 +11,9 @@ let credits = [
 ];
 
 export default class extends Phaser.State {
-    init () {}
+    init () {
+        this.game.dialogueOpen = false;
+    }
 
     create () {
         new MainNavigation(this.game, this);

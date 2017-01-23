@@ -94,6 +94,11 @@ class Game extends Phaser.Game {
         this.state.add('WeaponShop', WeaponShop, false);
         this.state.add('ScrollShop', ScrollShop, false);
 
+        this.state.onInitCallback = () => {
+            console.log('Started a New Game State!');
+            this.dialogueOpen = false;
+        };
+
         this.state.start('Boot');
     }
 
