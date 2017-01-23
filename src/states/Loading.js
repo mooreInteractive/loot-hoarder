@@ -45,15 +45,10 @@ export default class extends Phaser.State {
         this.game.load.spritesheet('portraits', './assets/images/portraits/sheet.png', 32, 48);
 
         //weapons
-        this.game.load.image('shank0', './assets/images/items/shank.png');
-        this.game.load.image('spear0', './assets/images/items/spear.png');
         this.game.load.image('shield3', './assets/images/items/shield.png');
         this.game.load.image('helm1', './assets/images/items/stone_helm.png');
         this.game.load.image('boots1', './assets/images/items/stone_boots.png');
         this.game.load.image('armor0', './assets/images/items/leather_armor.png');
-        this.game.load.image('sword2', './assets/images/items/sword.png');
-        this.game.load.image('axe0', './assets/images/items/axe.png');
-        this.game.load.image('bow0', './assets/images/items/bow.png');
         this.game.load.image('redRing', './assets/images/items/ring.png');
         this.game.load.image('blueRing', './assets/images/items/blue_ring.png');
         this.game.load.image('purpleRing', './assets/images/items/purple_ring.png');
