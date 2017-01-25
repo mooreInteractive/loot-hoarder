@@ -280,9 +280,13 @@ export default class extends Phaser.State {
                     this.add.tween(this.getLootText).to( {y: this.game.world.centerY + 475}, 600, Phaser.Easing.Bounce.Out, true);
                     let tween_CHEST_DOWN = this.add.tween(this.chest).to( {y: this.game.world.centerY + 300}, 600, Phaser.Easing.Bounce.Out, true);
                     tween_CHEST_DOWN.onComplete.addOnce(()=>{
+                        let endCB = () => {
+                            this.game.player.battling = false;
+                            this.game.state.start('MainMenu', true, false, this.passedEvent);
+                        };
                         this.add.tween(this.itemBackdrop).to( {alpha: 0.5}, 600, null, true);
                         this.add.tween(this.lootTitle).to( {alpha: 1}, 600, null, true);
-                        this.lootList = new LootList(this.game, this, '#FFFFFF', this.droppedGold);
+                        this.lootList = new LootList(this.game, this, '#FFFFFF', this.droppedGold, endCB.bind(this));
                     });
                     //this.game.state.start('LootView', true, false);
                 });

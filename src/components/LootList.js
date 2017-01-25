@@ -4,13 +4,14 @@ import ItemReadOut from './ItemReadOut';
 import * as StoryFunctions from './StoryFunctions';
 
 export default class LootList{
-    constructor(game, gameState, color='#000000', gold=0){
+    constructor(game, gameState, color='#000000', gold=0, endCB){
         this.game = game;
         this.loot = game.loot;
         this.gameState = gameState;
         this.keptLoot = false;
         this.textColor = color;
         this.gold = gold;
+        this.endCB = endCB;
 
         this.lootKeepBtns = [];
         this.lootSellBtns = [];
@@ -22,6 +23,22 @@ export default class LootList{
         this.addPotionLabel();
 
         this.updateLootTextAndButtons();
+
+        //continue Button
+        let endBtn = new Phaser.Button(this.game, this.game.world.width - 100, this.game.world.centerY - 50, 'greyButton', () => {
+            this.endCB();
+            this.game.loot = [];
+        }, this);
+        endBtn.scale.x = 0.6;
+        endBtn.anchor.setTo(0.5);
+        this.gameState.add.existing(endBtn);
+
+        let endBtnText = this.gameState.add.text(this.game.world.width - 100, this.game.world.centerY - 50, 'DONE');
+        endBtnText.font = 'Press Start 2P';
+        endBtnText.fontSize = 24;
+        endBtnText.fill = '#111111';
+        endBtnText.anchor.setTo(0.5);
+        endBtnText.visible = true;
     }
 
     pullOutPotions(){
@@ -78,12 +95,6 @@ export default class LootList{
 
         this.cleanUpLootButtons();
 
-        if(loot.length == 0 && this.keptLoot){
-            this.game.state.start('Inventory');
-        } else if(loot.length == 0){
-            this.game.state.start('MainMenu');
-        }
-
         loot.forEach((item, index) => {
             let itemOffsetHeight = (110*index);
             let buttonsY = 130 + itemOffsetHeight;
@@ -112,9 +123,8 @@ export default class LootList{
                 this.gameState.add.existing(addBtn);
                 this.lootKeepBtns.push(addBtn);
 
-                let sellBtn = new Phaser.Button(this.game, this.game.world.centerX - 210, buttonsY, 'yellowButton', () => {
-                    console.log('Sell Item!');
-                    this.game.player.gold += item.value;
+                let sellBtn = new Phaser.Button(this.game, this.game.world.centerX - 210, buttonsY, 'greyButton', () => {
+                    console.log('Drop Item!');
                     loot.splice(loot.indexOf(item), 1);
                     this.updateLootTextAndButtons(loot);
                 }, this);
@@ -132,7 +142,7 @@ export default class LootList{
                 addBtnText.visible = true;
                 this.lootKeepBtns.push(addBtnText);
 
-                let sellBtnText = this.gameState.add.text(this.game.world.centerX - 210, buttonsY, '$ELL');
+                let sellBtnText = this.gameState.add.text(this.game.world.centerX - 210, buttonsY, 'DROP');
                 sellBtnText.font = 'Oswald';
                 sellBtnText.fontSize = 24;
                 sellBtnText.fill = '#111111';

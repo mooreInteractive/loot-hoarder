@@ -73,7 +73,7 @@ export default class ItemGrid {
     }
 
     addItemSprite(item){
-        let drawnObject, drawnBackground;
+        let drawnObject, sprite;
         let width = item.shapeWidth*54;
         let height = item.shapeHeight*54;
         let bmd = this.gameState.add.bitmapData(width, height);
@@ -90,7 +90,7 @@ export default class ItemGrid {
             y:this.position.y + (65*invSlot.y)+((65*item.shapeHeight - (item.shapeHeight*54))/2)
         };
 
-        drawnBackground = this.gameState.add.sprite(spritePos.x, spritePos.y, bmd);
+        sprite = this.gameState.add.sprite(spritePos.x, spritePos.y, bmd);
 
         let useNewSprite = (newSpriteSets).indexOf(item.sprite) > -1;
 
@@ -100,42 +100,40 @@ export default class ItemGrid {
                 y: useNewSprite ? offsets : 0,
                 x: useNewSprite ? 6 : 0
             }; //TODO
-            drawnObject = drawnBackground.addChild(this.gameState.make.sprite(newSpriteOffset.x, newSpriteOffset.y, item.sprite));
+            drawnObject = sprite.addChild(this.gameState.make.sprite(newSpriteOffset.x, newSpriteOffset.y, item.sprite));
             if(useNewSprite){
                 drawnObject.frame = item.frame;
             }
         } else {
-            drawnObject = drawnBackground.addChild(this.gameState.make.sprite(spritePos.x, spritePos.y, bmd));
+            drawnObject = sprite.addChild(this.gameState.make.sprite(spritePos.x, spritePos.y, bmd));
         }
 
 
         //- Item Sprite Mouse Events
-        ([drawnBackground]).forEach((sprite) => {
-            sprite.inputEnabled = true;
-            sprite.originalPosition = sprite.position.clone();
+        sprite.inputEnabled = true;
+        sprite.originalPosition = sprite.position.clone();
 
-            sprite.events.onInputDown.add((sprite) => {
+        sprite.events.onInputDown.add((sprite) => {
+            this.selectItem(sprite, item);
+        }, this);
+        //Drag n Drop fucntionality, optional, callbacks provided
+        if(this.dragDrop){
+            sprite.input.enableDrag();
+
+            sprite.events.onInputOver.add((sprite) => {
                 this.selectItem(sprite, item);
             }, this);
-            //Drag n Drop fucntionality, optional, callbacks provided
-            if(this.dragDrop){
-                sprite.input.enableDrag();
 
-                sprite.events.onInputOver.add((sprite) => {
-                    this.selectItem(sprite, item);
-                }, this);
+            sprite.events.onDragStop.add((sprite, mousePos) => {
+                this.stopDrag(sprite, item, mousePos);
+            }, this);
 
-                sprite.events.onDragStop.add((sprite, mousePos) => {
-                    this.stopDrag(sprite, item, mousePos);
-                }, this);
+            sprite.events.onDragStart.add(function(sprite){
+                this.startDrag(sprite, item, this.itemsGroup);
+            }, this);
+        }
 
-                sprite.events.onDragStart.add(function(sprite){
-                    this.startDrag(sprite, item, this.itemsGroup);
-                }, this);
-            }
-        });
-
-        this.itemsGroup.add(drawnBackground);
+        this.itemsGroup.add(sprite);
     }
 
 }
