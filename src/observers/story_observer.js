@@ -4,6 +4,7 @@
 *  This file basically matches up game events to story events.
 */
 import * as StoryFunctions from '../components/StoryFunctions';
+import Dialogue from '../components/Dialogue';
 
 export default class StoryObserver{
     constructor(){
@@ -15,7 +16,7 @@ export default class StoryObserver{
         this.startGame = this.startGame.bind(this);
     }
 
-    notify(gameState, event){
+    notify(gameState, event, cb){
         switch(event){
         case 'START_GAME': this.startGame(gameState);
             break;
@@ -25,7 +26,7 @@ export default class StoryObserver{
             break;
         case 'CLICK_MAIN': this.clickMain(gameState);
             break;
-        case 'CLICK_RAID': this.clickRaid(gameState);
+        case 'CLICK_RAID': this.clickRaid(gameState, cb);
         }
     }
 
@@ -46,8 +47,29 @@ export default class StoryObserver{
         console.log('observed main click', gameState.game.player);
     }
 
-    clickRaid(gameState){
+    clickRaid(gameState, cb){
         console.log('observed raid click', gameState.game.player);
+        let equippedGear = false;
+        let equipment = gameState.game.player.equipped;
+        let dungeon = gameState.game.dungeons[gameState.game.player.currentDungeon];
+
+        Object.keys(equipment).forEach((slot) => {
+            if(equipment[slot] != null){
+                equippedGear = true;
+                return;
+            }
+        });
+        if(!equippedGear){
+            StoryFunctions.chapter1.firstRaid(gameState.game, gameState.gameState);
+        } else {
+            if(gameState.game.player.latestUnlockedDungeon >= dungeon.level){
+                if(gameState.game.player.battleStats.currentHealth > 1){
+                    cb(dungeon);
+                }
+            } else {
+                new Dialogue(gameState.game, gameState.gameState, 'ok', 'shopkeeper', 'Youre weak son.', ()=>{});
+            }
+        }
     }
 
     startGame(gameState){

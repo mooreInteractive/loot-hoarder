@@ -5,7 +5,7 @@ import Avatar from '../components/Avatar';
 import ItemReadOut from '../components/ItemReadOut';
 import ItemGrid from '../components/ItemGrid';
 
-let newSpriteSets = ['swords', 'axes', 'misc_weap'];
+let newSpriteSets = ['swords', 'axes'];
 
 export default class extends Phaser.State {
     constructor(){
@@ -19,7 +19,6 @@ export default class extends Phaser.State {
         this.inventorySprites = [];
         this.selectedSprite = null;
         this.currentDungeon = this.game.dungeons[this.game.player.currentDungeon];
-        this.game.dialogueOpen = false;
     }
 
     preload () {
@@ -253,7 +252,7 @@ export default class extends Phaser.State {
         })[0];
 
         let drawnObject;
-        let sprite;
+        let drawnBackground;
         let width = item.shapeWidth*27;
         let height = item.shapeHeight*27;
 
@@ -268,18 +267,17 @@ export default class extends Phaser.State {
             y: this.equippedSlots.position.y + slotSprite.position.y + ((slotSprite.height - (item.shapeHeight*27))/2)
         };
 
-        sprite = this.game.add.sprite(spritePos.x, spritePos.y, bmd);
+        drawnBackground = this.game.add.sprite(spritePos.x, spritePos.y, bmd);
 
         let useNewSprite = (newSpriteSets).indexOf(item.sprite) > -1;
         //console.log('--placing piece at x,y:', gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2));
         if(item.sprite){
             console.log('sprite:', item.sprite);
-            let offsets = item.shapeHeight > 2 ? 16.5 : 0;
             let newSpriteOffset = {
-                y: useNewSprite ? offsets : 0,
+                y: useNewSprite ? 16.5 : 0,
                 x: useNewSprite ? 3 : 0
             }; //TODO
-            drawnObject = sprite.addChild(this.game.make.sprite(newSpriteOffset.x, newSpriteOffset.y, item.sprite));
+            drawnObject = drawnBackground.addChild(this.game.make.sprite(newSpriteOffset.x, newSpriteOffset.y, item.sprite));
             drawnObject.scale.x = 0.5;
             drawnObject.scale.y = 0.5;
             if(useNewSprite){
@@ -287,30 +285,32 @@ export default class extends Phaser.State {
                 drawnObject.frame = item.frame;
             }
         } else {
-            drawnObject = sprite.addChild(this.game.make.sprite(spritePos.x, spritePos.y, bmd));
+            drawnObject = drawnBackground.addChild(this.game.make.sprite(spritePos.x, spritePos.y, bmd));
         }
 
-        sprite.inputEnabled = true;
-        sprite.input.enableDrag();
-        sprite.originalPosition = sprite.position.clone();
+        ([drawnBackground]).forEach((sprite) => {
+            sprite.inputEnabled = true;
+            sprite.input.enableDrag();
+            sprite.originalPosition = drawnObject.position.clone();
 
-        sprite.events.onInputDown.add((sprite) => {
-            //this.hoverInvItem(drawnObject, mousePos, item);
-            this.selectItem(sprite, item);
-        }, this);
-        sprite.events.onInputOver.add((sprite) => {
-            //this.hoverInvItem(drawnObject, mousePos, item);
-            this.selectItem(sprite, item);
-        }, this);
-        sprite.events.onDragStop.add((sprite, mousePos) => {
-            this.stopDrag(sprite, item, mousePos);
-        }, this);
-        sprite.events.onDragStart.add(function(sprite){
-            this.startDrag(sprite, item, this.equippedItemsGroup, true);
-        }, this);
+            sprite.events.onInputDown.add((sprite) => {
+                //this.hoverInvItem(drawnObject, mousePos, item);
+                this.selectItem(sprite, item);
+            }, this);
+            sprite.events.onInputOver.add((sprite) => {
+                //this.hoverInvItem(drawnObject, mousePos, item);
+                this.selectItem(sprite, item);
+            }, this);
+            sprite.events.onDragStop.add((sprite, mousePos) => {
+                this.stopDrag(sprite, item, mousePos);
+            }, this);
+            sprite.events.onDragStart.add(function(sprite){
+                this.startDrag(sprite, item, this.equippedItemsGroup, true);
+            }, this);
+        });
 
 
-        this.equippedItemsGroup.add(sprite);
+        this.equippedItemsGroup.add(drawnBackground);
     }
 
     selectItem(sprite, item){

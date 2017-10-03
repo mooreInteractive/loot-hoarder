@@ -112,29 +112,17 @@ export default class MainNavigation{
         } else if(this.raidShopSetting == 'shop' && this.currentDungeon.level == 3){
             this.openScrollShop();
         } else {
-            let equippedGear = false;
-            let equipment = this.game.player.equipped;
+            // let equippedGear = false;
+            // let equipment = this.game.player.equipped;
             let dungeon = this.currentDungeon;
 
-            Object.keys(equipment).forEach((slot) => {
-                if(equipment[slot] != null){
-                    equippedGear = true;
-                    return;
-                }
-            });
-
-            if(!equippedGear){
-                new Dialogue(this.game, this.gameState, 'ok', 'shopkeeper', 'You should equip something before raiding...', ()=>{});
-            } else {
-                if(this.game.player.latestUnlockedDungeon >= dungeon.level){
-                    if(this.game.player.battleStats.currentHealth > 1){
-                        this.game.state.start('Raid', true, false, dungeon);
-                    }
-                } else {
-                    new Dialogue(this.game, this.gameState, 'ok', 'shopkeeper', 'Your shit\'s too weak son.', ()=>{});
-                }
-            }
+            //Send Event to Start Raid
+            this.game.storyEvents.notify(this, 'CLICK_RAID', this.startRaid.bind(this, dungeon));
         }
+    }
+
+    startRaid(dungeon){
+        this.game.state.start('Raid', true, false, dungeon);
     }
 
     animateRaidShopButtonTo(yPos){

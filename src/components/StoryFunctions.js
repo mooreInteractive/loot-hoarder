@@ -12,6 +12,9 @@ export let chapter1 = {
             game.player.story.chapter1.start = true;
         });
     },
+    firstRaid: (game, gameState) => {
+        new Dialogue(game, gameState, 'ok', 'shopkeeper', 'You should equip something before raiding...', ()=>{});
+    },
     shopNote: (game, gameState) => {
         console.log('story gameState:', gameState);
         if(game.player.story.chapter1.foundSecondNote){

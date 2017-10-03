@@ -33,7 +33,7 @@ class Game extends Phaser.Game {
         /***** VERSION NUMBER - UPDATING WILL WIPE PLAYER DATA *************
         /****
         /**/
-        this.version = '0.0.25'; //updated
+        this.version = '0.0.24'; //updated
         /**/
         /****
         *******************************************************************/
@@ -93,11 +93,6 @@ class Game extends Phaser.Game {
         this.state.add('LootView', LootView, false);
         this.state.add('WeaponShop', WeaponShop, false);
         this.state.add('ScrollShop', ScrollShop, false);
-
-        this.state.onInitCallback = () => {
-            console.log('Started a New Game State!');
-            this.dialogueOpen = false;
-        };
 
         this.state.start('Boot');
     }
