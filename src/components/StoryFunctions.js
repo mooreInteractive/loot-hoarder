@@ -1,5 +1,45 @@
 import Dialogue from './Dialogue';
 
+const shopkeepersDagger = {
+    'name': `shopkeeper's Dagger`,
+    'type': 'melee',
+    'inventoryType': 'hand',
+    'level': 1,
+    'range': 0,
+    'durability': 12,
+    'weight': 1,
+    'dmg': {
+        'min': 1,
+        'max': 3
+    },
+    'crit':{
+        'multiplier': '2',
+        'threshold': '95'
+    },
+    'magic': {
+        'effect':{
+            'attribute': null,
+            'value': -1
+        },
+        'damage':{
+            'type': null,
+            'value': 0,
+            'uses': -1
+        }
+    },
+    'shape': [
+        [1,1,0,0],
+        [1,1,0,0],
+        [0,0,0,0],
+        [0,0,0,0]],
+    'shapeWidth': 2,
+    'shapeHeight': 2,
+    'inventorySlot': {x:0, y:0},
+    'sprite': 'misc_weap',
+    'frame': 13,
+    'value': 1
+};
+
 export let saveStory = (story) => {
     if(localStorage){
         localStorage.setItem('loot-hoarder-story', JSON.stringify(story));
@@ -13,7 +53,19 @@ export let chapter1 = {
         });
     },
     firstRaid: (game, gameState) => {
-        new Dialogue(game, gameState, 'ok', 'shopkeeper', 'You should equip something before raiding...', ()=>{});
+        new Dialogue(game, gameState, 'bool', 'shopkeeper', `Don't you have any sort of weapon?`, (reply)=>{
+            if(reply === 'yes'){
+                new Dialogue(game, gameState, 'ok', 'shopkeeper', `You'd better equip it before raiding.`, ()=>{});
+                game.player.story.chapter1.firstRaid = true;
+            } else {
+                new Dialogue(game, gameState, 'ok', 'shopkeeper', 'Oh, well here take this and equip it.', ()=>{
+                    game.player.receiveItem(shopkeepersDagger);
+                    game.player.story.chapter1.firstRaid = true;
+                    game.player.story.chapter1.shopkeepersDebt = true;
+                });
+            }
+        });
+        localStorage.setItem('loot-hoarder-story', JSON.stringify(game.player.story));
     },
     shopNote: (game, gameState) => {
         console.log('story gameState:', gameState);

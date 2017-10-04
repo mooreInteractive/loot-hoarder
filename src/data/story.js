@@ -1,6 +1,8 @@
 export let Story = {
     chapter1: {
         start: false,
+        firstRaid: false,
+        shopKeepersDebt: false,
         firstLootDrop: false,
         timesCheckedShop: 0,
         foundSecondNote: false,

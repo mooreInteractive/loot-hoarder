@@ -48,7 +48,6 @@ export default class StoryObserver{
     }
 
     clickRaid(gameState, cb){
-        console.log('observed raid click', gameState.game.player);
         let equippedGear = false;
         let equipment = gameState.game.player.equipped;
         let dungeon = gameState.game.dungeons[gameState.game.player.currentDungeon];

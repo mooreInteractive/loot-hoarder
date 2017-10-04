@@ -1,4 +1,4 @@
-import { placeItemInSlot } from './utils';
+import { placeItemInSlot, tryToPlaceItemInBackpack } from './utils';
 import * as Story from './data/story';
 
 class Player {
@@ -75,6 +75,15 @@ class Player {
         this.magicFX = magicFX;
     }
 
+    receiveItem(item){
+        let placed = tryToPlaceItemInBackpack(item, this.inventory, this.backpack);
+        if(!placed){
+            return false;
+        }
+        this.savePlayerData();
+        return true;
+    }
+
     generateStarterWeapon(){
         let item = {
             'name': 'pocket knife',
@@ -116,8 +125,9 @@ class Player {
             'value': 1
         };
 
-        placeItemInSlot(this.backpack, this.inventory, item, {x:0,y:0});
-        this.savePlayerData();
+        this.receiveItem(item);
+        // placeItemInSlot(this.backpack, this.inventory, item, {x:0,y:0});
+        // this.savePlayerData();
     }
 
     heal(){
