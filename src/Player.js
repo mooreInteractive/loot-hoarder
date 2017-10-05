@@ -1,4 +1,4 @@
-import { placeItemInSlot, tryToPlaceItemInBackpack } from './utils';
+import { tryToPlaceItemInBackpack } from './utils';
 import * as Story from './data/story';
 
 class Player {

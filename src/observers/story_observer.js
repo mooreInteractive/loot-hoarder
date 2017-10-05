@@ -20,7 +20,7 @@ export default class StoryObserver{
         switch(event){
         case 'START_GAME': this.startGame(gameState);
             break;
-        case 'CLICK_SHOP': this.clickShop(gameState);
+        case 'CLICK_SHOP': this.clickShop(gameState, cb);
             break;
         case 'CLICK_INVENTORY': this.clickInventory(gameState);
             break;
@@ -31,11 +31,11 @@ export default class StoryObserver{
     }
 
     //event handlers - story gate logic
-    clickShop(gameState){
-        if(!gameState.game.player.story.chapter1.rescuedShopKeep){
-            StoryFunctions.chapter1.shopNote(gameState.game, gameState);
+    clickShop(gameState, openShop){
+        if(!gameState.game.player.story.chapter1.shopkeepersDebt){
+            openShop();
         } else {
-            console.log('Open The Shop ALREADY!');
+            StoryFunctions.chapter1.shopkeepersDebt(gameState.game, gameState);
         }
     }
 
@@ -58,7 +58,7 @@ export default class StoryObserver{
                 return;
             }
         });
-        if(!equippedGear){
+        if(!equippedGear && !gameState.game.player.story.chapter1.firstRaid){
             StoryFunctions.chapter1.firstRaid(gameState.game, gameState.gameState);
         } else {
             if(gameState.game.player.latestUnlockedDungeon >= dungeon.level){
