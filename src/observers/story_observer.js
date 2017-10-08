@@ -14,13 +14,16 @@ export default class StoryObserver{
         this.clickMain = this.clickMain.bind(this);
         this.clickRaid = this.clickRaid.bind(this);
         this.startGame = this.startGame.bind(this);
+        this.sellItem = this.sellItem.bind(this);
     }
 
-    notify(gameState, event, cb){
+    notify(gameState, event, cb, instance=null){
         switch(event){
         case 'START_GAME': this.startGame(gameState);
             break;
         case 'CLICK_SHOP': this.clickShop(gameState, cb);
+            break;
+        case 'SELL_ITEM': this.sellItem(gameState, instance);
             break;
         case 'CLICK_INVENTORY': this.clickInventory(gameState);
             break;
@@ -35,7 +38,19 @@ export default class StoryObserver{
         if(!gameState.game.player.story.chapter1.shopkeepersDebt){
             openShop();
         } else {
-            StoryFunctions.chapter1.shopkeepersDebt(gameState.game, gameState);
+            StoryFunctions.chapter1.shopkeepersDebt(gameState.game, gameState, openShop);
+        }
+    }
+
+    sellItem(gameState, item){
+        if(gameState.game.player.story.chapter1.shopkeepersDebt){
+            if(item.name.search(/iron/gi) > -1){
+                gameState.game.player.story.chapter1.shopkeepersDebt = false;
+                new Dialogue(gameState.game, gameState, 'ok', 'shopkeeper', 'Ah some iron, thanks! I can open my shop for sale now!', ()=>{
+                    gameState.game.player.savePlayerData();
+                    gameState.state.start('WeaponShop');
+                });
+            }
         }
     }
 

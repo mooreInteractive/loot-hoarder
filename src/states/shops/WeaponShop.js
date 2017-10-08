@@ -8,12 +8,13 @@ import Dialogue from '../../components/Dialogue';
 import Avatar from '../../components/Avatar';
 
 export default class extends Phaser.State {
-    init(){
+    init(settings={}){
         this.selectItemToBuy = this.selectItemToBuy.bind(this);
         this.selectItemToSell = this.selectItemToSell.bind(this);
         this.selectedSprite;
         this.selectedItem;
         this.game.dialogueOpen = false;
+        this.settings = settings;
 
         this.items = this.game.shopItems;
         let time = Math.floor((new Date).getTime()/1000);
@@ -66,17 +67,10 @@ export default class extends Phaser.State {
 
         this.invGridPos = {x: 59, y: 510};
 
-        //buy and sell tab Buttons
-        let buyBmd = this.add.bitmapData(90, 49);
-        // buyBmd.ctx.beginPath();
-        // buyBmd.ctx.rect(0, 0, 90, 49);
-        // buyBmd.ctx.fillStyle = '#131313';
-        // buyBmd.ctx.fill();
-        this.buyBtn = new Phaser.Button(this.game, 105, 480, buyBmd, this.showBuyGrid, this);
-        this.buyBtn.anchor.setTo(0.5);
-        this.add.existing(this.buyBtn);
-        this.buyBtnText = this.add.text(105, 485, 'BUY', this.Pixel21Black);
-        this.buyBtnText.anchor.setTo(0.5);
+        if(this.settings.hide != 'buy'){
+            this.createBuyButton();
+        }
+
 
         let sellBmd = this.add.bitmapData(92, 50);
         this.sellBtn = new Phaser.Button(this.game, 207, 480, sellBmd, this.showSellGrid, this);
@@ -99,7 +93,30 @@ export default class extends Phaser.State {
         this.shopTimer = this.add.text(384, 805, '', this.Pixel21Black);
         this.shopTimer.anchor.setTo(0.5);
 
-        this.showBuyGrid();
+        //default view
+        if(this.settings.hide){
+            if(this.settings.hide === 'buy'){
+                this.showSellGrid();
+            } else {
+                this.showBuyGrid();
+            }
+        } else {
+            this.showBuyGrid();
+        }
+    }
+
+    createBuyButton(){
+        //buy and sell tab Buttons
+        let buyBmd = this.add.bitmapData(90, 49);
+        // buyBmd.ctx.beginPath();
+        // buyBmd.ctx.rect(0, 0, 90, 49);
+        // buyBmd.ctx.fillStyle = '#131313';
+        // buyBmd.ctx.fill();
+        this.buyBtn = new Phaser.Button(this.game, 105, 480, buyBmd, this.showBuyGrid, this);
+        this.buyBtn.anchor.setTo(0.5);
+        this.add.existing(this.buyBtn);
+        this.buyBtnText = this.add.text(105, 485, 'BUY', this.Pixel21Black);
+        this.buyBtnText.anchor.setTo(0.5);
     }
 
     createBuyGrid(){
@@ -247,6 +264,7 @@ export default class extends Phaser.State {
                 this.game.player.savePlayerData();
 
                 //this
+                this.game.storyEvents.notify(this, 'SELL_ITEM', () => {}, this.selectedItem);
                 this.resetSelectedItem();
             }
         });

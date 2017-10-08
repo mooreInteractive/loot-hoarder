@@ -71,8 +71,8 @@ export default class MainNavigation{
     }
 
     openShop(){
-        this.game.storyEvents.notify(this.gameState, 'CLICK_SHOP', () => {
-            this.gameState.state.start('WeaponShop');
+        this.game.storyEvents.notify(this.gameState, 'CLICK_SHOP', (options) => {
+            this.gameState.state.start('WeaponShop', true, false, options);
         });
     }
 

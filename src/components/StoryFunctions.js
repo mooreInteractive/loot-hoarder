@@ -70,47 +70,9 @@ export let chapter1 = {
         localStorage.setItem('loot-hoarder-story', JSON.stringify(game.player.story));
     },
 
-    shopkeepersDebt: (game, gameState) => {
+    shopkeepersDebt: (game, gameState, cb) => {
         new Dialogue(game, gameState, 'ok', 'shopkeeper', 'Hey kid! I gave you my last good dagger. Can you bring me something made of iron so i can reopen my shop?', ()=>{
-            new Dialogue(game, gameState, 'bool', 'shopkeeper', 'Do you have a piece of iron for me?', (reply)=>{
-                if(reply === 'yes'){
-                    console.log('Check Inventory for Iron Item...', game.player);
-                    let invItems = game.player.inventory.filter((item) => {
-                        return item.name.search(/iron/gi) > -1;
-                    });
-                    let ironItems = invItems;
-                    let askAboutItem = (index) => {
-                        new Dialogue(game, gameState, 'bool', 'shopkeeper', `This one?  '${ironItems[index].name}'`, (reply)=>{
-                            if(reply === 'yes'){
-                                console.log('remove item:', ironItems[index]);
-                                removeItemFromBackpack(game.player.backpack, ironItems[index]);
-
-                                //player
-                                console.log('removeing:', index);
-                                let inv = game.player.inventory;
-                                inv.splice(index, 1);
-                                game.player.story.chapter1.shopKeepersDebt = false;
-                                game.player.savePlayerData();
-                                console.log('inventory after removal:', game.player.inventory);
-                            } else {
-                                if(index+1 < ironItems.length-1){
-                                    askAboutItem(index+1);
-                                } else {
-                                    new Dialogue(game, gameState, 'ok', 'shopkeeper', `Ok. Well come back when you have one for me.`, ()=>{});
-                                }
-                            }
-                        });
-                    };
-                    if(ironItems.length > 0){
-                        askAboutItem(0);
-                    } else {
-                        new Dialogue(game, gameState, 'ok', 'shopkeeper', `Are you sure? It's not in your inventory.`, ()=>{});
-                    }
-
-                } else {
-                    new Dialogue(game, gameState, 'ok', 'shopkeeper', `Are you sure? It's not in your inventory.`, ()=>{});
-                }
-            });
+            cb({hide: 'buy'});
         });
     },
 
