@@ -5,7 +5,7 @@ import Avatar from '../components/Avatar';
 import ItemReadOut from '../components/ItemReadOut';
 import ItemGrid from '../components/ItemGrid';
 
-let newSpriteSets = ['swords', 'axes'];
+let newSpriteSets = ['swords', 'axes', 'misc_weap'];
 
 export default class extends Phaser.State {
     constructor(){
@@ -240,7 +240,6 @@ export default class extends Phaser.State {
                     }
                 });
             }
-            console.log(hitSlot);
         }
 
         return hitSlot;
@@ -272,16 +271,15 @@ export default class extends Phaser.State {
         let useNewSprite = (newSpriteSets).indexOf(item.sprite) > -1;
         //console.log('--placing piece at x,y:', gridPos.x + (65*invSlot.x)+((65*item.shapeWidth - 54*item.shapeWidth)/2), gridPos.y + (65*invSlot.y)+((65*item.shapeHeight - 54*item.shapeHeight)/2));
         if(item.sprite){
-            console.log('sprite:', item.sprite);
+            let heightOffset = [0, 0, 0, 16.5];
             let newSpriteOffset = {
-                y: useNewSprite ? 16.5 : 0,
+                y: useNewSprite ? heightOffset[item.shapeHeight] : 0,
                 x: useNewSprite ? 3 : 0
             }; //TODO
             drawnObject = drawnBackground.addChild(this.game.make.sprite(newSpriteOffset.x, newSpriteOffset.y, item.sprite));
             drawnObject.scale.x = 0.5;
             drawnObject.scale.y = 0.5;
             if(useNewSprite){
-                console.log('item frame:', item, item.frame);
                 drawnObject.frame = item.frame;
             }
         } else {

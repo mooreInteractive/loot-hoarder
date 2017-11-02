@@ -1,5 +1,5 @@
 import Dialogue from './Dialogue';
-import { removeItemFromBackpack } from '../utils';
+// import { removeItemFromBackpack } from '../utils';
 
 
 const shopkeepersDagger = {

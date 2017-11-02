@@ -4,7 +4,9 @@ import Dialogue from '../components/Dialogue';
 import Avatar from '../components/Avatar';
 
 let credits = [
+    {text: 'Adam Moore - this is my game', link: 'http://moore-interactive.net'},
     {text: 'Loxmyth - Avatar/Enemies Art', link: 'http://loxmyth.com'},
+    {text: 'WRLCK - Weapons Art', link: 'https://www.gamedevmarket.net/member/wrlck/'},
     {text: 'Nick Heathfield - Music', link: 'http://nickheathfield.co.uk'},
     {text: 'Buch(OGA) - overworld, portraits', link: 'http://opengameart.org/users/buch'},
     {text: 'Bevouliin(OGA) - battle backgrounds', link: 'http://bevouliin.com/'},
@@ -49,7 +51,7 @@ export default class extends Phaser.State {
         this.musicText = this.add.text(this.game.world.centerX - 50, 110, 'Music on/off:', textStyle);
         this.musicText.anchor.setTo(0.5);
 
-        this.creditsText = this.add.text(75, 200, 'Credtis(Thank you!):', textStyle);
+        this.creditsText = this.add.text(75, 200, 'Credits:', textStyle);
         //credits:
         this.creditBtns = [];
 
