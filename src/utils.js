@@ -85,7 +85,7 @@ export const equipItem = (player, item, slot) => {
     player.updateBattleStats();
 
     /* track equipped */
-    window.ga('send', 'event', 'gane_items', 'equip_item', item.name);
+    window.ga('send', 'event', 'game_items', 'equip_item', item.name);
 };
 
 export const unequipItem = (player, item) => {

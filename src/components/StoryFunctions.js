@@ -3,7 +3,7 @@ import Dialogue from './Dialogue';
 
 
 const shopkeepersDagger = {
-    'name': `shopkeeper's Dagger`,
+    'name': `Shopkeeper's Dagger`,
     'type': 'melee',
     'inventoryType': 'hand',
     'level': 1,

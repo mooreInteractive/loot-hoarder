@@ -47,14 +47,14 @@ export default class extends Phaser.State {
         //let Pixel24Black = {font: 'Press Start 2P', fontSize: 36, fill: '#000000' };
         let Pixel24White = {font: 'Press Start 2P', fontSize: 36, fill: '#898989' };
         let Pixel36Blue = {font: 'Press Start 2P', fontSize: 42, fill: '#527ee5' };
-        let Pixel16Black = {font: 'Press Start 2P', fontSize: 16, fill: '#000000' };
+        let Pixel16White = {font: 'Press Start 2P', fontSize: 16, fill: '#FFFFFF' };
 
         //Player Stats
         this.playerInfo = this.add.text(180, 200, '', Pixel24White);
-        this.playerInfo2 = this.add.text(470, 310, '', Pixel16Black);
+        this.playerInfo2 = this.add.text(470, 310, '', Pixel16White);
 
         //Item Read Out Text
-        this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 155, y: 435});
+        this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 155, y: 435}, '#FFFFFF');
 
         //skillPoint + Buttons
         this.plusBtns = [
@@ -77,7 +77,7 @@ export default class extends Phaser.State {
         this.potionButton.visible = this.game.player.potions > 0;
         this.add.existing(this.potionButton);
 
-        this.potionText = this.add.text(65, 210, `x${this.game.player.potions}`, Pixel16Black);
+        this.potionText = this.add.text(65, 210, `x${this.game.player.potions}`, Pixel16White);
         this.potionText.visible = this.game.player.potions > 1;
 
         this.itemActionButton = new Phaser.Button(this.game, 665, 485, 'greyButton', this.useItem, this);
@@ -86,7 +86,7 @@ export default class extends Phaser.State {
         this.itemActionButton.visible = false;
         this.add.existing(this.itemActionButton);
 
-        this.itemActionText = this.add.text(665, 485, 'use', Pixel16Black);
+        this.itemActionText = this.add.text(665, 485, 'use', Pixel16White);
         this.itemActionText.anchor.setTo(0.5);
         this.itemActionText.visible = false;
 
@@ -219,6 +219,18 @@ export default class extends Phaser.State {
         ){
             let dropSlots = this.equippedSlots.filter((slot)=>{
                 if(item.inventoryType == 'hand' && (['leftHand', 'rightHand']).indexOf(slot.type) > -1){
+                    // console.log('current Left:', this.game.player.equipped['leftHand']);
+                    // console.log('current right:', this.game.player.equipped['rightHand']);
+                    // console.log('item:', item);
+
+                    if(this.game.player.equipped['leftHand'] != null && this.game.player.equipped['leftHand'].hands > 1){
+                        console.log('two-handed weapon equipped');
+                        return false;
+                    }
+                    if(this.game.player.equipped['rightHand'] != null && this.game.player.equipped['rightHand'].hands > 1){
+                        console.log('two-handed weapon equipped');
+                        return false;
+                    }
                     return true;
                 } else if((item.inventoryType == 'accessory' && (['accessory1','accessory2','accessory3','accessory4']).indexOf(slot.type) > -1)){
                     return true;
@@ -245,7 +257,7 @@ export default class extends Phaser.State {
         return hitSlot;
     }
 
-    addEquippedSprite(item, key){
+    addEquippedSprite(item, key, ghost=false){
         let slotSprite = this.equippedSlots.children.filter((sprite) => {
             return sprite.type == key;
         })[0];
@@ -287,27 +299,35 @@ export default class extends Phaser.State {
         }
 
         ([drawnBackground]).forEach((sprite) => {
-            sprite.inputEnabled = true;
-            sprite.input.enableDrag();
-            sprite.originalPosition = drawnObject.position.clone();
+            if(!ghost){
+                sprite.inputEnabled = true;
+                sprite.input.enableDrag();
+                sprite.originalPosition = drawnObject.position.clone();
 
-            sprite.events.onInputDown.add((sprite) => {
-                //this.hoverInvItem(drawnObject, mousePos, item);
-                this.selectItem(sprite, item);
-            }, this);
-            sprite.events.onInputOver.add((sprite) => {
-                //this.hoverInvItem(drawnObject, mousePos, item);
-                this.selectItem(sprite, item);
-            }, this);
-            sprite.events.onDragStop.add((sprite, mousePos) => {
-                this.stopDrag(sprite, item, mousePos);
-            }, this);
-            sprite.events.onDragStart.add(function(sprite){
-                this.startDrag(sprite, item, this.equippedItemsGroup, true);
-            }, this);
+                sprite.events.onInputDown.add((sprite) => {
+                    //this.hoverInvItem(drawnObject, mousePos, item);
+                    this.selectItem(sprite, item);
+                }, this);
+                sprite.events.onInputOver.add((sprite) => {
+                    //this.hoverInvItem(drawnObject, mousePos, item);
+                    this.selectItem(sprite, item);
+                }, this);
+                sprite.events.onDragStop.add((sprite, mousePos) => {
+                    this.stopDrag(sprite, item, mousePos);
+                }, this);
+                sprite.events.onDragStart.add(function(sprite){
+                    this.startDrag(sprite, item, this.equippedItemsGroup, true);
+                }, this);
+            } else {
+                sprite.alpha = 0.5;
+            }
         });
 
-
+        if(item.hands > 1 && !ghost){
+            let otherKey = (['leftHand', 'rightHand']).filter(slotType => { return slotType != key; });
+            console.log('drawing second hand, two keys:', key, otherKey[0]);
+            this.addEquippedSprite(item, otherKey[0], true);
+        }
         this.equippedItemsGroup.add(drawnBackground);
     }
 
@@ -394,50 +414,59 @@ export default class extends Phaser.State {
         let equipSlot = this.mouseOverEquipmentSlot(mouse, item);
 
         if(currentSprite.parent == this.equippedItemsGroup){
-            if(slot){
-                let fits = utils.placeItemInSlot(this.game.player.backpack, this.game.player.inventory, item, slot);
-                if(fits){
-                    //console.log('------fits.');
-                    //utils.unequipItem(this.game.player, item);
-                    this.invGrid.addItemSprite(item);
-                    //this.addBackPackSprite(item);
-                    currentSprite.destroy();
-                } else {
-                    currentSprite.position.copyFrom(currentSprite.originalPosition);
-                    utils.equipItem(this.game.player, item, {type: item.inventorySlot});
-                }
-            } else if(equipSlot != undefined && equipSlot != false && this.game.player.equipped[equipSlot.type] == null){
-                // console.log('----on equip slot...');
-                utils.equipItem(this.game.player, item, equipSlot);
-                this.addEquippedSprite(item, equipSlot.type);
+            this.dropEquippedItem(slot, equipSlot, item, currentSprite);
+        } else {
+            this.dropBackpackItem(slot, equipSlot, item, currentSprite);
+        }
+
+        // console.log('--after stopDrag player.inv, backpack, equipped:', this.game.player.inventory, this.game.player.backpack, this.game.player.equipped);
+    }
+
+    dropEquippedItem(slot, equipSlot, item, currentSprite){
+        if(slot){
+            let fits = utils.placeItemInSlot(this.game.player.backpack, this.game.player.inventory, item, slot);
+            if(fits){
+                //console.log('------fits.');
+                //utils.unequipItem(this.game.player, item);
+                this.invGrid.addItemSprite(item);
+                //this.addBackPackSprite(item);
                 currentSprite.destroy();
             } else {
                 currentSprite.position.copyFrom(currentSprite.originalPosition);
                 utils.equipItem(this.game.player, item, {type: item.inventorySlot});
             }
+        } else if( equipSlot != undefined && equipSlot != false
+                && this.game.player.equipped[equipSlot.type] == null){
+            // console.log('----on equip slot...');
+            utils.equipItem(this.game.player, item, equipSlot);
+            this.addEquippedSprite(item, equipSlot.type);
+            currentSprite.destroy();
         } else {
-            // console.log('--dropping backPack Item...');
-            if(slot){
-                // console.log('----on inventory slot...');
-                let fits = utils.placeItemInSlot(this.game.player.backpack, this.game.player.inventory, item, slot);
-                if(fits){
-                    currentSprite.originalPosition = currentSprite.position.clone();
-                } else {
-                    // console.log('------doesnt fit, return to origin');
-                    this.returnItemToOrigin(currentSprite, item);
-                }
-            } else if(equipSlot != undefined && equipSlot != false){
-                // console.log('----on equip slot...');
-                utils.equipItem(this.game.player, item, equipSlot);
-                this.addEquippedSprite(item, equipSlot.type);
-                currentSprite.destroy();
+            currentSprite.position.copyFrom(currentSprite.originalPosition);
+            utils.equipItem(this.game.player, item, {type: item.inventorySlot});
+        }
+    }
+
+    dropBackpackItem(slot, equipSlot, item, currentSprite){
+        // console.log('--dropping backPack Item...');
+        if(slot){
+            // console.log('----on inventory slot...');
+            let fits = utils.placeItemInSlot(this.game.player.backpack, this.game.player.inventory, item, slot);
+            if(fits){
+                currentSprite.originalPosition = currentSprite.position.clone();
             } else {
-                // console.log('----on nothing, return to origin...');
+                // console.log('------doesnt fit, return to origin');
                 this.returnItemToOrigin(currentSprite, item);
             }
+        } else if(equipSlot != undefined && equipSlot != false){
+            // console.log('----on equip slot...');
+            utils.equipItem(this.game.player, item, equipSlot);
+            this.addEquippedSprite(item, equipSlot.type);
+            currentSprite.destroy();
+        } else {
+            // console.log('----on nothing, return to origin...');
+            this.returnItemToOrigin(currentSprite, item);
         }
-
-        // console.log('--after stopDrag player.inv, backpack, equipped:', this.game.player.inventory, this.game.player.backpack, this.game.player.equipped);
     }
 
     returnItemToOrigin(sprite, item){

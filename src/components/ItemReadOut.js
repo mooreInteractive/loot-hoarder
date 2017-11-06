@@ -41,14 +41,14 @@ export default class ItemReadOut{
             // }
 
             if(this.item.ac != null){//Armor
-                this.lootText.text += `[${this.item.level}] ${this.item.name} \n`;
+                this.lootText.text += `${this.item.name} \n`;
                 this.lootText.text += `AC: ${this.item.ac}, Type: ${this.item.type} \n`;
                 if(this.item.magic.effect.attribute != null){
                     this.lootText.text += `${this.item.magic.effect.attribute} +${this.item.magic.effect.value}\n`;
                 }
             } else if(this.item.dmg != null){//Weapon
                 let critPercent = (100 - this.item.crit.threshold) + '%';
-                this.lootText.text += `[${this.item.level}] ${this.item.name} \n`;
+                this.lootText.text += `${this.item.name} \n`;
                 this.lootText.text += `Dmg: ${this.item.dmg.min} - ${this.item.dmg.max}   Crit: ${critPercent} - x${this.item.crit.multiplier}\n`;
                 if(this.item.magic.effect.attribute != null){
                     this.lootText.text += `${this.item.magic.effect.attribute} +${this.item.magic.effect.value}\n`;
