@@ -29,6 +29,7 @@ class Game extends Phaser.Game {
 
         this.baseWidth = baseWidth;
         this.baseHeight = baseHeight;
+        this.OnResizeCalled = this.OnResizeCalled.bind(this);
 
         /***** VERSION NUMBER - UPDATING WILL WIPE PLAYER DATA *************
         /****
@@ -43,8 +44,8 @@ class Game extends Phaser.Game {
         let field = document.getElementById('content');
         //Init Utilities
         this.disableContextMenu(field);
-        window.addEventListener('resize', this.OnResizeCalled.bind(this), false);
-        //this.OnResizeCalled();
+        window.addEventListener('resize', this.OnResizeCalled, false);
+        // this.OnResizeCalled();
 
         let playerData = null;
         let playerClock = 0;
@@ -126,13 +127,12 @@ class Game extends Phaser.Game {
     }
 
     OnResizeCalled() {
-        let gameWidth = window.innerWidth;
+        let gameWidth = document.documentElement.clientWidth;
         let scaleToFitX = gameWidth / this.baseWidth;
-        let scaleDownForAd = window.innerWidth < 728 ? 100 : 90;
-        let gameHeight = window.innerHeight - scaleDownForAd;
+        let scaleDownForAd = gameWidth < 728 ? 100 : 90;
+        let gameHeight = document.documentElement.clientHeight - scaleDownForAd;
         let scaleToFitY = gameHeight / this.baseHeight;
         let optimalRatio = Math.min(scaleToFitX, scaleToFitY);
-
         this.scale.setUserScale(optimalRatio, optimalRatio, 0, 0);
     }
 
