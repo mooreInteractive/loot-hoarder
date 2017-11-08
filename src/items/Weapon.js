@@ -60,7 +60,8 @@ export function build(levelMin, levelMax) {
     let critMultiplier = critData.length > 1 ? critData[1].slice(1) : critData[0].slice(1);
 
     weapon.name = newWeapon.name;
-    weapon.hands = newWeapon.twoHanded ? 2 : newWeapon.hands ? newWeapon.hands : 1;
+    console.log('creating weapon with twoHanded, or hands:', newWeapon.twoHanded, newWeapon.hands);
+    weapon.hands = newWeapon.twoHanded === "TRUE" ? 2 : newWeapon.hands ? newWeapon.hands : 1;
     weapon.weight = parseInt(newWeapon.weight);
     weapon.frame = parseInt(newWeapon.frame);
     weapon.dmg.min = parseInt(dmgMin);
