@@ -265,7 +265,7 @@ export default class extends Phaser.State {
                                     useSlot = false;
                                 }
                             } else {
-                                hitSlot = rightSlot;
+                                hitSlot = leftSlot;
                                 return true;
                             }
                             if(this.game.player.equipped[rightSlot.type] != null){
