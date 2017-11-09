@@ -231,53 +231,54 @@ export default class extends Phaser.State {
             if(dropSlots.length == 1){
                 //console.log('-mouseOverEquipmentSlot:', slots[i], slots[i].type, this.game.player.equipped);
                 hitSlot = dropSlots[0];
-            } else if(dropSlots.length > 1){
-                let leftSlot;
-                dropSlots.some((slot)=>{
-                    let accessorySlot = (['accessory1','accessory2','accessory3','accessory4']).indexOf(slot.type) > -1;
-                    if(this.game.player.equipped[slot.type] == null){
-                        if(leftSlot){
-                            if(this.game.player.equipped[leftSlot.type] != null){
-                                if(this.game.player.equipped[leftSlot.type].hands > 1 || item.hands > 1){
-                                    // console.log('two-handed weapon equipped');
-                                    hitSlot = leftSlot;
-                                    return true;
-                                } else {
-                                    hitSlot = slot;
-                                    return true;
-                                }
-                            } else {
-                                hitSlot = leftSlot;
-                                return true;
-                            }
-                        } else {
-                            leftSlot = slot;
+            } else if(dropSlots.length == 2){//hands
+                if(dropSlots.length == 2){
+                    let leftSlot = dropSlots[0];
+                    let rightSlot = dropSlots[1];
+                    let leftHandEmpty = this.game.player.equipped[leftSlot.type] == null;
+                    let rightHandEmpty = this.game.player.equipped[rightSlot.type] == null;
+                    let leftTwoHanded = this.game.player.equipped[leftSlot.type] ? this.game.player.equipped[leftSlot.type].hands > 1 : false;
+                    let rightTwoHanded = this.game.player.equipped[rightSlot.type] ? this.game.player.equipped[rightSlot.type].hands > 1 : false;
+                    let itemTwoHanded = item.hands > 1;
+                    //left empty
+                    if(leftHandEmpty && !rightHandEmpty){
+                        hitSlot = leftSlot;
+                        if(itemTwoHanded || rightTwoHanded){
+                            hitSlot = rightSlot;
                         }
-                    } else if(!accessorySlot){
-                        if(!leftSlot){
-                            leftSlot = slot;
-                        }else{
-                            let rightSlot = slot;
-                            let useSlot = true;
-                            if(this.game.player.equipped[leftSlot.type] != null){
-                                if(this.game.player.equipped[leftSlot.type].hands > 1 || item.hands > 1){
-                                    // console.log('two-handed weapon equipped');
-                                    useSlot = false;
-                                }
-                            } else {
-                                hitSlot = leftSlot;
-                                return true;
-                            }
-                            if(this.game.player.equipped[rightSlot.type] != null){
-                                if(this.game.player.equipped[rightSlot.type].hands > 1 || item.hands > 1){
-                                    // console.log('two-handed weapon equipped');
-                                    useSlot = false;
-                                }
-                            }
-                            if(useSlot){hitSlot = leftSlot;}
+                    }
+                    //right Empty
+                    if(!leftHandEmpty && rightHandEmpty){
+                        hitSlot = rightSlot;
+                        if(itemTwoHanded || leftTwoHanded){
+                            hitSlot = leftSlot;
+                        }
+                    }
+                    //both Empty
+                    if(leftHandEmpty && rightHandEmpty){
+                        hitSlot = leftSlot;
+                    }
+                    //both full
+                    if(!leftHandEmpty && !rightHandEmpty){
+                        if(!itemTwoHanded){
+                            hitSlot = leftSlot;
+                        }
+                    }
+                }
+            } else if(dropSlots.length == 4){//accessories
+                let emptySlot;
+                dropSlots.forEach(slot => {
+                    if(!emptySlot){
+                        if(this.game.player.equipped[slot.type] == null){
+                            emptySlot = slot;
                         }
                     }
                 });
+                if(!emptySlot){
+                    hitSlot = dropSlots[3];//replace the last one?
+                } else {
+                    hitSlot = emptySlot;
+                }
             }
         }
 
