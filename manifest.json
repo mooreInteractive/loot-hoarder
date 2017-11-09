@@ -1,44 +1,39 @@
 {
   "name": "Moore's Lewt",
+  "start_url": "index.html",
+  "background_color": "#5981f7",
+  "display": "standalone",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "assets/images/logos/lewt-36.png",
       "sizes": "36x36",
-      "type": "image/png",
-      "density": 0.75
+      "type": "image/png"
     },
     {
       "src": "assets/images/logos/lewt-48.png",
       "sizes": "48x48",
-      "type": "image/png",
-      "density": 1.0
+      "type": "image/png"
     },
     {
       "src": "assets/images/logos/lewt-72.png",
       "sizes": "72x72",
-      "type": "image/gif",
-      "density": 1.5
+      "type": "image/gif"
     },
     {
       "src": "assets/images/logos/lewt-96.png",
       "sizes": "96x96",
-      "type": "image/gif",
-      "density": 2.0
+      "type": "image/gif"
     },
     {
       "src": "assets/images/logos/lewt-144.png",
       "sizes": "144x144",
-      "type": "image/gif",
-      "density": 3.0
+      "type": "image/gif"
     },
     {
       "src": "assets/images/logos/lewt-192.png",
       "sizes": "192x192",
-      "type": "image/gif",
-      "density": 4.0
+      "type": "image/gif"
     }
-  ],
-  "start_url": "index.html",
-  "display": "standalone",
-  "orientation": "portrait"
+  ]
 }
