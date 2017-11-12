@@ -50,20 +50,18 @@ export function build(levelMin, levelMax) {
         return randWeapon.level == weapon.level;
     });
     let newWeapon = weaponSet[this.rand(0,weaponSet.length-1)];
-    let dmgSplit = newWeapon.dmg.split('+');
-    let modifier = parseInt(dmgSplit[1]) || 0;
-    let dmgMinMax = dmgSplit[0].split('d');
-    let dmgMin = parseInt(dmgMinMax[0])+modifier;
-    let dmgMax = (parseInt(dmgMinMax[0])*parseInt(dmgMinMax[1]))+modifier;
+    let dmgSplit = newWeapon.dmg.split('-');
+    let dmgMin = parseInt(dmgSplit[0]);
+    let dmgMax = parseInt(dmgSplit[1]);
     let critData = newWeapon.crit.split('/');
     let critThreshold = critData.length > 1 ? critData[0] : 95;
     let critMultiplier = critData.length > 1 ? critData[1].slice(1) : critData[0].slice(1);
 
     weapon.name = newWeapon.name;
-    console.log('creating weapon with twoHanded, or hands:', newWeapon.twoHanded, newWeapon.hands);
     weapon.hands = newWeapon.twoHanded === "TRUE" ? 2 : newWeapon.hands ? newWeapon.hands : 1;
-    weapon.weight = parseInt(newWeapon.weight);
+    // weapon.weight = parseInt(newWeapon.weight);
     weapon.frame = parseInt(newWeapon.frame);
+    weapon.dmgType = newWeapon.dmgType;
     weapon.dmg.min = parseInt(dmgMin);
     weapon.dmg.max = parseInt(dmgMax);
     weapon.value = parseInt(newWeapon.value);

@@ -1,62 +1,85 @@
-level,name,dmg,crit,weight,durability,value,twoHanded,spriteType,frame
-1,Hand Crossbow,1d4,90/x2,2,6,100,FALSE,bow,18
-1,Dagger,1d4,90/x2,1,6,2,FALSE,dagger,13
-1,Wood Stake,1d4,x2,1,4,0,FALSE,dagger,12
-1,Shortspear,1d6,x2,3,6,1,FALSE,spear,25
-1,Quarter Staff,2d6,x2,4,4,0,TRUE,spear,24
-1,Broken Short Sword,1d6,90/x2,4,6,2,FALSE,sword,6
-1,Worn Short Sword,1d6+1,x2,4,7,4,FALSE,sword,7
-1,Dull Long Sword,1d6,85/x2,5,6,6,FALSE,sword,12
-1,Broken Machete,1d6,x3,3,4,3,FALSE,sword,24
-2,Light Hammer,1d4,x2,2,6,1,FALSE,axe,6
-2,LongSpear,1d6,x3,9,8,5,TRUE,spear,26
-2,Short Sword,1d6+2,90/x2,5,8,8,FALSE,sword,8
-2,Machete,1d6+1,90/x2,3,8,4,FALSE,sword,25
-3,Hatchet,1d6,x2,2,8,8,FALSE,axe,19
-3,Hand Axe,1d6,x3,3,8,6,FALSE,axe,18
-3,Short Bow,1d6,x3,2,10,30,TRUE,bow,18
-3,Compound Short Bow,1d6+1,x3,2,12,75,TRUE,bow,20
-3,Punch Dagger,1d4,x3,1,8,8,FALSE,dagger,13
-3,Kukri,1d4,85/x2,2,8,8,FALSE,dagger,14
-3,Spear,1d8,x3,6,8,2,TRUE,spear,26
-3,Javelin,1d6,x2,2,10,1,FALSE,spear,26
-3,Long Sword,1d8,90/x2,6,10,6,FALSE,sword,13
-4,Battle Axe,1d8,x3,6,10,10,FALSE,axe,0
-4,Heavy Pick,1d6,x4,6,10,8,TRUE,axe,12
-4,Light Crossbow,1d8,90/x2,4,12,35,FALSE,bow,19
-4,Long Bow,1d8,x3,3,14,75,TRUE,bow,19
-4,Trident,1d8,x2,4,10,15,FALSE,spear,27
-4,Boar Spear,1d8,x2,8,18,5,TRUE,spear,27
-4,Scimitar,1d8+1,x2,4,12,8,FALSE,sword,23
-5,War Hammer,1d8,x3,5,15,12,TRUE,axe,14
-5,Light Repeating Crossbow,1d8,90/x2,6,14,250,TRUE,bow,20
-5,Heavy Repeating Crossbow,1d10,90/x2,12,14,400,TRUE,bow,21
-5,Glaive,1d10,x3,10,12,8,TRUE,spear,26
-5,Guisarme,2d4,x3,12,12,9,TRUE,spear,25
-5,Falchion,1d8+2,x2,5,14,12,FALSE,sword,23
-6,Heavy Crossbow,1d10,90/x2,8,16,50,FALSE,bow,22
-6,Compound Long Bow,1d8+1,x3,3,16,100,TRUE,bow,23
-6,Starknife,1d4+1,x3,3,12,10,FALSE,dagger,16
-6,Kama,1d6,x2,2,12,10,FALSE,dagger,15
-6,Halbred,1d10,x3,12,15,10,TRUE,spear,25
-6,Bardiche,1d10,90/x2,14,15,13,TRUE,spear,28
-6,Great Sword,1d12,x3,10,16,18,TRUE,sword,2
-7,Bayonet,1d6,x2,1,18,15,FALSE,dagger,16
-7,Sword Breaker,1d6+1,90/x3,3,24,24,FALSE,dagger,17
-7,Lance,1d8,x3,10,18,10,TRUE,spear,25
-7,Bill,1d8,x3,11,20,11,TRUE,spear,26
-7,Bastard Sword,1d10,x2,12,18,24,TRUE,sword,9
-8,Great Axe,1d12,x3,12,18,20,TRUE,axe,2
-8,Dwarven War Axe,1d10,x3,8,18,30,FALSE,axe,24
-8,Double Crossbow,1d8,90/x2,18,20,300,TRUE,bow,24
-8,Ranseur,2d4,x3,12,20,10,TRUE,spear,27
-8,Cleaver,2d6,90/x2,8,20,30,FALSE,sword,25
-9,Orc Double Axe,2d8,x3,15,22,60,TRUE,axe,8
-9,Spiked Chain,2d4,x2,10,22,25,FALSE,spear,27
-9,Bec de Corbin,1d10,x3,12,20,15,TRUE,spear,28
-9,Glaive-Guisarme,1d10,x3,10,22,12,TRUE,spear,29
-9,Rapier,2d6,x3,6,22,45,FALSE,sword,13
-10,Gnome Hooked Hammer,2d6,x4,6,24,20,TRUE,axe,13
-10,Lucerne Hammer,1d12,x3,12,24,15,TRUE,axe,16
-10,Dwarven Urgrosh,2d8,x3,12,24,50,TRUE,spear,20
-10,Mountain Death Blade,2d8,85/x2,8,24,80,FALSE,sword,11
+level,name,dmg,crit,hands,value,spriteType,frame,dmgType
+1,wood broad swowrd,1-3,x3,2,5,sword,0,b
+1,wood sword,1-2,90/x2,1,5,sword,6,s
+1,wood bokken,2-3,x2,2,5,sword,18,s
+1,Iron Foil,1-2,x3,1,5,sword,12,p
+2,Iron Broadsword,2-4,x3,2,7,sword,1,b
+2,Iron Sword,2-3,90/x2,1,7,sword,7,s
+2,Iron Cutlass,2-3,x3,1,7,sword,13,p
+2,Iron Katana,3-4,x2,2,7,sword,19,s
+3,Steel broad sword,3-4,90/x3,2,9,sword,2,b
+3,fine blade sword,2-5,90/x2,1,9,sword,8,s
+4,rusted rapier,4-6,x2,1,12,sword,14,p
+4,steel katana,3-8,x3,2,12,sword,20,s
+5,Elven Broad Sword,7-8,x2,2,15,sword,3,b
+5,Superior Blade,5-6,85/x2,1,15,sword,9,s
+6,Fine Cutlass,3-10,x4,1,18,sword,15,p
+6,Guilded Katana,8-10,x2,2,18,sword,21,s
+7,Dwarven Broad Sword,9-10,90/x3,2,21,sword,4,b
+7,Superier Blade of Light,6-9,85/x2,1,21,sword,10,s
+8,rusted machete,5-15,x3,1,24,sword,24,s
+8,Rapier of Light,9-12,x2,1,24,sword,16,p
+8,Kriss,9-10,90/x3,1,24,sword,22,s
+9,Orcish Broad Sword,6-18,x4,2,27,sword,5,b
+9,Falchion,10-13,x3,1,27,sword,23,s
+10,Dark Superior Blade,10-16,x2,1,30,sword,11,s
+10,Dark Rapier,5-18,x4,1,30,sword,17,p
+11,Cleaver,9-20,x3,1,34,sword,25,b
+11,Broad Sword of Fire,14-20,x2,2,34,sword,30,b
+11,Broad Sword of Ice,14-20,x2,2,34,sword,36,b
+12,Fire Sword,10-23,x3,1,38,sword,32,s
+12,Ice Sword,10-23,x3,1,38,sword,38,s
+13,Superior Blade of Fire,16-20,x3,1,42,sword,31,s
+13,Superior Blade of Ice,16-20,x3,1,42,sword,37,s
+15,Brutish Sword,20-24,x2,1,50,sword,26,b
+15,Fire Falchion,16-26,90/x3,1,50,sword,33,s
+15,Ice Falchion,16-26,90/x3,1,50,sword,38,s
+18,Dark Brutish Sword,27-30,x3,1,65,sword,27,b
+18,Fire Rapier,20-35,x4,1,65,sword,34,p
+18,Ice Cutlass,20-35,x4,1,65,sword,39,p
+20,Dark Fire Blade,30-40,85/x3,2,75,sword,28,b
+20,Dark Ice Blade,30-40,85/x3,2,75,sword,29,b
+20,Fire Katana,20-50,90/x4,2,75,sword,35,s
+20,Ice Katana,20-50,90/x4,2,75,sword,41,s
+1,wood great axe,2-3,x3,2,5,axe,0,b
+1,wood battle axe,2-4,90/x2,2,5,axe,6,s
+1,Iron Hand Axe,1-3,x2,1,5,axe,12,s
+2,Iron great axe,2-4,x3,2,7,axe,1,b
+2,Iron Battle Axe,2-4,x3,2,7,axe,7,s
+2,Wraped Hand Axe,1-4,90/x2,1,7,axe,13,s
+3,Steel Great Axe,2-5,x3,2,9,axe,2,b
+3,Steel Battle Axe,1-6,x2,2,9,axe,8,s
+4,Swift Axe,2-5,90/x3,1,12,axe,14,s
+5,The Wind's Gale,5-7,90/x2,2,15,axe,3,b
+5,The Mountain's Breath,3-8,x2,2,15,axe,4,b
+6,Superior Battle Axe,4-8,x3,2,18,axe,9,s
+6,Gnarled Hand Axe,5-6,x2,1,18,axe,15,p
+7,Battle Axe of Light,6-8,85/x2,2,21,axe,10,s
+8,Demon's Tooth,4-8,x4,1,24,axe,16,p
+8,Dark Great Axe,8-10,x2,2,24,axe,5,b
+9,Hell's Battle Axe,8-10,90/x3,2,27,axe,11,s
+10,Demon's Fang,6-9,85/x2,1,30,axe,17,p
+11,Black Steel Axe,5-15,x3,1,34,axe,18,s
+12,Black Steel Quick Axe,9-12,x2,1,38,axe,19,s
+12,Black Steel Mace,9-10,90/x3,1,38,axe,20,b
+13,Bone Axe,6-18,x4,1,42,axe,21,s
+14,Spiked Tooth Axe,10-13,x3,1,46,axe,22,p
+14,Demon's Head Club,10-16,x2,2,46,axe,23,b
+15,Rusted Executioner's Axe,5-18,x4,2,50,axe,24,s
+16,Worn Executioner's Axe,9-20,x3,2,55,axe,25,s
+16,Executioner's Demon Axe,14-20,x2,1,55,axe,26,s
+17,Demon's Great Axe,14-20,x2,2,60,axe,27,b
+18,Great Axe of Dark Fire,10-23,x3,2,65,axe,28,b
+18,Great Axe of Dark Ice,10-23,x3,2,65,axe,29,b
+19,Hot Great Axe,16-20,x3,2,70,axe,30,b
+19,Cold Great Axe,16-20,x3,2,70,axe,36,b
+20,Battle Axe of Fire,20-24,x2,2,75,axe,31,s
+20,Battle Axe of Ice,16-26,90/x3,2,75,axe,37,s
+20,Great Axe of Fire,16-26,90/x3,2,75,axe,32,b
+20,Great Axe of Ice,27-30,x3,2,75,axe,38,b
+21,Hand Axe of Fire,20-35,x4,1,80,axe,33,s
+21,Hand Axe of Ice,20-35,x4,1,80,axe,39,s
+22,Swift Axe of Fire,30-40,85/x3,1,85,axe,34,s
+22,Swift Axe of Ice,30-40,85/x3,1,85,axe,40,s
+22,Executioner's Axe of Fire,20-50,90/x4,2,85,axe,35,s
+22,Executioner's Axe of Ice,20-50,90/x4,2,85,axe,41,s

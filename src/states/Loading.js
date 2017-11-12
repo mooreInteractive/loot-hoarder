@@ -57,6 +57,8 @@ export default class extends Phaser.State {
         this.game.load.image('scroll', './assets/images/items/scroll.png');
         this.game.load.spritesheet('axes', './assets/images/items/Fantasy_Axes_3x.png', 96, 96);
         this.game.load.spritesheet('swords', './assets/images/items/Fantasy_Swords_3x.png', 96, 96);
+        this.game.load.spritesheet('daggers', './assets/images/items/Fantasy_Daggers_3x.png', 96, 96);
+        this.game.load.spritesheet('spears', './assets/images/items/Spears_3x.png', 48, 96);
         this.game.load.spritesheet('misc_weap', './assets/images/items/Weapons1_3x.png', 96, 96);
 
         //terrain

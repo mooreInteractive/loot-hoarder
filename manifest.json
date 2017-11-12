@@ -1,5 +1,6 @@
 {
   "name": "Moore's Lewt",
+  "short_name": "Moore's Lewt",
   "start_url": "index.html",
   "background_color": "#5981f7",
   "display": "standalone",
