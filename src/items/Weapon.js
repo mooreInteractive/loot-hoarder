@@ -2,7 +2,7 @@
 import * as Constants from './constants';
 import * as Weapons from '../data/weapons';
 
-export function build(levelMin, levelMax) {
+export function build(levelMin, levelMax, rarity=null) {
     let weapon = {
         'name': 'null',
         'type': 'null',
@@ -102,14 +102,23 @@ export function build(levelMin, levelMax) {
         break;
     }
 
-    switch(this.rand(0,12)){
-    case 0:
-        weapon.magic.effect = this.getMagicEffect(weapon.level);
-        weapon.name += ' of '+weapon.magic.effect.attribute;
-        weapon.value += 100*weapon.level;
-        break;
-    default:
-        break;
+    let randWin = this.rand(0,12);
+    if(randWin < 1 || rarity === 'rare'){
+        let realMagic = this.rand(0,5);
+        if(realMagic > 0){
+            switch(realMagic){
+            case 1: weapon.magic.type = 'Extra Valuable';
+                weapon.value *= 2;
+                break;
+            default: weapon.magic.type = 'Enhanced Damage';
+                weapon.dmg.min += levelMin;
+                weapon.dmg.max += levelMin;
+            }
+        } else {
+            weapon.magic.effect = this.getMagicEffect(weapon.level);
+            weapon.name += ' of '+weapon.magic.effect.attribute;
+            weapon.value += 100*weapon.level;
+        }
     }
     //return the weapon
     return weapon;

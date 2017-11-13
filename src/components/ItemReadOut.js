@@ -52,6 +52,8 @@ export default class ItemReadOut{
                 this.lootText.text += `Dmg: ${this.item.dmg.min} - ${this.item.dmg.max}   Crit: ${critPercent} - x${this.item.crit.multiplier}\n`;
                 if(this.item.magic.effect.attribute != null){
                     this.lootText.text += `${this.item.magic.effect.attribute} +${this.item.magic.effect.value}\n`;
+                } else if(this.item.magic.type){
+                    this.lootText.text += `${this.item.magic.type}`;
                 }
             } else if(this.item.type == 'misc'){
                 this.lootText.text += `${this.item.name} \n`;

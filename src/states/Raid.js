@@ -2,9 +2,9 @@ import Phaser from 'phaser';
 import * as Forge from '../items/Forge';
 import Avatar from '../components/Avatar';
 import Dialogue from '../components/Dialogue';
-import * as StoryFunctions from '../components/StoryFunctions';
 import randomColor from 'randomcolor';
 import LootList from '../components/LootList';
+import * as lootUtils from '../components/lootUtils';
 //import LootParticle from '../components/particle';
 
 export default class extends Phaser.State {
@@ -383,44 +383,11 @@ export default class extends Phaser.State {
     assessment(){
         let player = this.game.player;
         let enemy = this.currentEnemy;
-        let story = this.game.player.story;
 
         if(enemy.hp < 1){//killed an enemey
-            //get loot
-            let lootChance = Forge.rand(0,100);
-            let lootThreshold = 65;
-            let lootMin = this.dungeon.level - 1 > 1 ? this.dungeon.level - 1 : this.dungeon.level;
-            let lootMax = this.dungeon.level;
-            if(this.dungeon.defeated){
-                lootThreshold = 85;
-            }
-            if(enemy.boss){lootThreshold = 35; lootMax = this.dungeon.level + 1;}
-            if(player.magicFX.time > 0 && player.magicFX.name === 'LEWT'){lootThreshold -= 15;}
-            if( lootChance > lootThreshold || !story.chapter1.firstLootDrop){
-                //Story Junk - TODO offload somewhere? This will get bad
-                if(this.dungeon.level == 2 && !story.chapter1.foundSecondNote && story.chapter1.timesCheckedShop > 0){
-                    StoryFunctions.chapter1.dropNote(this.game, this, story);
-                    story.chapter1.foundSecondNote = true;
-                } else {
-                    if(!story.chapter1.firstLootDrop){
-                        story.chapter1.firstLootDrop = true;
-                        StoryFunctions.saveStory(story);
-                        this.game.loot.push(Forge.getRandomWeapon(lootMin,lootMax));
-                    } else {
-                        this.game.loot.push(Forge.getRandomItem(lootMin,lootMax));
-                    }
-                    this.updateLogText('Dropped item!');
-                }
-
-            } else{
-                let goldChance = Forge.rand(0,100);
-                if(goldChance > 65){
-                    let goldDrop = Math.floor(lootChance / 10);
-                    //this.game.player.gold += goldDrop;
-                    this.droppedGold += goldDrop;
-                    this.updateLogText(`Dropped ${goldDrop} gold.`);
-                }
-            }
+            let drop = lootUtils.generateLoot(enemy, this);
+            this.droppedGold = drop.gold;
+            this.updateLogText(drop.text);
             //get exp
             let newExp = Math.floor((enemy.dps + enemy.originalHp) / 2);
             if(player.magicFX.time != 0 && player.magicFX.name == 'EXP'){ newExp = newExp*2; }
