@@ -2,6 +2,7 @@
   "name": "Moore's Lewt",
   "short_name": "Moore's Lewt",
   "start_url": "index.html",
+  "theme_color": "#5981f7",
   "background_color": "#5981f7",
   "display": "standalone",
   "orientation": "portrait",
@@ -19,22 +20,22 @@
     {
       "src": "assets/images/logos/lewt-72.png",
       "sizes": "72x72",
-      "type": "image/gif"
+      "type": "image/png"
     },
     {
       "src": "assets/images/logos/lewt-96.png",
       "sizes": "96x96",
-      "type": "image/gif"
+      "type": "image/png"
     },
     {
       "src": "assets/images/logos/lewt-144.png",
       "sizes": "144x144",
-      "type": "image/gif"
+      "type": "image/png"
     },
     {
       "src": "assets/images/logos/lewt-192.png",
       "sizes": "192x192",
-      "type": "image/gif"
+      "type": "image/png"
     }
   ]
 }

@@ -6,9 +6,15 @@ export default class ItemReadOut{
         this.settings = settings;
         this.textColor = color;
 
-        let Oswald24Black = {font: 'Oswald', fontSize: 22, fill: this.textColor};
-        this.lootText = this.gameState.add.text(this.settings.x, this.settings.y, '', Oswald24Black);
-        this.lootText.lineSpacing = -5;
+        let blueColor = color === '#000000' ? '#1113DE' : '#ADD8E6';
+
+        this.regularBlack = {font: 'Press Start 2P', fontSize: 18, fill: this.textColor};
+        this.magicBlue = {font: 'Press Start 2P', fontSize: 18, fill: blueColor};
+
+        this.lootTextGroup = game.add.group();
+        // this.lootText = this.gameState.add.text(this.settings.x, this.settings.y, '', regularBlack);
+        // this.lootTextGroup.add(game.make.text(this.settings.x, this.settings.y+(25*0), 'firstLine',  regularBlack));
+        // this.lootText.lineSpacing = -5;
 
         if(this.item != null){
             this.drawItemText();
@@ -24,46 +30,77 @@ export default class ItemReadOut{
 
     clearItem(){
         this.item = null;
-        this.lootText.text = '';
+        this.lootTextGroup.removeAll(true);
     }
 
     drawItemText(){
         //clear it out
-        this.lootText.text = '';
+        this.lootTextGroup.removeAll(true);
         if(this.item.type == 'special'){
-            console.log('item', this.item);
-            this.lootText.text = this.item.desc;
+            this.lootTextGroup.add(
+                this.game.make.text(
+                    this.settings.x,
+                    this.settings.y+(24*0),
+                    this.item.desc,
+                    this.regularBlack
+                )
+            );
         } else{
-            // if(this.item.magic.effect.attribute != null){
-            //     this.lootText.fill = '#1113DE';
-            // } else {
-            //     this.lootText.fill = this.textColor;
-            // }
-
+            let magicItem = this.item.magic.effect.attribute != null || this.item.magic.type != null;
+            //first line - item title
+            let itemName = `${this.item.name}`;
+            this.lootTextGroup.add(
+                this.game.make.text(
+                    this.settings.x,
+                    this.settings.y+(24*0),
+                    itemName,
+                    magicItem ? this.magicBlue : this.regularBlack
+                )
+            );
+            //second line - item descriptions
+            let line2Text = '';
+            let line3Text = '';
             if(this.item.ac != null){//Armor
-                this.lootText.text += `${this.item.name} \n`;
-                this.lootText.text += `AC: ${this.item.ac}, Type: ${this.item.type} \n`;
-                if(this.item.magic.effect.attribute != null){
-                    this.lootText.text += `${this.item.magic.effect.attribute} +${this.item.magic.effect.value}\n`;
-                }
+                line2Text = `AC: ${this.item.ac}`;
+                line3Text = `Type: ${this.item.type}`;
             } else if(this.item.dmg != null){//Weapon
                 let critPercent = (100 - this.item.crit.threshold) + '%';
-                this.lootText.text += `${this.item.name} \n`;
-                this.lootText.text += `Dmg: ${this.item.dmg.min} - ${this.item.dmg.max}   Crit: ${critPercent} - x${this.item.crit.multiplier}\n`;
-                if(this.item.magic.effect.attribute != null){
-                    this.lootText.text += `${this.item.magic.effect.attribute} +${this.item.magic.effect.value}\n`;
-                } else if(this.item.magic.type){
-                    this.lootText.text += `${this.item.magic.type}`;
-                }
+                line2Text = `Dmg: ${this.item.dmg.min}-${this.item.dmg.max}`;
+                line3Text = `Crit: x${this.item.crit.multiplier}(${critPercent})`;
             } else if(this.item.type == 'misc'){
-                this.lootText.text += `${this.item.name} \n`;
-                this.lootText.text += `${this.item.description} \n`;
-            } else {
-                this.lootText.text += `${this.item.name} \n`;
-                if(this.item.magic.effect.attribute != null){
-                    this.lootText.text += `${this.item.magic.effect.attribute} +${this.item.magic.effect.value}\n`;
-                }
+                line2Text = `${this.item.description}`;
             }
+            this.lootTextGroup.add(
+                this.game.make.text(
+                    this.settings.x,
+                    this.settings.y+(24*1),
+                    line2Text,
+                    this.regularBlack
+                )
+            );
+            this.lootTextGroup.add(
+                this.game.make.text(
+                    this.settings.x,
+                    this.settings.y+(24*2),
+                    line3Text,
+                    this.regularBlack
+                )
+            );
+            //fourth line - magic properties
+            let magicText = '';
+            if(this.item.magic.effect.attribute != null){
+                magicText = `${this.item.magic.effect.attribute} +${this.item.magic.effect.value}\n`;
+            } else if(this.item.magic.type){
+                magicText = `${this.item.magic.type}`;
+            }
+            this.lootTextGroup.add(
+                this.game.make.text(
+                    this.settings.x,
+                    this.settings.y+(24*3),
+                    magicText,
+                    this.magicBlue
+                )
+            );
         }
     }
 }

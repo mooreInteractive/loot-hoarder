@@ -55,7 +55,7 @@ export default class extends Phaser.State {
         this.playerInfo2 = this.add.text(470, 310, '', Pixel16White);
 
         //Item Read Out Text
-        this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 155, y: 435}, '#FFFFFF');
+        this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 160, y: 440}, '#FFFFFF');
 
         //skillPoint + Buttons
         this.plusBtns = [

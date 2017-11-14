@@ -67,7 +67,7 @@ export default class LootList{
         });
 
         this.lootReadOuts.forEach((readOut)=>{
-            readOut.lootText.destroy();
+            readOut.clearItem();
             readOut = null;
         });
 

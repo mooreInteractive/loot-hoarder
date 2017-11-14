@@ -75,7 +75,6 @@ export default class extends Phaser.State {
     }
 
     playClicked(){
-        console.log(Phaser.Easing);
         this.add.tween(this.playBtn).to( { x: this.game.world.width + 300 }, 500, Phaser.Easing.Back.In, true);
         this.add.tween(this.banner).to( { x: this.game.world.width + 300 }, 500, Phaser.Easing.Back.In, true);
 
