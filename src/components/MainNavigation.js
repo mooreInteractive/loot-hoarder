@@ -46,14 +46,16 @@ export default class MainNavigation{
 
         //Inv Button
         let invBtnFrame = this.gameState.key == 'Inventory' ? 1 : 0;
-        this.inventoryBtn = new Phaser.Button(this.game, 140, this.game.world.height - 70, 'inventory_btn', this.openInventory, this, invBtnFrame, invBtnFrame, invBtnFrame);
+        this.inventoryBtn = new Phaser.Button(this.game, (this.game.world.width/2) - 10, this.game.world.height - 80, 'inventory_btn', this.openInventory, this, invBtnFrame, invBtnFrame, invBtnFrame);
         this.inventoryBtn.anchor.setTo(0.5);
+        this.inventoryBtn.scale.setTo(1.3);
         this.game.add.existing(this.inventoryBtn);
 
         //World Button
         let worldBtnFrame = this.gameState.key == 'MainMenu' ? 1 : 0;
-        this.worldBtn = new Phaser.Button(this.game, 210, this.game.world.height - 70, 'world_btn', this.openMain, this, worldBtnFrame, worldBtnFrame, worldBtnFrame);
+        this.worldBtn = new Phaser.Button(this.game, (this.game.world.width/2) - 10, this.game.world.height - 175, 'world_btn', this.openMain, this, worldBtnFrame, worldBtnFrame, worldBtnFrame);
         this.worldBtn.anchor.setTo(0.5);
+        this.worldBtn.scale.setTo(1.3);
         this.game.add.existing(this.worldBtn);
 
     }
