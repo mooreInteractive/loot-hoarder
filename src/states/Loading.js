@@ -79,6 +79,7 @@ export default class extends Phaser.State {
         this.game.load.image('field-blue', './assets/images/terrain/field-blue.png');
         this.game.load.image('field-tan', './assets/images/terrain/field-tan.png');
         this.game.load.image('sunny-hills', './assets/images/terrain/sunny-hills.png');
+        this.game.load.image('sunny-hills-dark', './assets/images/terrain/sunny-hills-dark.png');
 
         //Mobs
         this.game.load.spritesheet('goo', './assets/images/mobs/goo.png', 77, 72);

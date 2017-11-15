@@ -33,7 +33,7 @@ export default class extends Phaser.State {
 
     create () {
         //Backgrounds
-        let bg = this.add.image(-100,-10,'sunny-hills');
+        let bg = this.add.image(-100,-10,'sunny-hills-dark');
         bg.scale.setTo(3.2);
         this.lightBG = this.add.image(-100,-10,'sunny-hills');
         this.lightBG.scale.setTo(3.2);
