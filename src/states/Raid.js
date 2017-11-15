@@ -33,8 +33,10 @@ export default class extends Phaser.State {
 
     create () {
         //Backgrounds
-        this.add.image(0,0,'field-tan');
-        this.lightBG = this.add.image(0,0,'field-blue');
+        let bg = this.add.image(-100,-10,'sunny-hills');
+        bg.scale.setTo(3.2);
+        this.lightBG = this.add.image(-100,-10,'sunny-hills');
+        this.lightBG.scale.setTo(3.2);
         if(this.dungeon.beaten){
             this.lightBG.alpha = 1;
         } else {
@@ -43,7 +45,7 @@ export default class extends Phaser.State {
 
 
         let avatarSettings = {x: this.dungeon.sprite.x - 50, y: this.dungeon.sprite.y + 25, scale: 2};
-        let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 220 };
+        let hpSettings = {x: this.game.world.centerX, y: this.game.world.height - 260 };
         this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, false); //Need to call avatar.update() and avatar.render()
 
         /* Reused Enemy HealthBar Graphic */
@@ -60,8 +62,8 @@ export default class extends Phaser.State {
         EnHpBar.ctx.fillStyle = '#DE11CD';
         EnHpBar.ctx.fill();
 
-        this.enHealthBarBg = this.add.sprite(this.game.world.centerX+155, this.game.world.height-80, EnHpBarBg);
-        this.enHealthBar = this.add.sprite(this.game.world.centerX+161, this.game.world.height-74, EnHpBar);
+        this.enHealthBarBg = this.add.sprite(this.game.world.centerX+155, this.game.world.height-120, EnHpBarBg);
+        this.enHealthBar = this.add.sprite(this.game.world.centerX+161, this.game.world.height-114, EnHpBar);
         this.enHealthBarBg.visible = false;
         this.enHealthBar.visible = false;
 
@@ -84,7 +86,7 @@ export default class extends Phaser.State {
         this.dungeon.enemies.forEach((enemy)=>{
             if(this.loadedSprites.indexOf(enemy.sprite) == -1){
                 this.loadedSprites.push(enemy.sprite);
-                let addedSprite = this.game.add.sprite(this.game.world.width + 200, this.game.world.height-125, enemy.sprite);
+                let addedSprite = this.game.add.sprite(this.game.world.width + 200, this.game.world.height-165, enemy.sprite);
                 addedSprite.anchor.setTo(0.5,1);
                 addedSprite.scale.setTo(2,2);
                 addedSprite.animations.add('walk');
@@ -95,13 +97,13 @@ export default class extends Phaser.State {
         });
 
         let fontStyles = {font: 'Press Start 2P', stroke: '#FFFFFF', fontSize: 32};
-        this.dmgText = this.add.text(this.game.world.centerX - 200, this.game.world.centerY + 100, '', fontStyles);
+        this.dmgText = this.add.text(this.game.world.centerX - 200, this.game.world.centerY + 60, '', fontStyles);
         this.dmgText.fill = '#CD1313';
         this.dmgText.visible = false;
         this.dmgText.stroke = '#FFFFFF';
         this.dmgText.strokeThickness = 2;
 
-        this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY + 100, '', fontStyles);
+        this.enDmgText = this.add.text(this.game.world.centerX + 160, this.game.world.centerY + 60, '', fontStyles);
         this.enDmgText.fill = '#1313CD';
         this.enDmgText.visible = false;
         this.enDmgText.stroke = '#FFFFFF';
@@ -193,8 +195,8 @@ export default class extends Phaser.State {
     }
 
     animateBattleStart(){
-        let avatarSettings = {x: this.game.world.centerX - 200, y: this.game.world.height-275, scale: 2};
-        let hpSettings = {x: this.game.world.centerX - 200, y: this.game.world.height - 53};
+        let avatarSettings = {x: this.game.world.centerX - 200, y: this.game.world.height-315, scale: 2};
+        let hpSettings = {x: this.game.world.centerX - 200, y: this.game.world.height - 93};
         this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, this.queueEnemy);
     }
 

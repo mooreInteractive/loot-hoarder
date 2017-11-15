@@ -6,10 +6,10 @@ import Avatar from '../components/Avatar';
 let credits = [
     {text: 'Adam Moore - this is my game', link: 'http://moore-interactive.net'},
     {text: 'Loxmyth - Avatar/Enemies Art', link: 'http://loxmyth.com'},
-    {text: 'WRLCK - Weapons Art', link: 'https://www.gamedevmarket.net/member/wrlck/'},
+    {text: 'WRLCK(GDM) - Weapons Art', link: 'https://www.gamedevmarket.net/member/wrlck/'},
     {text: 'Nick Heathfield - Music', link: 'http://nickheathfield.co.uk'},
     {text: 'Buch(OGA) - overworld, portraits', link: 'http://opengameart.org/users/buch'},
-    {text: 'Bevouliin(OGA) - battle backgrounds', link: 'http://bevouliin.com/'},
+    {text: 'Ansimuz(GDM) - battle backgrounds', link: 'https://www.gamedevmarket.net/member/ansimuz/'},
     {text: 'Kenney (Asset Jesus) - Buttons Art', link: 'http://kenney.nl'}
 ];
 
