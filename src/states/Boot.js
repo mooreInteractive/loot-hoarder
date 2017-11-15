@@ -11,6 +11,7 @@ export default class extends Phaser.State {
     preload () {
         //set up game scale, and resize function
         this.game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
+        this.game.stage.smoothed = false;
         this.game.OnResizeCalled();
 
         WebFont.load({
