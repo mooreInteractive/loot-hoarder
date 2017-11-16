@@ -72,15 +72,6 @@ export default class extends Phaser.State {
             btn.input.useHandCursor = true;
         });
 
-        //Potions
-        this.potionButton = new Phaser.Button(this.game, 90, 200, 'potion', this.usePotion, this);
-        this.potionButton.anchor.setTo(0.5);
-        this.potionButton.visible = this.game.player.potions > 0;
-        this.add.existing(this.potionButton);
-
-        this.potionText = this.add.text(65, 210, `x${this.game.player.potions}`, Pixel16White);
-        this.potionText.visible = this.game.player.potions > 1;
-
         this.itemActionButton = new Phaser.Button(this.game, 665, 485, 'greyButton', this.useItem, this);
         this.itemActionButton.scale.setTo(0.5, 1.5);
         this.itemActionButton.anchor.setTo(0.5);
@@ -96,16 +87,6 @@ export default class extends Phaser.State {
 
     create () {
         this.mainNav = new MainNavigation(this.game, this, this.currentDungeon);
-    }
-
-    usePotion(){
-        let player = this.game.player;
-        if(player.battleStats.currentHealth != player.battleStats.health){
-            player.battleStats.currentHealth = player.battleStats.health;
-            player.potions -= 1;
-        }
-        this.potionButton.visible = this.game.player.potions > 0;
-        this.potionText.visible = this.game.player.potions > 1;
     }
 
     useItem(){
@@ -543,11 +524,6 @@ export default class extends Phaser.State {
         this.updateCharacterText();
         this.avatar.update();
         this.mainNav.update(this.currentDungeon);
-
-        //potion text
-        this.potionText.text = `x${this.game.player.potions}`;
-        this.potionButton.visible = this.game.player.potions > 0;
-        this.potionText.visible = this.game.player.potions > 1;
     }
 
 }

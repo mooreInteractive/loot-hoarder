@@ -55,6 +55,7 @@ export default class extends Phaser.State {
         this.game.load.image('pinkRing', './assets/images/items/pink_ring.png');
         this.game.load.image('potion', './assets/images/items/potion.png');
         this.game.load.image('scroll', './assets/images/items/scroll.png');
+        this.game.load.spritesheet('misc_items', './assets/images/items/Items1_3x.png', 96, 96);
         this.game.load.spritesheet('axes', './assets/images/items/Fantasy_Axes_3x.png', 96, 96);
         this.game.load.spritesheet('swords', './assets/images/items/Fantasy_Swords_3x.png', 96, 96);
         this.game.load.spritesheet('daggers', './assets/images/items/Fantasy_Daggers_3x.png', 96, 96);

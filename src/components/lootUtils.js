@@ -21,6 +21,7 @@ export function generateLoot(enemy, gameState){
     if(enemy.boss){lootThreshold = 0; lootMax = dungeon.level + 1;}
     if(player.magicFX.time > 0 && player.magicFX.name === 'LEWT'){lootThreshold -= 15;}
     if( lootChance > lootThreshold || !story.chapter1.firstLootDrop){
+        // console.log('Generating Weapon:', enemy.boss, dungeon.enemiesLeft);
         if(!story.chapter1.firstLootDrop){
             story.chapter1.firstLootDrop = true;
             StoryFunctions.saveStory(story);
@@ -32,7 +33,7 @@ export function generateLoot(enemy, gameState){
             drop.gold += gold;
             drop.text.push(`Dropped ${gold} gold.`);
         } else if(enemy.boss && dungeon.enemiesLeft <= 1){//Boss
-            game.loot.push(Forge.getRandomWeapon(lootMin,lootMax, 'rare'));
+            game.loot.push(Forge.getRandomWeapon(lootMin,lootMax,'rare'));
             drop.text.push('Dropped rare item!');
             game.loot.push(Forge.getRandomItem(lootMin,lootMax));
             drop.text.push('Dropped item!');

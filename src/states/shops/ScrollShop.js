@@ -20,7 +20,8 @@ export default class extends Phaser.State {
     }
 
     create () {
-        this.add.image(0,0,'field-blue');
+        let bg = this.add.image(-100,-10,'sunny-hills');
+        bg.scale.setTo(3.2);
 
         // this.buyBg = this.add.image(2,-71,'buy_bg');
         this.sellBg = this.add.image(2,-71,'scroll_shop_bg');

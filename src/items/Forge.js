@@ -17,8 +17,8 @@ export function getRandomItem(levelMin, levelMax){
     }
 }
 
-export function getRandomWeapon(levelMin, levelMax){
-    return Weapon.build(levelMin, levelMax);
+export function getRandomWeapon(levelMin, levelMax, rarity){
+    return Weapon.build(levelMin, levelMax, rarity);
 }
 
 export function getRandomRareWeapon(levelMin, levelMax){

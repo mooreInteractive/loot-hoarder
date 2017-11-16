@@ -108,11 +108,12 @@ export function build(levelMin, levelMax, rarity=null) {
         if(realMagic > 0){
             switch(realMagic){
             case 1: weapon.magic.type = 'Extra Valuable';
-                weapon.value *= 2;
+                weapon.value = Math.ceil(weapon.value*2);
                 break;
             default: weapon.magic.type = 'Enhanced Damage';
                 weapon.dmg.min += levelMin;
                 weapon.dmg.max += levelMin;
+                weapon.value = Math.ceil(weapon.value*1.25);
             }
         } else {
             weapon.magic.effect = this.getMagicEffect(weapon.level);
@@ -142,7 +143,7 @@ export function getMagicEffect(lvl) {
         break;
     }
 
-    effect.value = lvl;
+    effect.value = Math.ceil(lvl/5);
 
 
     return effect;

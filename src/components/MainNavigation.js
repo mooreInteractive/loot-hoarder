@@ -23,6 +23,8 @@ export default class MainNavigation{
                 this.raidBtnAlpha = 0.5;
             }
         }
+        let Pixel16White = {font: 'Press Start 2P', fontSize: 20, fill: '#FFFFFF' };
+
         this.raidBtn = new Phaser.Button(this.game, this.game.world.width - 306, shopRaidInitialPos, 'raid_shop_slider', this.raidCurrentDungeon, this);
         this.raidBtn.alpha = this.raidBtnAlpha;
         let raidBtnBg = this.game.add.graphics(0,0);
@@ -58,6 +60,25 @@ export default class MainNavigation{
         this.worldBtn.scale.setTo(1.3);
         this.game.add.existing(this.worldBtn);
 
+        //Potions
+        this.potionButton = new Phaser.Button(this.game, 75, this.game.world.height-68, 'misc_items', this.usePotion, this, 0, 0, 0);
+        this.potionButton.scale.setTo(0.85);
+        this.potionButton.anchor.setTo(0.5);
+        this.gameState.add.existing(this.potionButton);
+        let numPotions = this.game.player.potions;
+        let potionTextX = 75;
+        this.potionText = this.gameState.add.text(potionTextX, this.game.world.height-58, `${numPotions}`, Pixel16White);
+
+    }
+
+    usePotion(){
+        let player = this.game.player;
+        if(player.battleStats.currentHealth != player.battleStats.health){
+            player.battleStats.currentHealth = player.battleStats.health;
+            player.potions -= 1;
+        }
+        // this.potionButton.visible = this.game.player.potions > 0;
+        // this.potionText.visible = this.game.player.potions > 1;
     }
 
     openInventory(){
@@ -149,6 +170,10 @@ export default class MainNavigation{
         //set city name text
         this.cityNameText.text = this.currentDungeon.name;
         let currHealth = this.game.player.battleStats.currentHealth;
+
+        //potion text
+        this.potionText.text = `${this.game.player.potions}`;
+        this.potionButton.visible = this.game.player.potions > 0;
 
         if(this.currentDungeon){
             this.raidBtn.alpha = 1;

@@ -39,7 +39,8 @@ export default class extends Phaser.State {
     }
 
     create () {
-        this.add.image(0,0,'field-blue');
+        let bg = this.add.image(-100,-10,'sunny-hills');
+        bg.scale.setTo(3.2);
 
         this.buyBg = this.add.image(2,-71,'buy_bg');
         this.sellBg = this.add.image(2,-71,'sell_bg');
@@ -191,8 +192,15 @@ export default class extends Phaser.State {
 
     generateShopItems(){
         let amount = 8;
-        for(let i = 0; i < amount; i++){
-            let item = Forge.getRandomWeapon(1, this.game.player.level+1);
+        let rareAmount = 2;
+        for(let i = 0; i < rareAmount; i++){
+            let rarity = i === 0 ? 'rare' : null;
+            let maxLevel = i === 0 ? this.game.player.level + 2 : this.game.player.level + 1;
+            let item = Forge.getRandomWeapon(this.game.player.level, maxLevel, rarity);
+            Utils.tryToPlaceItemInBackpack(item, this.items, this.backpack);
+        }
+        for(let i = 0; i < amount-rareAmount; i++){
+            let item = Forge.getRandomWeapon(this.game.player.level, this.game.player.level+1);
             let placed = Utils.tryToPlaceItemInBackpack(item, this.items, this.backpack);
             if(!placed){
                 break;
