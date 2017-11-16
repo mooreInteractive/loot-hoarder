@@ -83,12 +83,12 @@ export default class MainNavigation{
 
     usePotion(){
         let player = this.game.player;
-        if(player.battleStats.currentHealth != player.battleStats.health){
+        let playerNeedsHealth = player.battleStats.currentHealth != player.battleStats.health;
+        let playerHasPotions = player.potions > 0;
+        if(playerNeedsHealth && playerHasPotions){
             player.battleStats.currentHealth = player.battleStats.health;
             player.potions -= 1;
         }
-        // this.potionButton.visible = this.game.player.potions > 0;
-        // this.potionText.visible = this.game.player.potions > 1;
     }
 
     openInventory(){
