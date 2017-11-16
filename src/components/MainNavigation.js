@@ -61,13 +61,23 @@ export default class MainNavigation{
         this.game.add.existing(this.worldBtn);
 
         //Potions
-        this.potionButton = new Phaser.Button(this.game, 75, this.game.world.height-68, 'misc_items', this.usePotion, this, 0, 0, 0);
+        let bgbmd = this.game.add.bitmapData(82, 82);
+        bgbmd.ctx.beginPath();
+        bgbmd.ctx.rect(0, 0, 82, 82);
+        bgbmd.ctx.fillStyle = '#000000';
+
+        bgbmd.ctx.fill();
+        let potionBg = this.game.add.sprite(75, this.game.world.height-67, bgbmd);
+        potionBg.anchor.setTo(0.5);
+        potionBg.alpha = 0.6;
+
+        this.potionButton = new Phaser.Button(this.game, 75, this.game.world.height-67, 'misc_items', this.usePotion, this, 0, 0, 0);
         this.potionButton.scale.setTo(0.85);
         this.potionButton.anchor.setTo(0.5);
         this.gameState.add.existing(this.potionButton);
         let numPotions = this.game.player.potions;
         let potionTextX = 75;
-        this.potionText = this.gameState.add.text(potionTextX, this.game.world.height-58, `${numPotions}`, Pixel16White);
+        this.potionText = this.gameState.add.text(potionTextX, this.game.world.height-57, `${numPotions}`, Pixel16White);
 
     }
 
@@ -173,7 +183,6 @@ export default class MainNavigation{
 
         //potion text
         this.potionText.text = `${this.game.player.potions}`;
-        this.potionButton.visible = this.game.player.potions > 0;
 
         if(this.currentDungeon){
             this.raidBtn.alpha = 1;
