@@ -8,6 +8,11 @@ export default class Tools {
         window.mobParty = this.mobParty.bind(this);
         window.beefcake = this.beefcake.bind(this);
         window.levelUp = this.levelUp.bind(this);
+        window.addSkill = this.addSkill.bind(this);
+    }
+
+    addSkill(skill){
+        this.game.player.skills.push(skill);
     }
 
     addLoot(amt=3, lvlMin=1, lvlMax=5){

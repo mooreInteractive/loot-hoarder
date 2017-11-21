@@ -19,6 +19,7 @@ class Player {
         this.exp = 0;
         this.nextLevel = {level: 1, minExp: 25, maxExp: 50};
         this.skillPoints = 0;
+        this.skills = [];
         this.battling = false;
         this.latestUnlockedDungeon = 1;
         this.currentDungeon = 0;
@@ -241,6 +242,7 @@ class Player {
                 exp: this.exp,
                 nextLevel: this.nextLevel,
                 skillPoints: this.skillPoints,
+                skills: this.skills,
                 magicFX: this.magicFX,
                 inventory: this.inventory,
                 potions: this.potions,
@@ -290,6 +292,7 @@ class Player {
         this.exp = playerData.exp;
         this.nextLevel = playerData.nextLevel;
         this.skillPoints = playerData.skillPoints;
+        this.skills = playerData.skills;
         this.magicFX = playerData.magicFX;
         this.battling = false;
         this.inventory = playerData.inventory;

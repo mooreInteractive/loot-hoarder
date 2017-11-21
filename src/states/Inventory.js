@@ -214,24 +214,25 @@ export default class extends Phaser.State {
                 hitSlot = dropSlots[0];
             } else if(dropSlots.length == 2){//hands
                 if(dropSlots.length == 2){
+                    let player = this.game.player;
                     let leftSlot = dropSlots[0];
                     let rightSlot = dropSlots[1];
-                    let leftHandEmpty = this.game.player.equipped[leftSlot.type] == null;
-                    let rightHandEmpty = this.game.player.equipped[rightSlot.type] == null;
-                    let leftTwoHanded = this.game.player.equipped[leftSlot.type] ? this.game.player.equipped[leftSlot.type].hands > 1 : false;
-                    let rightTwoHanded = this.game.player.equipped[rightSlot.type] ? this.game.player.equipped[rightSlot.type].hands > 1 : false;
-                    let itemTwoHanded = item.hands > 1;
+                    let leftHandEmpty = player.equipped[leftSlot.type] == null;
+                    let rightHandEmpty = player.equipped[rightSlot.type] == null;
+                    let leftTwoHanded = player.equipped[leftSlot.type] ? (player.equipped[leftSlot.type].hands > 1 && !player.skills.includes('two-handed1hand')) : false;
+                    let rightTwoHanded = player.equipped[rightSlot.type] ? (player.equipped[rightSlot.type].hands > 1 && !player.skills.includes('two-handed1hand')) : false;
+                    let itemTwoHanded = item.hands > 1 && !player.skills.includes('two-handed1hand');
                     //left empty
                     if(leftHandEmpty && !rightHandEmpty){
                         hitSlot = leftSlot;
-                        if(itemTwoHanded || rightTwoHanded){
+                        if(itemTwoHanded || rightTwoHanded || (!player.skills.includes('two-one-handed'))){
                             hitSlot = rightSlot;
                         }
                     }
                     //right Empty
                     if(!leftHandEmpty && rightHandEmpty){
                         hitSlot = rightSlot;
-                        if(itemTwoHanded || leftTwoHanded){
+                        if(itemTwoHanded || leftTwoHanded || (!player.skills.includes('two-one-handed'))){
                             hitSlot = leftSlot;
                         }
                     }
@@ -334,7 +335,7 @@ export default class extends Phaser.State {
 
         drawnBackground.inventoryType = key;
 
-        if(item.hands > 1 && !ghost){
+        if(item.hands > 1 && !ghost && !this.game.player.skills.includes('two-handed1hand')){
             this.addSecondHandGhostImage(item, key);
         } else if(ghost){
             this.ghostedWeapon = drawnBackground;
