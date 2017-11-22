@@ -198,6 +198,9 @@ export default class extends Phaser.State {
         let avatarSettings = {x: this.game.world.centerX - 200, y: this.game.world.height-315, scale: 2};
         let hpSettings = {x: this.game.world.centerX - 200, y: this.game.world.height - 93};
         this.avatar.moveToAtScale(avatarSettings, hpSettings, 400, this.queueEnemy);
+        if(this.game.player.skills.includes('berserker')){
+            this.updateLogText('BERSERKER!');
+        }
     }
 
     animateBattleEnd(){
@@ -299,8 +302,9 @@ export default class extends Phaser.State {
     updateLogText(logText){
         let currText = this.errorText.text;
         let lines = currText.split('\n');
+        console.log('lines length:', lines.length);
         if(lines.length == 7){
-            lines.splice(6, 1);
+            lines.splice(6, 2);
         }
         lines.reverse();
         lines.push(logText);
@@ -389,7 +393,9 @@ export default class extends Phaser.State {
         if(enemy.hp < 1){//killed an enemey
             let drop = lootUtils.generateLoot(enemy, this);
             this.droppedGold = drop.gold;
-            this.updateLogText(drop.text);
+            if(drop.text.length > 0){
+                this.updateLogText(drop.text);
+            }
             //get exp
             let newExp = Math.floor((enemy.dps + enemy.originalHp) / 2);
             if(player.magicFX.time != 0 && player.magicFX.name == 'EXP'){ newExp = newExp*2; }
@@ -522,7 +528,10 @@ export default class extends Phaser.State {
         }
 
         let enemySpeedStandIn = 60;
-        let playerSpeed = 60 - Math.floor(this.game.player.battleStats.dexterity / 3);
+        /*player speed calculation*/
+        let normalPlayerModifier = Math.floor(this.game.player.battleStats.dexterity / 3);
+        let berzerker = this.game.player.skills.includes('berserker') && this.frameCount < 150 ? 30 : 0;
+        let playerSpeed = 60 - normalPlayerModifier - berzerker;
 
         if(this.raidStarted && !this.battlePaused && !this.raidEnded){
             if((this.frameCount % playerSpeed == 0) && this.currentEnemy){
