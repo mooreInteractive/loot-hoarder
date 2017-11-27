@@ -46,7 +46,9 @@ class Player {
             health: 10,
             currentHealth: 10,
             armor: 0,
-            totalWeight: 0
+            totalWeight: 0,
+            maxWeight: 0,
+            overEncumbered: false
         };
 
         this.backpack = [
