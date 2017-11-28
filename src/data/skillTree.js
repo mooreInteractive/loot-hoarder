@@ -1,24 +1,4 @@
 let slices = ['str','dex','vit','wis'];
-let strSlice = generateSlice(0);
-function generateSlice (attrIndex){
-    let attr = slices[attrIndex];
-    let strSlice;
-    strSlice = sliceSchema.slice(0);
-    strSlice.forEach(item => {
-        let adjustedIndex = item.attr + attr;
-        let setAttr;
-        if(adjustedIndex < 0){
-            setAttr = slices[slices.length - 1];
-        } else if(adjustedIndex > 3){
-            setAttr = slices[adjustedIndex%4];
-        } else {
-            setAttr = slices[adjustedIndex];
-        }
-        item.attr = setAttr;
-    });
-
-    return strSlice;
-}
 let sliceSchema = [
     {
         x: 260,
@@ -149,4 +129,53 @@ let sliceSchema = [
     }
 ];
 
+let strSkills = [
+    {
+        name: 'berserker',
+        title: 'Berserker',
+        desc: 'Performs a flurry of quick attacks at the beginning of a raid.'
+    },
+    {
+        name: 'two-hand1hand',
+        title: 'Two Handed Weapons with One Hand',
+        desc: 'Able to equip two-handed weapons in a single hand.'
+    },
+    {
+        name: 'no-weight',
+        title: 'No Over Encumberment',
+        desc: 'The player cannot become over encumbered.'
+    },
+    {
+        name: 'crit-dmg-up',
+        title: 'Increase Critical Hit Damage',
+        desc: 'When landing a critical hit, it\'ll do extra damage.'
+    }
+];
+
+function generateSlice (attrIndex){
+    let strSlice;
+    strSlice = sliceSchema.slice(0);
+    let currentSkill = 0;
+    strSlice.forEach(item => {
+        if(item.type === 'attr'){
+            let adjustedIndex = item.attr + attrIndex;
+            let setAttr;
+            if(adjustedIndex < 0){
+                setAttr = slices[slices.length - 1];
+            } else if(adjustedIndex > 3){
+                setAttr = slices[adjustedIndex%4];
+            } else {
+                setAttr = slices[adjustedIndex];
+            }
+            item.attr = setAttr;
+        } else if(item.type === 'skill'){
+            Object.assign(item, strSkills[currentSkill]);
+            currentSkill += 1;
+        }
+    });
+
+    return strSlice;
+}
+
+let strSlice = generateSlice(0);
 export default strSlice;

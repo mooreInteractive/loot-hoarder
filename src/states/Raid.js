@@ -349,7 +349,8 @@ export default class extends Phaser.State {
         let crit = Forge.rand(0+player.baseStats.dexterity, 100);
         let critThreshold = player.equipped.leftHand ? player.equipped.leftHand.crit.threshold : 95;
         if(player.magicFX.time > 0 && player.magicFX.name == 'CRIT'){ critThreshold -= 15;}
-        let critMulti = player.equipped.leftHand ? player.equipped.leftHand.crit.multiplier : 95;
+        let critMulti = player.equipped.leftHand ? player.equipped.leftHand.crit.multiplier : 2;
+        if(player.skills.includes('crit-dmg-up')){critMulti += 1;}
 
         if(miss > 15){
             if(crit > critThreshold){
@@ -530,8 +531,9 @@ export default class extends Phaser.State {
         let enemySpeedStandIn = 60;
         /*player speed calculation*/
         let normalPlayerModifier = Math.floor(this.game.player.battleStats.dexterity / 3);
+        let playerStartingSpeed = this.game.player.battleStats.overEncumbered && !this.game.player.skills.includes('no-weight') ? 90 : 60;
         let berzerker = this.game.player.skills.includes('berserker') && this.frameCount < 150 ? 30 : 0;
-        let playerSpeed = 60 - normalPlayerModifier - berzerker;
+        let playerSpeed = playerStartingSpeed - normalPlayerModifier - berzerker;
 
         if(this.raidStarted && !this.battlePaused && !this.raidEnded){
             if((this.frameCount % playerSpeed == 0) && this.currentEnemy){

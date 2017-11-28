@@ -10,6 +10,7 @@ import Options from './states/Options';
 import Inventory from './states/Inventory';
 import Raid from './states/Raid';
 import LootView from './states/LootView';
+import SkillTree from './states/SkillTree';
 import WeaponShop from './states/shops/WeaponShop';
 import ScrollShop from './states/shops/ScrollShop';
 import Tools from './tools';
@@ -94,6 +95,7 @@ class Game extends Phaser.Game {
         this.state.add('LootView', LootView, false);
         this.state.add('WeaponShop', WeaponShop, false);
         this.state.add('ScrollShop', ScrollShop, false);
+        this.state.add('SkillTree', SkillTree, false);
 
         this.state.start('Boot');
     }

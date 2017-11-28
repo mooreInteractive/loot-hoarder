@@ -13,6 +13,7 @@ export default class extends Phaser.State {
         this.startDrag = this.startDrag.bind(this);
         this.stopDrag = this.stopDrag.bind(this);
         this.selectItem = this.selectItem.bind(this);
+        this.openSkills = this.openSkills.bind(this);
     }
 
     init () {
@@ -72,6 +73,12 @@ export default class extends Phaser.State {
             btn.input.useHandCursor = true;
         });
 
+        //skill tree
+        this.skillTreeBtn = this.add.text(130, 150, 'skills', Pixel36Blue);
+        this.skillTreeBtn.inputEnabled = true;
+        this.skillTreeBtn.input.useHandCursor = true;
+        this.skillTreeBtn.events.onInputDown.add(this.openSkills);
+
         this.itemActionButton = new Phaser.Button(this.game, 665, 485, 'greyButton', this.useItem, this);
         this.itemActionButton.scale.setTo(0.5, 1.5);
         this.itemActionButton.anchor.setTo(0.5);
@@ -83,6 +90,10 @@ export default class extends Phaser.State {
         this.itemActionText.visible = false;
 
 
+    }
+
+    openSkills(){
+        this.state.start('SkillTree');
     }
 
     create () {

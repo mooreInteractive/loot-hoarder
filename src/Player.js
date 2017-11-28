@@ -220,7 +220,11 @@ class Player {
             }
         });
 
+        /* weight/encumberment */
         this.battleStats.totalWeight = weight;
+        this.battleStats.maxWeight = 10 + (this.battleStats.strength*5) + (this.battleStats.strength*this.battleStats.dexterity);
+        this.battleStats.overEncumbered = this.skills.includes('no-weight') ? false : (this.battleStats.totalWeight > this.battleStats.maxWeight);
+
         this.battleStats.health = health;
         if(this.battleStats.currentHealth > this.battleStats.health){
             this.battleStats.currentHealth = this.battleStats.health;
