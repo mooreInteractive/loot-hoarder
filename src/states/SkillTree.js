@@ -16,7 +16,6 @@ export default class extends Phaser.State {
     }
 
     preload () {
-        this.add.image(0,0,'inv_bg');
         this.currentDungeon = this.game.dungeons[this.game.player.currentDungeon];
 
         //let Pixel24Black = {font: 'Press Start 2P', fontSize: 36, fill: '#000000' };
@@ -26,6 +25,12 @@ export default class extends Phaser.State {
     }
 
     create () {
+        this.skillWheel = this.game.add.group();
+        this.skillWheel.position.setTo(this.game.world.centerX, this.game.world.centerY+100);
+        let wheelBg = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY+100, 'skill_wheel');
+        wheelBg.anchor.setTo(0.5);
+        this.skillWheel.add(wheelBg);
+
         this.mainNav = new MainNavigation(this.game, this, this.currentDungeon);
 
         //Avatar
@@ -35,6 +40,9 @@ export default class extends Phaser.State {
 
         this.addStrengthButtons();
         this.addRotationButtons();
+
+        this.skillWheel.pivot.x = this.game.world.centerX;
+        this.skillWheel.pivot.y = this.game.world.centerY+100;
     }
 
     addRotationButtons(){
@@ -80,7 +88,7 @@ export default class extends Phaser.State {
                 skillBtn.tint = 0.1 * 0x010101;
             }
             skillBtn.anchor.setTo(0.5);
-            this.add.existing(skillBtn);
+            this.skillWheel.add(skillBtn);
         });
     }
     showSkillDetail(skill){
@@ -97,6 +105,7 @@ export default class extends Phaser.State {
     update(){
         this.avatar.update();
         this.mainNav.update(this.currentDungeon);
+        this.skillWheel.rotation += 0.01;
     }
 
 }
