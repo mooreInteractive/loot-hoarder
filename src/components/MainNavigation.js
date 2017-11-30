@@ -61,22 +61,12 @@ export default class MainNavigation{
         this.game.add.existing(this.worldBtn);
 
         //Potions
-        let bgbmd = this.game.add.bitmapData(82, 82);
-        bgbmd.ctx.beginPath();
-        bgbmd.ctx.rect(0, 0, 82, 82);
-        bgbmd.ctx.fillStyle = '#000000';
-
-        bgbmd.ctx.fill();
-        let potionBg = this.game.add.sprite(75, this.game.world.height-67, bgbmd);
-        potionBg.anchor.setTo(0.5);
-        potionBg.alpha = 0.6;
-
-        this.potionButton = new Phaser.Button(this.game, 75, this.game.world.height-67, 'misc_items', this.usePotion, this, 0, 0, 0);
-        this.potionButton.scale.setTo(0.85);
+        this.potionButton = new Phaser.Button(this.game, 110, this.game.world.height-72, 'misc_items', this.usePotion, this, 0, 0, 0);
+        this.potionButton.scale.setTo(0.65);
         this.potionButton.anchor.setTo(0.5);
         this.gameState.add.existing(this.potionButton);
         let numPotions = this.game.player.potions;
-        let potionTextX = 75;
+        let potionTextX = 110;
         this.potionText = this.gameState.add.text(potionTextX, this.game.world.height-57, `${numPotions}`, Pixel16White);
 
     }

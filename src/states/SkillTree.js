@@ -7,6 +7,8 @@ import strSlice from '../data/skillTree';
 export default class extends Phaser.State {
     constructor(){
         super();
+        this.startDrag = this.startDrag.bind(this);
+        this.stopDrag = this.stopDrag.bind(this);
     }
 
     init () {
@@ -32,26 +34,64 @@ export default class extends Phaser.State {
         this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, true); //Need to call avatar.update()
 
         this.addStrengthButtons();
+        this.addRotationButtons();
+    }
+
+    addRotationButtons(){
+        let leftButton = new Phaser.Button(this.game, 100, this.game.world.centerY, 'rot_left', this.rotateLeft, this);
+        let rightButton = new Phaser.Button(this.game, this.game.world.width - 100, this.game.world.centerY, 'rot_right', this.rotateRight, this);
+
+        leftButton.anchor.setTo(0.5);
+        this.add.existing(leftButton);
+        rightButton.anchor.setTo(0.5);
+        this.add.existing(rightButton);
+    }
+
+    rotateLeft(){
+        console.log('rotate left');
+    }
+    rotateRight(){
+        console.log('rotate right');
     }
 
     addStrengthButtons(){
         console.log('srength skills:', strSlice);
 
         strSlice.forEach((skillItem) => {
-            let btnWidth = skillItem.type === 'attr' ? 35 : 50;
-            let bmd = this.game.add.bitmapData(btnWidth, btnWidth);
-            bmd.ctx.beginPath();
-            bmd.circle(btnWidth/2, btnWidth/2, btnWidth/2);
-            bmd.ctx.fillStyle = '#000000';
-
-            bmd.ctx.fill();
-            let skillBtn = this.game.add.sprite(skillItem.x, skillItem.y*2, bmd);
-            skillBtn.inputEnabled = true;
-
-            skillBtn.events.onInputDown.add((sprite) => {
-                console.log('skillBtn pressed:', sprite, skillItem);
-            }, this);
+            let btnSprite = skillItem.type === 'attr' ? 'attr_button' : 'skill_button';
+            let debug = true;
+            let skillBtn;
+            if(debug){
+                //sprite for dragging/debugging
+                skillBtn = this.game.add.sprite(skillItem.x, skillItem.y*2, btnSprite);
+                skillBtn.inputEnabled = true;
+                skillBtn.input.enableDrag();
+                skillBtn.events.onDragStop.add((sprite) => {
+                    this.stopDrag(sprite);
+                }, this);
+                skillBtn.events.onDragStart.add(function(sprite){
+                    this.startDrag(sprite);
+                }, this);
+            } else {
+                //button for real
+                skillBtn = new Phaser.Button(this.game, skillItem.x, skillItem.y*2, btnSprite, this.showSkillDetail.bind(this, skillItem), this);
+            }
+            if(this.game.player.skills.length === 0 && !skillItem.introSkill){
+                skillBtn.tint = 0.1 * 0x010101;
+            }
+            skillBtn.anchor.setTo(0.5);
+            this.add.existing(skillBtn);
         });
+    }
+    showSkillDetail(skill){
+        console.log('clicked skill:', skill);
+    }
+
+    startDrag(sprite){
+        this.currentSprint = sprite;
+    }
+    stopDrag(sprite){
+        console.log('stopped dragging this sprite to:', sprite.position);
     }
 
     update(){

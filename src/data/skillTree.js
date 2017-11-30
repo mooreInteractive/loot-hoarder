@@ -130,25 +130,27 @@ let sliceSchema = [
 ];
 
 let strSkills = [
-    {
-        name: 'berserker',
-        title: 'Berserker',
-        desc: 'Performs a flurry of quick attacks at the beginning of a raid.'
-    },
+
     {
         name: 'two-hand1hand',
         title: 'Two Handed Weapons with One Hand',
         desc: 'Able to equip two-handed weapons in a single hand.'
     },
     {
-        name: 'no-weight',
-        title: 'No Over Encumberment',
-        desc: 'The player cannot become over encumbered.'
-    },
-    {
         name: 'crit-dmg-up',
         title: 'Increase Critical Hit Damage',
         desc: 'When landing a critical hit, it\'ll do extra damage.'
+    },
+    {
+        name: 'berserker',
+        title: 'Berserker',
+        desc: 'Performs a flurry of quick attacks at the beginning of a raid.',
+        introSkill: true
+    },
+    {
+        name: 'no-weight',
+        title: 'No Over Encumberment',
+        desc: 'The player cannot become over encumbered.'
     }
 ];
 

@@ -17,6 +17,12 @@ export default class extends Phaser.State {
         this.game.load.image('part_med_yellow', './assets/images/particles/med_yellow.png');
         this.game.load.image('part_lg_yellow', './assets/images/particles/lg_yellow.png');
 
+        //skill tree UI
+        this.game.load.image('rot_left', './assets/images/skills/turn-left.png');
+        this.game.load.image('rot_right', './assets/images/skills/turn-right.png');
+        this.game.load.image('attr_button', './assets/images/skills/attr-button.png');
+        this.game.load.image('skill_button', './assets/images/skills/skill-button.png');
+
         //Button Backgrounds
         this.game.load.image('blueButton', './assets/images/blue_button00.png');
         this.game.load.image('greenButton', './assets/images/green_button00.png');
