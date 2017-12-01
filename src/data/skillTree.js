@@ -1,36 +1,36 @@
 let slices = ['str','dex','vit','wis'];
 let sliceSchema = [
     {
-        x: 260,
-        y: 68,
+        x: 212,
+        y: 102,
         type: 'attr',
         attr: -1,
         neighbors: [4]
     },
     {
-        x: 331,
-        y: 48,
+        x: 290,
+        y: 78,
         type: 'attr',
         attr: -1,
         neighbors: [4]
     },
     {
-        x: 434,
-        y: 47,
+        x: 437,
+        y: 78,
         type: 'attr',
         attr: -1,
         neighbors: [5]
     },
     {
-        x: 509,
-        y: 68,
+        x: 543,
+        y: 102,
         type: 'attr',
         attr: 1,
         neighbors: [5]
     },
     {
-        x: 304,
-        y: 98,
+        x: 273,
+        y: 160,
         type: 'skill',
         name: 'skill-two',
         title: 'Skill Two',
@@ -38,8 +38,8 @@ let sliceSchema = [
         neighbors: [0,1,6]
     },
     {
-        x: 461,
-        y: 98,
+        x: 468,
+        y: 151,
         type: 'skill',
         name: 'skill-three',
         title: 'Skill Three',
@@ -47,29 +47,29 @@ let sliceSchema = [
         neighbors: [2,3,7]
     },
     {
-        x: 343,
-        y: 124,
+        x: 334,
+        y: 204,
         type: 'attr',
         attr: -1,
         neighbors: [4,8,9]
     },
     {
-        x: 423,
-        y: 124,
+        x: 413,
+        y: 199,
         type: 'attr',
         attr: 1,
         neighbors: [5,9,10]
     },
     {
-        x: 317,
-        y: 148,
+        x: 287,
+        y: 259,
         type: 'attr',
         attr: 0,
         neighbors: [6,'ld0']
     },
     {
-        x: 383,
-        y: 148,
+        x: 378,
+        y: 258,
         type: 'skill',
         name: 'skill-one',
         title: 'Skill One',
@@ -77,29 +77,29 @@ let sliceSchema = [
         neighbors: [6,7,11,12]
     },
     {
-        x: 446,
-        y: 148,
+        x: 462,
+        y: 255,
         type: 'attr',
         attr: 0,
         neighbors: [7,'rd0']
     },
     {
-        x: 335,
-        y: 187,
+        x: 319,
+        y: 319,
         type: 'attr',
         attr: 0,
         neighbors: [9,13]
     },
     {
-        x: 411,
-        y: 187,
+        x: 429,
+        y: 319,
         type: 'attr',
         attr: 0,
         neighbors: [9,13]
     },
     {
-        x: 383,
-        y: 235,
+        x: 378,
+        y: 376,
         type: 'skill',
         name: 'skill-four',
         title: 'Skill Four',
@@ -107,22 +107,22 @@ let sliceSchema = [
         neighbors: [11,12,14,15]
     },
     {
-        x: 364,
-        y: 270,
+        x: 357,
+        y: 445,
         type: 'attr',
         attr: 2,
         neighbors: [13,16,'ld1']
     },
     {
-        x: 406,
-        y: 270,
+        x: 414,
+        y: 442,
         type: 'attr',
         attr: 2,
         neighbors: [13,16,'rd1']
     },
     {
-        x: 384,
-        y: 324,
+        x: 386,
+        y: 508,
         type: 'attr',
         attr: 2,
         neighbors: [14,15,'center']

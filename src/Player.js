@@ -179,6 +179,13 @@ class Player {
         this.savePlayerData();
     }
 
+    addSkill(skill){
+        this.skills.push(skill);
+        this.skillPoints -= 3;
+        this.updateBattleStats();
+        this.savePlayerData();
+    }
+
     resetBattleStatsAttributes(){
         this.battleStats.strength = this.baseStats.strength;
         this.battleStats.vitality = this.baseStats.vitality;

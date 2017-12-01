@@ -26,11 +26,6 @@ export default class extends Phaser.State {
     preload () {
         this.add.image(0,0,'inv_bg');
 
-        //Avatar
-        let avatarSettings = {x: 90, y: 85, scale: 1};
-        let hpSettings = {x: 325, y: 100 };
-        this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, true); //Need to call avatar.update()
-
         //Inventory Grid
         this.invGridPos = {x: 59, y: 560};
         this.invGrid = new ItemGrid(
@@ -48,7 +43,7 @@ export default class extends Phaser.State {
 
         //let Pixel24Black = {font: 'Press Start 2P', fontSize: 36, fill: '#000000' };
         let Pixel24White = {font: 'Press Start 2P', fontSize: 36, fill: '#898989' };
-        let Pixel36Blue = {font: 'Press Start 2P', fontSize: 42, fill: '#527ee5' };
+        // let Pixel36Blue = {font: 'Press Start 2P', fontSize: 42, fill: '#527ee5' };
         let Pixel16White = {font: 'Press Start 2P', fontSize: 16, fill: '#FFFFFF' };
 
         //Player Stats
@@ -57,27 +52,6 @@ export default class extends Phaser.State {
 
         //Item Read Out Text
         this.itemReadOut = new ItemReadOut(this.game, this, null, {x: 160, y: 440}, '#FFFFFF');
-
-        //skillPoint + Buttons
-        this.plusBtns = [
-            this.add.text(130, 198, '+', Pixel36Blue),
-            this.add.text(130, 239, '+', Pixel36Blue),
-            this.add.text(130, 280, '+', Pixel36Blue),
-            this.add.text(130, 324, '+', Pixel36Blue)
-        ];
-
-        this.plusBtns.forEach((btn, index) => {
-            btn.visible = this.game.player.skillPoints > 0;
-            btn.inputEnabled = true;
-            btn.events.onInputDown.add(this.plusClicked.bind(this, index), this);
-            btn.input.useHandCursor = true;
-        });
-
-        //skill tree
-        this.skillTreeBtn = this.add.text(130, 150, 'skills', Pixel36Blue);
-        this.skillTreeBtn.inputEnabled = true;
-        this.skillTreeBtn.input.useHandCursor = true;
-        this.skillTreeBtn.events.onInputDown.add(this.openSkills);
 
         this.itemActionButton = new Phaser.Button(this.game, 665, 485, 'greyButton', this.useItem, this);
         this.itemActionButton.scale.setTo(0.5, 1.5);
@@ -98,6 +72,10 @@ export default class extends Phaser.State {
 
     create () {
         this.mainNav = new MainNavigation(this.game, this, this.currentDungeon);
+        //Avatar
+        let avatarSettings = {x: 220, y: 170, scale: 3};
+        let hpSettings = {x: 203, y: this.game.world.height - 160};
+        this.avatar = new Avatar(this.game, this, avatarSettings, hpSettings, true, true); //Need to call avatar.update()
     }
 
     useItem(){
@@ -119,21 +97,21 @@ export default class extends Phaser.State {
         player.backpack[item.inventorySlot.y][item.inventorySlot.x].sprite.tint = 0xFFFFFF;
     }
 
-    plusClicked(index){
-        this.game.player.skillUp(index);
-        if(this.game.player.skillPoints < 1){
-            this.plusBtns.forEach((btn) => {
-                btn.visible = false;
-            });
-        }
-    }
+    // plusClicked(index){
+    //     this.game.player.skillUp(index);
+    //     if(this.game.player.skillPoints < 1){
+    //         this.plusBtns.forEach((btn) => {
+    //             btn.visible = false;
+    //         });
+    //     }
+    // }
 
     updateCharacterText(){
 
-        this.playerInfo.text = `Str: ${this.game.player.battleStats.strength} \n`;
-        this.playerInfo.text += `Dex: ${this.game.player.battleStats.dexterity} \n`;
-        this.playerInfo.text += `Vit: ${this.game.player.battleStats.vitality} \n`;
-        this.playerInfo.text += `Wis: ${this.game.player.battleStats.wisdom} \n`;
+        // this.playerInfo.text = `Str: ${this.game.player.battleStats.strength} \n`;
+        // this.playerInfo.text += `Dex: ${this.game.player.battleStats.dexterity} \n`;
+        // this.playerInfo.text += `Vit: ${this.game.player.battleStats.vitality} \n`;
+        // this.playerInfo.text += `Wis: ${this.game.player.battleStats.wisdom} \n`;
 
         this.playerInfo2.text = `Dmg: ${this.game.player.battleStats.dmg.min} - ${this.game.player.battleStats.dmg.max} \n`;
         this.playerInfo2.text += `Armor: ${this.game.player.battleStats.armor} \n`;

@@ -52,6 +52,13 @@ export default class Avatar{
         //levelIconBitMap.circle(50,50,40, '#FFFFFF');
         let hudPos = {x: hpSettings.x - (hpWidth/2) - 70, y: hpSettings.y - hpHeight + 5};
         this.levelIconBg = this.characterHUD.create(hudPos.x, hudPos.y, 'hud_main');
+        this.levelIconBg.inputEnabled = true;
+        this.levelIconBg.input.useHandCursor = true;
+        this.levelIconBg.events.onInputDown.add(() => {
+            if(!this.game.player.battling && this.gameState.key != 'SkillTree'){
+                this.gameState.state.start('SkillTree');
+            }
+        }, this);
         this.levelIconBg.animations.add('pulse', null, 12);
         if(this.game.player.skillPoints > 0){
             this.levelIconBg.animations.play('pulse', 12, true);
