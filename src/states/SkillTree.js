@@ -3,14 +3,16 @@ import Phaser from 'phaser';
 import Dialogue from '../components/Dialogue';
 import MainNavigation from '../components/MainNavigation';
 import Avatar from '../components/Avatar';
-import strSlice from '../data/skillTree';
+import skillSlices from '../data/skillTree';
 
 export default class extends Phaser.State {
     constructor(){
         super();
         this.startDrag = this.startDrag.bind(this);
         this.stopDrag = this.stopDrag.bind(this);
-        this.skills = strSlice.slice(0);
+        this.skills = skillSlices.slice(0);
+
+        this.debug = true;
     }
 
     init () {
@@ -31,7 +33,8 @@ export default class extends Phaser.State {
     create () {
         this.skillWheel = this.game.add.group();
         this.skillWheel.position.setTo(this.game.world.centerX, this.game.world.centerY+100);
-        let wheelBg = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY+100, 'skill_wheel');
+        let wheelSprite = this.debug ? 'skill_wheel_debug' : 'skill_wheel';
+        let wheelBg = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY+100, wheelSprite);
         wheelBg.anchor.setTo(0.5);
         this.skillWheel.add(wheelBg);
 
@@ -47,6 +50,18 @@ export default class extends Phaser.State {
 
         this.skillWheel.pivot.x = this.game.world.centerX;
         this.skillWheel.pivot.y = this.game.world.centerY+100;
+
+        if(!this.game.player.story.chapter1.firstSkillTree){
+            this.game.player.story.chapter1.firstSkillTree = true;
+            this.game.player.savePlayerData();
+            let sliceNumber = this.rand(24,40);
+            let randomStart = 45*sliceNumber;
+            let startTween = this.add.tween(this.skillWheel).to( { angle: randomStart }, 3000, Phaser.Easing.Cubic.Out, true);
+            startTween.onComplete.addOnce(()=>{
+                this.skillWheel.angle = this.wheelRotationSettings[sliceNumber%8];
+            });
+        }
+
     }
 
     addRotationButtons(){
@@ -60,13 +75,13 @@ export default class extends Phaser.State {
     }
 
     rotateLeft(){
-        this.currentRotation -= 1;
-        if(this.currentRotation == -1){ this.skillWheel.angle = 360; this.currentRotation = 7; }
+        this.currentRotation += 1;
+        if(this.currentRotation == 8){ this.skillWheel.angle = -45; this.currentRotation = 0; }
         this.rotateWheel(this.wheelRotationSettings[this.currentRotation]);
     }
     rotateRight(){
-        this.currentRotation += 1;
-        if(this.currentRotation == 8){ this.skillWheel.angle = -45; this.currentRotation = 0; }
+        this.currentRotation -= 1;
+        if(this.currentRotation == -1){ this.skillWheel.angle = 360; this.currentRotation = 7; }
         this.rotateWheel(this.wheelRotationSettings[this.currentRotation]);
     }
 
@@ -80,9 +95,8 @@ export default class extends Phaser.State {
 
         this.skills.forEach((skillItem, index) => {
             let btnSprite = skillItem.type === 'attr' ? 'attr_button' : 'skill_button';
-            let debug = false;
             let skillBtn;
-            if(debug){
+            if(this.debug){
                 //sprite for dragging/debugging
                 skillBtn = this.game.add.sprite(skillItem.x, skillItem.y, btnSprite);
                 let scale = skillItem.type === 'attr' ? 1 : 0.75;
@@ -123,7 +137,6 @@ export default class extends Phaser.State {
     }
 
     showSkillDetail(skill){
-        console.log('clicked skill:', skill);
         let isSkill = skill.type === 'skill';
         let text = isSkill ? `Get skill: ${skill.name}?\n${skill.desc}` : `Get +1 ${skill.attr}?`;
         let attrIndex = isSkill ? 0 : (['str','dex','vit','wis']).indexOf(skill.attr);
@@ -144,6 +157,10 @@ export default class extends Phaser.State {
     }
     stopDrag(sprite, index){
         console.log('stopped dragging this sprite to:', sprite.position, index);
+    }
+
+    rand(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
     }
 
     update(){

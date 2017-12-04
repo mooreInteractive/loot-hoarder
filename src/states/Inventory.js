@@ -62,8 +62,6 @@ export default class extends Phaser.State {
         this.itemActionText = this.add.text(665, 485, 'use', Pixel16White);
         this.itemActionText.anchor.setTo(0.5);
         this.itemActionText.visible = false;
-
-
     }
 
     openSkills(){

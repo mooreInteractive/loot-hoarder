@@ -2,6 +2,7 @@ export let Story = {
     chapter1: {
         start: false,
         firstRaid: false,
+        firstSkillTree: false,
         shopKeepersDebt: false,
         firstLootDrop: false,
         timesCheckedShop: 0,

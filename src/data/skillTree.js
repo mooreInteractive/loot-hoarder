@@ -32,18 +32,18 @@ let sliceSchema = [
         x: 273,
         y: 160,
         type: 'skill',
-        name: 'skill-two',
-        title: 'Skill Two',
-        desc: 'Skill Two is awesome because reasons',
+        name: 'two-hand1hand',
+        title: 'Two Handed Weapons with One Hand',
+        desc: 'Able to equip two-handed weapons in a single hand.',
         neighbors: [0,1,6]
     },
     {
         x: 468,
         y: 151,
         type: 'skill',
-        name: 'skill-three',
-        title: 'Skill Three',
-        desc: 'Skill Three is awesome because reasons',
+        name: 'crit-dmg-up',
+        title: 'Increase Critical Hit Damage',
+        desc: 'When landing a critical hit, it\'ll do extra damage.',
         neighbors: [2,3,7]
     },
     {
@@ -71,9 +71,10 @@ let sliceSchema = [
         x: 378,
         y: 258,
         type: 'skill',
-        name: 'skill-one',
-        title: 'Skill One',
-        desc: 'Skill One is awesome because reasons',
+        name: 'berserker',
+        title: 'Berserker',
+        desc: 'The hero performs a flurry of quick attacks at the beginning of a raid.',
+        introSkill: true,
         neighbors: [6,7,11,12]
     },
     {
@@ -101,9 +102,9 @@ let sliceSchema = [
         x: 378,
         y: 376,
         type: 'skill',
-        name: 'skill-four',
-        title: 'Skill Four',
-        desc: 'Skill Four is awesome because reasons',
+        name: 'no-weight',
+        title: 'No Over Encumberment',
+        desc: 'The hero cannot become over encumbered.',
         neighbors: [11,12,14,15]
     },
     {
@@ -128,36 +129,120 @@ let sliceSchema = [
         neighbors: [14,15,'center']
     }
 ];
+let strDexSkills = [
+    {
+        x: 651,//-215
+        y: 363,//+35
+        type: 'skill',
+        name: 'unarmed-attack',
+        title: 'Unarmed Attack Bonus',
+        desc: 'The hero can make strong attacks without a weapon equipped.\ndmg = str x dex',
+        neighbors: [6,7,11,12]
+    },
+    {
+        x: 657,
+        y: 212,
+        type: 'skill',
+        name: 'sneak-attack',
+        title: 'Sneak Attack',
+        desc: 'The hero catches enemies off gaurd and lands an attack before battle time begins.',
+        neighbors: [6,7,11,12]
+    },
+    {
+        x: 800,
+        y: 347,
+        type: 'skill',
+        name: 'micro-meditation',
+        title: 'Micro Meditation',
+        desc: 'The hero heals a small amoutn of health when the enemies misses an attack.',
+        neighbors: [6,7,11,12]
+    },
+    {
+        x: 577,
+        y: 441,
+        type: 'skill',
+        name: 'dodge-first',
+        title: 'Dodge First attack',
+        desc: 'The hero always dodges the first attack in a battle.',
+        neighbors: [6,7,11,12]
+    }
+];
 
-let strSkills = [
+let dexSkills = [
+    {
+        x: 766,
+        y: 635,
+        type: 'skill',
+        name: 'two-one-handed',
+        title: 'Equip two One-Handed Weapons',
+        desc: 'The hero can equip two one-handed weapons. One in each hand.',
+        neighbors: [6,7,11,12]
+    }
+];
 
+let dexVitSkills = [
     {
-        name: 'two-hand1hand',
-        title: 'Two Handed Weapons with One Hand',
-        desc: 'Able to equip two-handed weapons in a single hand.'
-    },
+        x: 678,
+        y: 932,
+        type: 'skill',
+        name: 'crit-heal',
+        title: 'Crit Heal',
+        desc: 'When landing a Critical hit in battle, the hero gains health.',
+        neighbors: [6,7,11,12]
+    }
+];
+
+let vitSkills = [
     {
-        name: 'crit-dmg-up',
-        title: 'Increase Critical Hit Damage',
-        desc: 'When landing a critical hit, it\'ll do extra damage.'
-    },
+        x: 338,
+        y: 1036,
+        type: 'skill',
+        name: 'vitality-mastery',
+        title: 'Vitality Mastery',
+        desc: 'Twice the hero\'s vitality score is added to max HP.',
+        neighbors: [6,7,11,12]
+    }
+];
+
+let vitWisSkills = [
     {
-        name: 'berserker',
-        title: 'Berserker',
-        desc: 'Performs a flurry of quick attacks at the beginning of a raid.',
-        introSkill: true
-    },
+        x: 103,
+        y: 939,
+        type: 'skill',
+        name: 'heal',
+        title: 'Heal',
+        desc: 'The hero gains a heal spell which can be used like a potion. It takes a while to recharge though.',
+        neighbors: [6,7,11,12]
+    }
+];
+
+let wisSkills = [
     {
-        name: 'no-weight',
-        title: 'No Over Encumberment',
-        desc: 'The player cannot become over encumbered.'
+        x: -12,
+        y: 641,
+        type: 'skill',
+        name: 'tomes',
+        title: 'Tomes',
+        desc: 'The hero can read and equip Tomes. Tomes hold various spells that can be used in battle.',
+        neighbors: [6,7,11,12]
+    }
+];
+
+let wisStrSkills = [
+    {
+        x: 94,
+        y: 347,
+        type: 'skill',
+        name: 'magic-attack',
+        title: 'Magic Attack',
+        desc: 'The hero\'s weapon attacks are imbued with magic damage.',
+        neighbors: [6,7,11,12]
     }
 ];
 
 function generateSlice (attrIndex){
     let strSlice;
     strSlice = sliceSchema.slice(0);
-    let currentSkill = 0;
     strSlice.forEach(item => {
         if(item.type === 'attr'){
             let adjustedIndex = item.attr + attrIndex;
@@ -170,14 +255,17 @@ function generateSlice (attrIndex){
                 setAttr = slices[adjustedIndex];
             }
             item.attr = setAttr;
-        } else if(item.type === 'skill'){
-            Object.assign(item, strSkills[currentSkill]);
-            currentSkill += 1;
         }
     });
-
     return strSlice;
 }
 
-let strSlice = generateSlice(0);
-export default strSlice;
+let skillSlices = generateSlice(0)
+    .concat(strDexSkills)
+    .concat(dexSkills)
+    .concat(dexVitSkills)
+    .concat(vitSkills)
+    .concat(vitWisSkills)
+    .concat(wisSkills)
+    .concat(wisStrSkills);
+export default skillSlices;
