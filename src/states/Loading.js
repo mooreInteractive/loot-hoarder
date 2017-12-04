@@ -22,7 +22,10 @@ export default class extends Phaser.State {
         this.game.load.image('skill_wheel_debug', './assets/images/skills/wheel-debug.png');
         this.game.load.image('rot_left', './assets/images/skills/turn-left.png');
         this.game.load.image('rot_right', './assets/images/skills/turn-right.png');
-        this.game.load.image('attr_button', './assets/images/skills/attr-button.png');
+        this.game.load.image('attr_str', './assets/images/skills/attr-str.png');
+        this.game.load.image('attr_dex', './assets/images/skills/attr-dex.png');
+        this.game.load.image('attr_vit', './assets/images/skills/attr-vit.png');
+        this.game.load.image('attr_wis', './assets/images/skills/attr-wis.png');
         this.game.load.image('skill_button', './assets/images/skills/skill-button.png');
 
         //Button Backgrounds

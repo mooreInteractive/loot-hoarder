@@ -1,5 +1,5 @@
 let slices = ['str','dex','vit','wis'];
-let sliceSchema = [
+let strSkills = [
     {
         x: 212,
         y: 102,
@@ -170,6 +170,34 @@ let strDexSkills = [
 
 let dexSkills = [
     {
+        x: 921,
+        y: 461,
+        type: 'attr',
+        attr: -1,
+        neighbors: [4]
+    },
+    {
+        x: 945,
+        y: 555,
+        type: 'attr',
+        attr: -1,
+        neighbors: [4]
+    },
+    {
+        x: 947,
+        y: 687,
+        type: 'attr',
+        attr: -1,
+        neighbors: [5]
+    },
+    {
+        x: 923,
+        y: 793,
+        type: 'attr',
+        attr: 1,
+        neighbors: [5]
+    },
+    {
         x: 877,
         y: 527,
         type: 'skill',
@@ -188,6 +216,27 @@ let dexSkills = [
         neighbors: [2,3,7]
     },
     {
+        x: 819,
+        y: 580,
+        type: 'attr',
+        attr: -1,
+        neighbors: [4,8,9]
+    },
+    {
+        x: 821,
+        y: 679,
+        type: 'attr',
+        attr: 1,
+        neighbors: [5,9,10]
+    },
+    {
+        x: 772,
+        y: 530,
+        type: 'attr',
+        attr: 0,
+        neighbors: [6,'ld0']
+    },
+    {
         x: 766,
         y: 635,
         type: 'skill',
@@ -197,6 +246,27 @@ let dexSkills = [
         neighbors: [6,7,11,12]
     },
     {
+        x: 780,
+        y: 734,
+        type: 'attr',
+        attr: 0,
+        neighbors: [7,'rd0']
+    },
+    {
+        x: 709,
+        y: 572,
+        type: 'attr',
+        attr: 0,
+        neighbors: [9,13]
+    },
+    {
+        x: 712,
+        y: 689,
+        type: 'attr',
+        attr: 0,
+        neighbors: [9,13]
+    },
+    {
         x: 655,
         y: 635,
         type: 'skill',
@@ -204,6 +274,27 @@ let dexSkills = [
         title: 'Crit Chance Up',
         desc: 'Every weapon\'s critical hit chance increases by 10%',
         neighbors: [11,12,14,15]
+    },
+    {
+        x: 581,
+        y: 607,
+        type: 'attr',
+        attr: 2,
+        neighbors: [13,16,'ld1']
+    },
+    {
+        x: 583,
+        y: 664,
+        type: 'attr',
+        attr: 2,
+        neighbors: [13,16,'rd1']
+    },
+    {
+        x: 515,
+        y: 635,
+        type: 'attr',
+        attr: 2,
+        neighbors: [14,15,'center']
     }
 ];
 
@@ -248,6 +339,34 @@ let dexVitSkills = [
 
 let vitSkills = [
     {
+        x: 558,
+        y: 1168,
+        type: 'attr',
+        attr: -1,
+        neighbors: [4]
+    },
+    {
+        x: 465,
+        y: 1193,
+        type: 'attr',
+        attr: -1,
+        neighbors: [4]
+    },
+    {
+        x: 333,
+        y: 1195,
+        type: 'attr',
+        attr: -1,
+        neighbors: [5]
+    },
+    {
+        x: 229,
+        y: 1170,
+        type: 'attr',
+        attr: 1,
+        neighbors: [5]
+    },
+    {
         x: 493,
         y: 1125,
         type: 'skill',
@@ -266,6 +385,27 @@ let vitSkills = [
         neighbors: [2,3,7]
     },
     {
+        x: 440,
+        y: 1067,
+        type: 'attr',
+        attr: -1,
+        neighbors: [4,8,9]
+    },
+    {
+        x: 341,
+        y: 1069,
+        type: 'attr',
+        attr: 1,
+        neighbors: [5,9,10]
+    },
+    {
+        x: 489,
+        y: 1021,
+        type: 'attr',
+        attr: 0,
+        neighbors: [6,'ld0']
+    },
+    {
         x: 386,
         y: 1018,
         type: 'skill',
@@ -275,6 +415,27 @@ let vitSkills = [
         neighbors: [6,7,11,12]
     },
     {
+        x: 286,
+        y: 1026,
+        type: 'attr',
+        attr: 0,
+        neighbors: [7,'rd0']
+    },
+    {
+        x: 446,
+        y: 956,
+        type: 'attr',
+        attr: 0,
+        neighbors: [9,13]
+    },
+    {
+        x: 329,
+        y: 960,
+        type: 'attr',
+        attr: 0,
+        neighbors: [9,13]
+    },
+    {
         x: 383,
         y: 906,
         type: 'skill',
@@ -282,6 +443,27 @@ let vitSkills = [
         title: 'Undying',
         desc: 'The hero\'s health cannot go below 0.',
         neighbors: [11,12,14,15]
+    },
+    {
+        x: 411,
+        y: 829,
+        type: 'attr',
+        attr: 2,
+        neighbors: [13,16,'ld1']
+    },
+    {
+        x: 355,
+        y: 829,
+        type: 'attr',
+        attr: 2,
+        neighbors: [13,16,'rd1']
+    },
+    {
+        x: 385,
+        y: 765,
+        type: 'attr',
+        attr: 2,
+        neighbors: [14,15,'center']
     }
 ];
 
@@ -326,6 +508,34 @@ let vitWisSkills = [
 
 let wisSkills = [
     {
+        x: -152,
+        y: 810,
+        type: 'attr',
+        attr: -1,
+        neighbors: [4]
+    },
+    {
+        x: -176,
+        y: 715,
+        type: 'attr',
+        attr: -1,
+        neighbors: [4]
+    },
+    {
+        x: -176,
+        y: 585,
+        type: 'attr',
+        attr: -1,
+        neighbors: [5]
+    },
+    {
+        x: -154,
+        y: 478,
+        type: 'attr',
+        attr: 1,
+        neighbors: [5]
+    },
+    {
         x: -107,
         y: 739,
         type: 'skill',
@@ -344,6 +554,27 @@ let wisSkills = [
         neighbors: [2,3,7]
     },
     {
+        x: -50,
+        y: 690,
+        type: 'attr',
+        attr: -1,
+        neighbors: [4,8,9]
+    },
+    {
+        x: -50,
+        y: 591,
+        type: 'attr',
+        attr: 1,
+        neighbors: [5,9,10]
+    },
+    {
+        x: -4,
+        y: 739,
+        type: 'attr',
+        attr: 0,
+        neighbors: [6,'ld0']
+    },
+    {
         x: 1,
         y: 635,
         type: 'skill',
@@ -353,6 +584,27 @@ let wisSkills = [
         neighbors: [6,7,11,12]
     },
     {
+        x: -10,
+        y: 536,
+        type: 'attr',
+        attr: 0,
+        neighbors: [7,'rd0']
+    },
+    {
+        x: 60,
+        y: 696,
+        type: 'attr',
+        attr: 0,
+        neighbors: [9,13]
+    },
+    {
+        x: 60,
+        y: 580,
+        type: 'attr',
+        attr: 0,
+        neighbors: [9,13]
+    },
+    {
         x: 113,
         y: 635,
         type: 'skill',
@@ -360,6 +612,27 @@ let wisSkills = [
         title: 'Magical Aura',
         desc: 'The hero gains a magic aura.',
         neighbors: [11,12,14,15]
+    },
+    {
+        x: 188,
+        y: 661,
+        type: 'attr',
+        attr: 2,
+        neighbors: [13,16,'ld1']
+    },
+    {
+        x: 188,
+        y: 602,
+        type: 'attr',
+        attr: 2,
+        neighbors: [13,16,'rd1']
+    },
+    {
+        x: 253,
+        y: 635,
+        type: 'attr',
+        attr: 2,
+        neighbors: [14,15,'center']
     }
 ];
 
@@ -402,9 +675,9 @@ let wisStrSkills = [
     }
 ];
 
-function generateSlice (attrIndex){
+function generateSlice (attrIndex, slice){
     let strSlice;
-    strSlice = sliceSchema.slice(0);
+    strSlice = slice.slice(0);
     strSlice.forEach(item => {
         if(item.type === 'attr'){
             let adjustedIndex = item.attr + attrIndex;
@@ -422,12 +695,12 @@ function generateSlice (attrIndex){
     return strSlice;
 }
 
-let skillSlices = generateSlice(0)
+let skillSlices = generateSlice(0, strSkills)
     .concat(strDexSkills)
-    .concat(dexSkills)
+    .concat(generateSlice(1, dexSkills))
     .concat(dexVitSkills)
-    .concat(vitSkills)
+    .concat(generateSlice(2, vitSkills))
     .concat(vitWisSkills)
-    .concat(wisSkills)
+    .concat(generateSlice(3, wisSkills))
     .concat(wisStrSkills);
 export default skillSlices;

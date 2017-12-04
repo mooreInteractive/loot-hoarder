@@ -12,7 +12,7 @@ export default class extends Phaser.State {
         this.stopDrag = this.stopDrag.bind(this);
         this.skills = skillSlices.slice(0);
 
-        this.debug = true;
+        this.debug = false;
     }
 
     init () {
@@ -90,11 +90,12 @@ export default class extends Phaser.State {
     }
 
     addStrengthButtons(){
-        console.log('srength skills:', this.skills);
-        console.log('player skills:', this.game.player.skills.length);
+        // console.log('srength skills:', this.skills);
+        // console.log('player skills:', this.game.player.skills.length);
 
         this.skills.forEach((skillItem, index) => {
-            let btnSprite = skillItem.type === 'attr' ? 'attr_button' : 'skill_button';
+            let btnAttrSprite = `attr_${skillItem.attr}`;
+            let btnSprite = skillItem.type === 'attr' ? btnAttrSprite : 'skill_button';
             let skillBtn;
             if(this.debug){
                 //sprite for dragging/debugging
@@ -166,7 +167,6 @@ export default class extends Phaser.State {
     update(){
         this.avatar.update();
         this.mainNav.update(this.currentDungeon);
-        // this.skillWheel.rotation += 0.01;
     }
 
 }
