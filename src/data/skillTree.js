@@ -65,7 +65,7 @@ let strSkills = [
         y: 259,
         type: 'attr',
         attr: 0,
-        neighbors: [6,'ld0']
+        neighbors: [6,'p-17']
     },
     {
         x: 378,
@@ -82,7 +82,7 @@ let strSkills = [
         y: 255,
         type: 'attr',
         attr: 0,
-        neighbors: [7,'rd0']
+        neighbors: [7,17]
     },
     {
         x: 319,
@@ -112,21 +112,35 @@ let strSkills = [
         y: 445,
         type: 'attr',
         attr: 2,
-        neighbors: [13,16,'ld1']
+        neighbors: [13,16,'p-18']
     },
     {
         x: 414,
         y: 442,
         type: 'attr',
         attr: 2,
-        neighbors: [13,16,'rd1']
+        neighbors: [13,16,18]
     },
     {
         x: 386,
         y: 508,
         type: 'attr',
         attr: 2,
-        neighbors: [14,15,'center']
+        neighbors: [14,15]
+    },
+    {
+        x: 400,
+        y: 450,
+        type: 'attr',
+        attr: 1,
+        neighbors: [10, 'n-8']
+    },
+    {
+        x: 400,
+        y: 500,
+        type: 'attr',
+        attr: 1,
+        neighbors: [15, 'n-14']
     }
 ];
 let strDexSkills = [
@@ -195,7 +209,7 @@ let strDexSkills = [
         y: 288,
         type: 'attr',
         attr: 2,
-        neighbors: [6,'ld0']
+        neighbors: [6,'p-17']
     },
     {
         x: 651,//-215
@@ -204,6 +218,7 @@ let strDexSkills = [
         name: 'unarmed-attack',
         title: 'Unarmed Attack Bonus',
         desc: 'The hero can make strong attacks without a weapon equipped.\ndmg = str x dex',
+        introSkill: true,
         neighbors: [6,7,11,12]
     },
     {
@@ -211,7 +226,7 @@ let strDexSkills = [
         y: 429,
         type: 'attr',
         attr: 2,
-        neighbors: [7,'rd0']
+        neighbors: [7,17]
     },
     {
         x: 572,
@@ -241,21 +256,35 @@ let strDexSkills = [
         y: 478,
         type: 'attr',
         attr: -1,
-        neighbors: [13,16,'ld1']
+        neighbors: [13,16,'p-18']
     },
     {
         x: 548,
         y: 518,
         type: 'attr',
         attr: -1,
-        neighbors: [13,16,'rd1']
+        neighbors: [13,16,18]
     },
     {
         x: 480,
         y: 544,
         type: 'attr',
         attr: 0,
-        neighbors: [14,15,'center']
+        neighbors: [14,15]
+    },
+    {
+        x: 0,
+        y: 0,
+        type: 'attr',
+        attr: 1,
+        neighbors: [10, 'n-8']
+    },
+    {
+        x: 0,
+        y: 0,
+        type: 'attr',
+        attr: 1,
+        neighbors: [15, 'n-14']
     }
 ];
 let dexSkills = [
@@ -324,7 +353,7 @@ let dexSkills = [
         y: 530,
         type: 'attr',
         attr: 0,
-        neighbors: [6,'ld0']
+        neighbors: [6,'p-17']
     },
     {
         x: 766,
@@ -333,6 +362,7 @@ let dexSkills = [
         name: 'two-one-handed',
         title: 'Equip two One-Handed Weapons',
         desc: 'The hero can equip two one-handed weapons. One in each hand.',
+        introSkill: true,
         neighbors: [6,7,11,12]
     },
     {
@@ -340,7 +370,7 @@ let dexSkills = [
         y: 734,
         type: 'attr',
         attr: 0,
-        neighbors: [7,'rd0']
+        neighbors: [7,17]
     },
     {
         x: 709,
@@ -370,21 +400,35 @@ let dexSkills = [
         y: 607,
         type: 'attr',
         attr: 2,
-        neighbors: [13,16,'ld1']
+        neighbors: [13,16,'p-18']
     },
     {
         x: 583,
         y: 664,
         type: 'attr',
         attr: 2,
-        neighbors: [13,16,'rd1']
+        neighbors: [13,16,18]
     },
     {
         x: 515,
         y: 635,
         type: 'attr',
         attr: 2,
-        neighbors: [14,15,'center']
+        neighbors: [14,15]
+    },
+    {
+        x: 0,
+        y: 0,
+        type: 'attr',
+        attr: 1,
+        neighbors: [10, 'n-8']
+    },
+    {
+        x: 0,
+        y: 0,
+        type: 'attr',
+        attr: 1,
+        neighbors: [15, 'n-14']
     }
 ];
 let dexVitSkills = [
@@ -453,7 +497,7 @@ let dexVitSkills = [
         y: 836,
         type: 'attr',
         attr: 2,
-        neighbors: [6,'ld0']
+        neighbors: [6,'p-17']
     },
     {
         x: 659,
@@ -462,6 +506,7 @@ let dexVitSkills = [
         name: 'crit-heal',
         title: 'Crit Heal',
         desc: 'When landing a Critical hit in battle, the hero gains health.',
+        introSkill: true,
         neighbors: [6,7,11,12]
     },
     {
@@ -469,7 +514,7 @@ let dexVitSkills = [
         y: 983,
         type: 'attr',
         attr: 2,
-        neighbors: [7,'rd0']
+        neighbors: [7,17]
     },
     {
         x: 660,
@@ -499,21 +544,35 @@ let dexVitSkills = [
         y: 754,
         type: 'attr',
         attr: -1,
-        neighbors: [13,16,'ld1']
+        neighbors: [13,16,'p-18']
     },
     {
         x: 505,
         y: 795,
         type: 'attr',
         attr: -1,
-        neighbors: [13,16,'rd1']
+        neighbors: [13,16,18]
     },
     {
         x: 478,
         y: 729,
         type: 'attr',
         attr: 0,
-        neighbors: [14,15,'center']
+        neighbors: [14,15]
+    },
+    {
+        x: 0,
+        y: 0,
+        type: 'attr',
+        attr: 1,
+        neighbors: [10, 'n-8']
+    },
+    {
+        x: 0,
+        y: 0,
+        type: 'attr',
+        attr: 1,
+        neighbors: [15, 'n-14']
     }
 ];
 let vitSkills = [
@@ -582,7 +641,7 @@ let vitSkills = [
         y: 1021,
         type: 'attr',
         attr: 0,
-        neighbors: [6,'ld0']
+        neighbors: [6,'p-17']
     },
     {
         x: 386,
@@ -591,6 +650,7 @@ let vitSkills = [
         name: 'vitality-mastery',
         title: 'Vitality Mastery',
         desc: 'Twice the hero\'s vitality score is added to max HP.',
+        introSkill: true,
         neighbors: [6,7,11,12]
     },
     {
@@ -598,7 +658,7 @@ let vitSkills = [
         y: 1026,
         type: 'attr',
         attr: 0,
-        neighbors: [7,'rd0']
+        neighbors: [7,17]
     },
     {
         x: 446,
@@ -628,21 +688,35 @@ let vitSkills = [
         y: 829,
         type: 'attr',
         attr: 2,
-        neighbors: [13,16,'ld1']
+        neighbors: [13,16,'p-18']
     },
     {
         x: 355,
         y: 829,
         type: 'attr',
         attr: 2,
-        neighbors: [13,16,'rd1']
+        neighbors: [13,16,18]
     },
     {
         x: 385,
         y: 765,
         type: 'attr',
         attr: 2,
-        neighbors: [14,15,'center']
+        neighbors: [14,15]
+    },
+    {
+        x: 0,
+        y: 0,
+        type: 'attr',
+        attr: 1,
+        neighbors: [10, 'n-8']
+    },
+    {
+        x: 0,
+        y: 0,
+        type: 'attr',
+        attr: 1,
+        neighbors: [15, 'n-14']
     }
 ];
 let vitWisSkills = [
@@ -711,7 +785,7 @@ let vitWisSkills = [
         y: 982,
         type: 'attr',
         attr: 2,
-        neighbors: [6,'ld0']
+        neighbors: [6,'p-17']
     },
     {
         x: 117,
@@ -720,6 +794,7 @@ let vitWisSkills = [
         name: 'heal',
         title: 'Heal',
         desc: 'The hero gains a heal spell which can be used like a potion. It takes a while to recharge though.',
+        introSkill: true,
         neighbors: [6,7,11,12]
     },
     {
@@ -727,7 +802,7 @@ let vitWisSkills = [
         y: 841,
         type: 'attr',
         attr: 2,
-        neighbors: [7,'rd0']
+        neighbors: [7,17]
     },
     {
         x: 200,
@@ -757,21 +832,35 @@ let vitWisSkills = [
         y: 791,
         type: 'attr',
         attr: -1,
-        neighbors: [13,16,'ld1']
+        neighbors: [13,16,'p-18']
     },
     {
         x: 225,
         y: 752,
         type: 'attr',
         attr: -1,
-        neighbors: [13,16,'rd1']
+        neighbors: [13,16,18]
     },
     {
         x: 291,
         y: 725,
         type: 'attr',
         attr: 0,
-        neighbors: [14,15,'center']
+        neighbors: [14,15]
+    },
+    {
+        x: 0,
+        y: 0,
+        type: 'attr',
+        attr: 1,
+        neighbors: [10, 'n-8']
+    },
+    {
+        x: 0,
+        y: 0,
+        type: 'attr',
+        attr: 1,
+        neighbors: [15, 'n-14']
     }
 ];
 let wisSkills = [
@@ -840,7 +929,7 @@ let wisSkills = [
         y: 739,
         type: 'attr',
         attr: 0,
-        neighbors: [6,'ld0']
+        neighbors: [6,'p-17']
     },
     {
         x: 1,
@@ -849,6 +938,7 @@ let wisSkills = [
         name: 'tomes',
         title: 'Tomes',
         desc: 'The hero can read and equip Tomes. Tomes hold various spells that can be used in battle.',
+        introSkill: true,
         neighbors: [6,7,11,12]
     },
     {
@@ -856,7 +946,7 @@ let wisSkills = [
         y: 536,
         type: 'attr',
         attr: 0,
-        neighbors: [7,'rd0']
+        neighbors: [7,17]
     },
     {
         x: 60,
@@ -886,21 +976,35 @@ let wisSkills = [
         y: 661,
         type: 'attr',
         attr: 2,
-        neighbors: [13,16,'ld1']
+        neighbors: [13,16,'p-18']
     },
     {
         x: 188,
         y: 602,
         type: 'attr',
         attr: 2,
-        neighbors: [13,16,'rd1']
+        neighbors: [13,16,18]
     },
     {
         x: 253,
         y: 635,
         type: 'attr',
         attr: 2,
-        neighbors: [14,15,'center']
+        neighbors: [14,15]
+    },
+    {
+        x: 0,
+        y: 0,
+        type: 'attr',
+        attr: 1,
+        neighbors: [10, 'n-8']
+    },
+    {
+        x: 0,
+        y: 0,
+        type: 'attr',
+        attr: 1,
+        neighbors: [15, 'n-14']
     }
 ];
 let wisStrSkills = [
@@ -969,7 +1073,7 @@ let wisStrSkills = [
         y: 432,
         type: 'attr',
         attr: 2,
-        neighbors: [6,'ld0']
+        neighbors: [6,'p-17']
     },
     {
         x: 113,
@@ -978,6 +1082,7 @@ let wisStrSkills = [
         name: 'magic-attack',
         title: 'Magic Attack',
         desc: 'The hero\'s weapon attacks are imbued with magic damage.',
+        introSkill: true,
         neighbors: [6,7,11,12]
     },
     {
@@ -985,7 +1090,7 @@ let wisStrSkills = [
         y: 284,
         type: 'attr',
         attr: 2,
-        neighbors: [7,'rd0']
+        neighbors: [7,17]
     },
     {
         x: 112,
@@ -1015,28 +1120,42 @@ let wisStrSkills = [
         y: 513,
         type: 'attr',
         attr: -1,
-        neighbors: [13,16,'ld1']
+        neighbors: [13,16,'p-18']
     },
     {
         x: 266,
         y: 472,
         type: 'attr',
         attr: -1,
-        neighbors: [13,16,'rd1']
+        neighbors: [13,16,18]
     },
     {
         x: 293,
         y: 538,
         type: 'attr',
         attr: 0,
-        neighbors: [14,15,'center']
+        neighbors: [14,15]
+    },
+    {
+        x: 310,
+        y: 450,
+        type: 'attr',
+        attr: 1,
+        neighbors: [10, 'n-8']
+    },
+    {
+        x: 310,
+        y: 500,
+        type: 'attr',
+        attr: 1,
+        neighbors: [15, 'n-14']
     }
 ];
 
-function generateSlice (attrIndex, slice){
+function generateSlice (attrIndex, slice, sliceIndex){
     let strSlice;
     strSlice = slice.slice(0);
-    strSlice.forEach(item => {
+    strSlice.forEach((item, index) => {
         if(item.type === 'attr'){
             let adjustedIndex = item.attr + attrIndex;
             let setAttr;
@@ -1049,16 +1168,17 @@ function generateSlice (attrIndex, slice){
             }
             item.attr = setAttr;
         }
+        item.index = `${sliceIndex}-${index}`;
     });
     return strSlice;
 }
 
-let skillSlices = generateSlice(0, strSkills)
-    .concat(generateSlice(0, strDexSkills))
-    .concat(generateSlice(1, dexSkills))
-    .concat(generateSlice(1, dexVitSkills))
-    .concat(generateSlice(2, vitSkills))
-    .concat(generateSlice(2, vitWisSkills))
-    .concat(generateSlice(3, wisSkills))
-    .concat(generateSlice(3, wisStrSkills));
+let skillSlices = generateSlice(0, strSkills, 0)
+    .concat(generateSlice(0, strDexSkills, 1))
+    .concat(generateSlice(1, dexSkills, 2))
+    .concat(generateSlice(1, dexVitSkills, 3))
+    .concat(generateSlice(2, vitSkills, 4))
+    .concat(generateSlice(2, vitWisSkills, 5))
+    .concat(generateSlice(3, wisSkills, 6))
+    .concat(generateSlice(3, wisStrSkills, 7));
 export default skillSlices;

@@ -19,6 +19,7 @@ export default class extends Phaser.State {
         this.skillSprites = [];
         this.currentRotation = 0;
         this.wheelRotationSettings = [0, 45, 90, 135, 180, 225, 270, 315];
+        this.setSkillStates();
     }
 
     preload () {
@@ -124,11 +125,83 @@ export default class extends Phaser.State {
         });
     }
 
+    setSkillStates(){
+        this.skills.forEach((skillItem, skillIndex) => {
+            let sliceIndex = Math.floor(skillIndex/19);
+            skillItem.state = 0;//locked
+            if(skillItem.type === 'attr'){
+                if(this.game.player.skillUps.includes(skillItem.index)){
+                    skillItem.state = 2;
+                } else {
+                    skillItem.neighbors.forEach((neighbor) => {
+                        if(typeof neighbor === 'number'){
+                            // console.log('skill index:', sliceIndex, neighbor, sliceIndex*19+neighbor, this.skills[sliceIndex*19+neighbor]);
+                            if(this.game.player.skillUps.includes(this.skills[sliceIndex*19+neighbor].index)){
+                                skillItem.state = 1;
+                            }
+                        } else {
+                            let neighborSplit = neighbor.split('-');
+                            let neighborType = neighborSplit[0];
+                            let neighborIndex = parseInt(neighborSplit[1]);
+                            let nextSlice;
+                            if(neighborType === 'n'){
+                                nextSlice = sliceIndex === 7 ? 0 : sliceIndex + 1;
+                            } else {
+                                nextSlice = sliceIndex === 0 ? 7 : sliceIndex - 1;
+                            }
+                            if(this.game.player.skillUps.includes(this.skills[nextSlice*19+neighborIndex].index)){
+                                skillItem.state = 1;
+                            }
+                        }
+                    });
+                }
+            } else {//skill
+                if(this.game.player.skills.includes(skillItem.name)){
+                    skillItem.state = 2;
+                } else {
+                    let learnedNeighbor = false;
+                    skillItem.neighbors.forEach((neighbor) => {
+                        if(this.game.player.skillUps.includes(this.skills[sliceIndex*19+neighbor].index)){
+                            learnedNeighbor = true;
+                        }
+                    });
+                    if(skillItem.introSkill || learnedNeighbor){
+                        skillItem.state = 1;
+                    }
+                }
+            }
+        });
+    }
+
+    updateNeighborStates(skill){
+        skill.state = 2;
+        let skillIndex = this.skills.indexOf(skill);
+        let sliceIndex = Math.floor(skillIndex/19);
+        skill.neighbors.forEach(neighbor => {
+            if(typeof neighbor === 'number'){
+                // console.log('neighbors:', sliceIndex*19+neighbor, this.skills[sliceIndex*19+neighbor]);
+                this.skills[sliceIndex*19+neighbor].state = 1;
+            } else {
+                let neighborSplit = neighbor.split('-');
+                let neighborType = neighborSplit[0];
+                let neighborIndex = parseInt(neighborSplit[1]);
+                let nextSlice;
+                if(neighborType === 'n'){
+                    nextSlice = sliceIndex === 7 ? 0 : sliceIndex + 1;
+                } else {
+                    nextSlice = sliceIndex === 0 ? 7 : sliceIndex - 1;
+                }
+                this.skills[nextSlice*19+neighborIndex].state = 1;
+            }
+
+        });
+    }
+
     updateSkillAvailability(){
         this.skills.forEach((skillItem) => {
             if(skillItem.sprite){
                 //update first time use
-                if(this.game.player.skills.length === 0 && !skillItem.introSkill){
+                if(skillItem.state === 0){
                     skillItem.sprite.tint = 0.1 * 0x010101;
                 } else {
                     skillItem.sprite.tint = 0xFFFFFF;
@@ -138,17 +211,28 @@ export default class extends Phaser.State {
     }
 
     showSkillDetail(skill){
+        console.log('detail:', skill);
         let isSkill = skill.type === 'skill';
         let text = isSkill ? `Get skill: ${skill.name}?\n${skill.desc}` : `Get +1 ${skill.attr}?`;
         let attrIndex = isSkill ? 0 : (['str','dex','vit','wis']).indexOf(skill.attr);
         new Dialogue(this.game, this, 'bool', null, text, (reply)=>{
             if(reply === 'yes'){
-                if(isSkill && this.game.player.skillPoints > 2){
-                    this.game.player.addSkill(skill.name);
-                } else if(!isSkill && this.game.player.skillPoints > 0){
-                    this.game.player.skillUp(attrIndex);
+                let cost = isSkill && this.game.player.skills.length > 0 ? 3 : 1;
+                let costCheck = this.game.player.skillPoints > cost;
+                let availCheck = skill.state === 1;
+                if(costCheck && availCheck){
+                    if(isSkill){
+                        this.game.player.addSkill(skill.name);
+                    } else {
+                        this.game.player.skillUps.push(skill.index);
+                        this.game.player.skillUp(attrIndex);
+                    }
+                    this.game.player.skillPoints -= cost;
+                    this.updateNeighborStates(skill);
+                    this.updateSkillAvailability();
+                } else {
+                    console.log('You can\'t afford it, or it\'s unavailable.');
                 }
-                this.updateSkillAvailability();
             }
         });
     }

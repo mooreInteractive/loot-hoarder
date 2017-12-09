@@ -9,10 +9,15 @@ export default class Tools {
         window.beefcake = this.beefcake.bind(this);
         window.levelUp = this.levelUp.bind(this);
         window.addSkill = this.addSkill.bind(this);
+        window.addSkillPoints = this.addSkillPoints.bind(this);
     }
 
     addSkill(skill){
         this.game.player.skills.push(skill);
+    }
+
+    addSkillPoints(amt=5){
+        this.game.player.skillsPoints += amt;
     }
 
     addLoot(amt=3, lvlMin=1, lvlMax=5){
