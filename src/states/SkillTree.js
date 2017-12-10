@@ -11,11 +11,13 @@ export default class extends Phaser.State {
         this.startDrag = this.startDrag.bind(this);
         this.stopDrag = this.stopDrag.bind(this);
         this.skills = skillSlices.slice(0);
+        this.dropStoneCover = this.dropStoneCover.bind(this);
 
         this.debug = false;
     }
 
     init () {
+        console.log('SKILLS INIT');
         this.skillSprites = [];
         this.currentRotation = 0;
         this.wheelRotationSettings = [0, 45, 90, 135, 180, 225, 270, 315];
@@ -25,15 +27,34 @@ export default class extends Phaser.State {
     preload () {
         this.currentDungeon = this.game.dungeons[this.game.player.currentDungeon];
 
-        // let Pixel24Black = {font: 'Press Start 2P', fontSize: 36, fill: '#000000' };
+        this.Pixel24Black = {font: 'Press Start 2P', fontSize: 36, fill: '#000000' };
         // let Pixel24White = {font: 'Press Start 2P', fontSize: 36, fill: '#898989' };
         // let Pixel36Blue = {font: 'Press Start 2P', fontSize: 42, fill: '#527ee5' };
-        // let Pixel16White = {font: 'Press Start 2P', fontSize: 16, fill: '#FFFFFF' };
+        this.Pixel16White = {font: 'Press Start 2P', fontSize: 42, fill: '#FFFFFF' };
+        this.Pixel36Grey = {font: 'Press Start 2P', fontSize: 18, fill: '#CDCDCD' };
     }
 
     create () {
         this.skillWheel = this.game.add.group();
         this.skillWheel.position.setTo(this.game.world.centerX, this.game.world.centerY+100);
+        if(!this.debug){
+            this.coverPos = {x: this.game.world.centerX, y: this.game.world.centerY+100};
+            this.stoneCover = this.game.add.sprite(this.game.world.centerX, -600, 'stone_cover');
+            this.stoneCover.anchor.setTo(0.5);
+
+            // this.hdLabel = this.add.text(434, 665, 'Hit die', this.Pixel36Grey);
+            // this.hdValue = this.add.text(600, 665, `1d${this.game.player.hitDie}`, this.Pixel36Grey);
+            //
+            // this.strLabel = this.add.text(135, 710, 'STR', this.Pixel16White);
+            // this.dexLabel = this.add.text(434, 710, 'DEX', this.Pixel16White);
+            // this.vitLabel = this.add.text(135, 770, 'VIT', this.Pixel16White);
+            // this.wisLabel = this.add.text(434, 770, 'WIS', this.Pixel16White);
+            //
+            // this.strValue = this.add.text(310, 710, this.game.player.battleStats.strength, this.Pixel16White);
+            // this.dexValue = this.add.text(609, 710, this.game.player.battleStats.dexterity, this.Pixel16White);
+            // this.vitValue = this.add.text(310, 770, this.game.player.battleStats.vitality, this.Pixel16White);
+            // this.wisValue = this.add.text(609, 770, this.game.player.battleStats.wisdom, this.Pixel16White);
+        }
         let wheelSprite = this.debug ? 'skill_wheel_debug' : 'skill_wheel';
         let wheelBg = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY+100, wheelSprite);
         wheelBg.anchor.setTo(0.5);
@@ -53,16 +74,50 @@ export default class extends Phaser.State {
         this.skillWheel.pivot.y = this.game.world.centerY+100;
 
         if(!this.game.player.story.chapter1.firstSkillTree){
-            this.game.player.story.chapter1.firstSkillTree = true;
-            this.game.player.savePlayerData();
-            let sliceNumber = this.rand(24,40);
-            let randomStart = 45*sliceNumber;
-            let startTween = this.add.tween(this.skillWheel).to( { angle: randomStart }, 3000, Phaser.Easing.Cubic.Out, true);
-            startTween.onComplete.addOnce(()=>{
-                this.skillWheel.angle = this.wheelRotationSettings[sliceNumber%8];
-            });
+            this.firstTimeAnimation();
+        } else {
+            if(this.stoneCover){
+                this.stoneCover.position.y = this.coverPos.y;
+                this.addPlayerStatLabels();
+            }
         }
 
+    }
+
+    firstTimeAnimation(){
+        this.game.player.story.chapter1.firstSkillTree = true;
+        this.game.player.savePlayerData();
+        let sliceNumber = this.rand(24,40);
+        let randomStart = 45*sliceNumber;
+        let startTween = this.add.tween(this.skillWheel).to( { angle: randomStart }, 3000, Phaser.Easing.Cubic.Out, true);
+        setTimeout(this.dropStoneCover, 1000);
+        startTween.onComplete.addOnce(()=>{
+            this.skillWheel.angle = this.wheelRotationSettings[sliceNumber%8];
+            this.addPlayerStatLabels();
+        });
+    }
+
+    dropStoneCover(){
+        this.add.tween(this.stoneCover).to( { y: this.coverPos.y }, 1500, Phaser.Easing.Linear.Out, true);
+    }
+
+    addPlayerStatLabels(){
+        if(!this.debug){
+            this.hdLabel = this.add.text(434, 665, 'Hit die', this.Pixel36Grey);
+            this.hdValue = this.add.text(600, 665, `1d${this.game.player.hitDie}`, this.Pixel36Grey);
+
+            this.strLabel = this.add.text(135, 710, 'STR', this.Pixel16White);
+            this.dexLabel = this.add.text(434, 710, 'DEX', this.Pixel16White);
+            this.vitLabel = this.add.text(135, 770, 'VIT', this.Pixel16White);
+            this.wisLabel = this.add.text(434, 770, 'WIS', this.Pixel16White);
+
+            this.strValue = this.add.text(310, 710, this.game.player.battleStats.strength, this.Pixel16White);
+            this.dexValue = this.add.text(609, 710, this.game.player.battleStats.dexterity, this.Pixel16White);
+            this.vitValue = this.add.text(310, 770, this.game.player.battleStats.vitality, this.Pixel16White);
+            this.wisValue = this.add.text(609, 770, this.game.player.battleStats.wisdom, this.Pixel16White);
+
+            this.updateSkillAvailability();
+        }
     }
 
     addRotationButtons(){
@@ -208,6 +263,11 @@ export default class extends Phaser.State {
                 }
             }
         });
+
+        this.strValue.text = this.game.player.battleStats.strength;
+        this.dexValue.text = this.game.player.battleStats.dexterity;
+        this.vitValue.text = this.game.player.battleStats.vitality;
+        this.wisValue.text = this.game.player.battleStats.wisdom;
     }
 
     showSkillDetail(skill){

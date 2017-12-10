@@ -17,7 +17,7 @@ export default class Tools {
     }
 
     addSkillPoints(amt=5){
-        this.game.player.skillsPoints += amt;
+        this.game.player.skillPoints += amt;
     }
 
     addLoot(amt=3, lvlMin=1, lvlMax=5){
@@ -62,6 +62,6 @@ export default class Tools {
             mobSprites.forEach((sprite)=>{
                 sprite.destroy();
             });
-        }, 6000);
+        }, 10000);
     }
 }

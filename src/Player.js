@@ -22,6 +22,7 @@ class Player {
         this.skills = [];
         this.skillUps = [];
         this.battling = false;
+        this.hitDie = 4;
         this.latestUnlockedDungeon = 1;
         this.currentDungeon = 0;
         this.inventory = [];
@@ -256,6 +257,7 @@ class Player {
                 skillPoints: this.skillPoints,
                 skills: this.skills,
                 skillUps: this.skillUps,
+                hitDie: this.hitDie,
                 magicFX: this.magicFX,
                 inventory: this.inventory,
                 potions: this.potions,
@@ -307,6 +309,7 @@ class Player {
         this.skillPoints = playerData.skillPoints;
         this.skills = playerData.skills;
         this.skillUps = playerData.skillUps;
+        this.hitDie = playerData.hitDie;
         this.magicFX = playerData.magicFX;
         this.battling = false;
         this.inventory = playerData.inventory;

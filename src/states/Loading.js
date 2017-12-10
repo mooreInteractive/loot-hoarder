@@ -20,6 +20,7 @@ export default class extends Phaser.State {
         //skill tree UI
         this.game.load.image('skill_wheel', './assets/images/skills/wheel.png');
         this.game.load.image('skill_wheel_debug', './assets/images/skills/wheel-debug.png');
+        this.game.load.image('stone_cover', './assets/images/skills/stone-cover.png');
         this.game.load.image('rot_left', './assets/images/skills/turn-left.png');
         this.game.load.image('rot_right', './assets/images/skills/turn-right.png');
         this.game.load.image('attr_str', './assets/images/skills/attr-str.png');

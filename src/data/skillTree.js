@@ -129,15 +129,15 @@ let strSkills = [
         neighbors: [14,15]
     },
     {
-        x: 400,
-        y: 450,
+        x: 539,
+        y: 256,
         type: 'attr',
         attr: 1,
         neighbors: [10, 'n-8']
     },
     {
-        x: 400,
-        y: 500,
+        x: 464,
+        y: 446,
         type: 'attr',
         attr: 1,
         neighbors: [15, 'n-14']
@@ -273,15 +273,15 @@ let strDexSkills = [
         neighbors: [14,15]
     },
     {
-        x: 0,
-        y: 0,
+        x: 763,
+        y: 478,
         type: 'attr',
         attr: 1,
         neighbors: [10, 'n-8']
     },
     {
-        x: 0,
-        y: 0,
+        x: 574,
+        y: 560,
         type: 'attr',
         attr: 1,
         neighbors: [15, 'n-14']
@@ -417,15 +417,15 @@ let dexSkills = [
         neighbors: [14,15]
     },
     {
-        x: 0,
-        y: 0,
+        x: 758,
+        y: 790,
         type: 'attr',
         attr: 1,
         neighbors: [10, 'n-8']
     },
     {
-        x: 0,
-        y: 0,
+        x: 570,
+        y: 717,
         type: 'attr',
         attr: 1,
         neighbors: [15, 'n-14']
@@ -561,15 +561,15 @@ let dexVitSkills = [
         neighbors: [14,15]
     },
     {
-        x: 0,
-        y: 0,
+        x: 540,
+        y: 1009,
         type: 'attr',
         attr: 1,
         neighbors: [10, 'n-8']
     },
     {
-        x: 0,
-        y: 0,
+        x: 466,
+        y: 823,
         type: 'attr',
         attr: 1,
         neighbors: [15, 'n-14']
@@ -705,15 +705,15 @@ let vitSkills = [
         neighbors: [14,15]
     },
     {
-        x: 0,
-        y: 0,
+        x: 233,
+        y: 1010,
         type: 'attr',
         attr: 1,
         neighbors: [10, 'n-8']
     },
     {
-        x: 0,
-        y: 0,
+        x: 306,
+        y: 825,
         type: 'attr',
         attr: 1,
         neighbors: [15, 'n-14']
@@ -849,15 +849,15 @@ let vitWisSkills = [
         neighbors: [14,15]
     },
     {
-        x: 0,
-        y: 0,
+        x: 9,
+        y: 797,
         type: 'attr',
         attr: 1,
         neighbors: [10, 'n-8']
     },
     {
-        x: 0,
-        y: 0,
+        x: 198,
+        y: 721,
         type: 'attr',
         attr: 1,
         neighbors: [15, 'n-14']
@@ -993,15 +993,15 @@ let wisSkills = [
         neighbors: [14,15]
     },
     {
-        x: 0,
-        y: 0,
+        x: 9,
+        y: 488,
         type: 'attr',
         attr: 1,
         neighbors: [10, 'n-8']
     },
     {
-        x: 0,
-        y: 0,
+        x: 197,
+        y: 563,
         type: 'attr',
         attr: 1,
         neighbors: [15, 'n-14']
@@ -1137,15 +1137,15 @@ let wisStrSkills = [
         neighbors: [14,15]
     },
     {
-        x: 310,
-        y: 450,
+        x: 226,
+        y: 267,
         type: 'attr',
         attr: 1,
         neighbors: [10, 'n-8']
     },
     {
-        x: 310,
-        y: 500,
+        x: 306,
+        y: 453,
         type: 'attr',
         attr: 1,
         neighbors: [15, 'n-14']
