@@ -23,6 +23,7 @@ class Player {
         this.skillUps = [];
         this.battling = false;
         this.hitDie = 4;
+        this.lastSkillWheelRotation = 0;
         this.latestUnlockedDungeon = 1;
         this.currentDungeon = 0;
         this.inventory = [];
@@ -265,6 +266,7 @@ class Player {
                 equipped: this.equipped,
                 gold: this.gold,
                 baseStats: this.baseStats,
+                lastSkillWheelRotation: this.lastSkillWheelRotation,
                 latestUnlockedDungeon: this.latestUnlockedDungeon,
                 currentDungeon: this.currentDungeon,
                 currentHealth: this.battleStats.currentHealth
@@ -319,6 +321,7 @@ class Player {
         this.baseStats = playerData.baseStats;
         this.currentDungeon = playerData.currentDungeon;
         this.latestUnlockedDungeon = playerData.latestUnlockedDungeon;
+        this.lastSkillWheelRotation = playerData.lastSkillWheelRotation;
         this.battleStats = {
             strength: playerData.baseStats.strength,
             vitality: playerData.baseStats.vitality,

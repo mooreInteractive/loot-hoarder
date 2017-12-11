@@ -19,7 +19,8 @@ export default class extends Phaser.State {
     init () {
         console.log('SKILLS INIT');
         this.skillSprites = [];
-        this.currentRotation = 0;
+        this.currentRotation = this.game.player.lastSkillWheelRotation;
+        console.log('currentRot:', this.currentRotation);
         this.wheelRotationSettings = [0, 45, 90, 135, 180, 225, 270, 315];
         this.setSkillStates();
     }
@@ -73,6 +74,8 @@ export default class extends Phaser.State {
         this.skillWheel.pivot.x = this.game.world.centerX;
         this.skillWheel.pivot.y = this.game.world.centerY+100;
 
+        this.setWheelRotation(this.wheelRotationSettings[this.currentRotation]);
+
         if(!this.game.player.story.chapter1.firstSkillTree){
             this.firstTimeAnimation();
         } else {
@@ -93,6 +96,10 @@ export default class extends Phaser.State {
         setTimeout(this.dropStoneCover, 1000);
         startTween.onComplete.addOnce(()=>{
             this.skillWheel.angle = this.wheelRotationSettings[sliceNumber%8];
+            console.log('current Rot:', sliceNumber%8);
+            this.currentRotation = sliceNumber%8;
+            this.game.player.lastSkillWheelRotation = sliceNumber%8;
+            this.game.player.savePlayerData();
             this.addPlayerStatLabels();
         });
     }
@@ -115,8 +122,6 @@ export default class extends Phaser.State {
             this.dexValue = this.add.text(609, 710, this.game.player.battleStats.dexterity, this.Pixel16White);
             this.vitValue = this.add.text(310, 770, this.game.player.battleStats.vitality, this.Pixel16White);
             this.wisValue = this.add.text(609, 770, this.game.player.battleStats.wisdom, this.Pixel16White);
-
-            this.updateSkillAvailability();
         }
     }
 
@@ -134,15 +139,28 @@ export default class extends Phaser.State {
         this.currentRotation += 1;
         if(this.currentRotation == 8){ this.skillWheel.angle = -45; this.currentRotation = 0; }
         this.rotateWheel(this.wheelRotationSettings[this.currentRotation]);
+        console.log('current Rot:', this.currentRotation);
+        this.game.player.lastSkillWheelRotation = this.currentRotation;
+        this.game.player.savePlayerData();
     }
     rotateRight(){
         this.currentRotation -= 1;
         if(this.currentRotation == -1){ this.skillWheel.angle = 360; this.currentRotation = 7; }
         this.rotateWheel(this.wheelRotationSettings[this.currentRotation]);
+        console.log('current Rot:', this.currentRotation);
+        this.game.player.lastSkillWheelRotation = this.currentRotation;
+        this.game.player.savePlayerData();
+    }
+
+    setWheelRotation(rotateTo){
+        this.skillWheel.angle = rotateTo;
     }
 
     rotateWheel(rotateTo){
         this.add.tween(this.skillWheel).to( { angle: rotateTo }, 500, Phaser.Easing.Bounce.Out, true);
+        this.skills.forEach(skill => {
+            skill.sprite.rotation = rotateTo*-1;
+        });
     }
 
     addStrengthButtons(){
@@ -171,7 +189,8 @@ export default class extends Phaser.State {
                 //button for real
                 skillBtn = new Phaser.Button(this.game, skillItem.x, skillItem.y, btnSprite, this.showSkillDetail.bind(this, skillItem), this);
             }
-            if(this.game.player.skills.length === 0 && !skillItem.introSkill){
+            let firstSkillSet = this.game.player.skills.length === 0 && !skillItem.introSkill;
+            if(firstSkillSet || skillItem.state === 0){
                 skillBtn.tint = 0.1 * 0x010101;
             }
             skillBtn.anchor.setTo(0.5);
@@ -190,9 +209,15 @@ export default class extends Phaser.State {
                 } else {
                     skillItem.neighbors.forEach((neighbor) => {
                         if(typeof neighbor === 'number'){
-                            // console.log('skill index:', sliceIndex, neighbor, sliceIndex*19+neighbor, this.skills[sliceIndex*19+neighbor]);
-                            if(this.game.player.skillUps.includes(this.skills[sliceIndex*19+neighbor].index)){
-                                skillItem.state = 1;
+                            let neighborSkill = this.skills[sliceIndex*19+neighbor];
+                            if(neighborSkill.type === 'attr'){
+                                if(this.game.player.skillUps.includes(neighborSkill.index)){
+                                    skillItem.state = 1;
+                                }
+                            } else {
+                                if(this.game.player.skills.includes(neighborSkill.name)){
+                                    skillItem.state = 1;
+                                }
                             }
                         } else {
                             let neighborSplit = neighbor.split('-');
@@ -278,7 +303,8 @@ export default class extends Phaser.State {
         new Dialogue(this.game, this, 'bool', null, text, (reply)=>{
             if(reply === 'yes'){
                 let cost = isSkill && this.game.player.skills.length > 0 ? 3 : 1;
-                let costCheck = this.game.player.skillPoints > cost;
+                console.log('skill cost:', cost);
+                let costCheck = this.game.player.skillPoints >= cost;
                 let availCheck = skill.state === 1;
                 if(costCheck && availCheck){
                     if(isSkill){
@@ -290,6 +316,7 @@ export default class extends Phaser.State {
                     this.game.player.skillPoints -= cost;
                     this.updateNeighborStates(skill);
                     this.updateSkillAvailability();
+                    this.game.player.savePlayerData();
                 } else {
                     console.log('You can\'t afford it, or it\'s unavailable.');
                 }
