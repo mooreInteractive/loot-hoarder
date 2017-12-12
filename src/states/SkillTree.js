@@ -154,18 +154,8 @@ export default class extends Phaser.State {
         this.getButton.anchor.setTo(0.5);
         this.getButton.inputEnabled = true;
         console.log('skill:', skill.title);
-        this.getButton.events.onInputDown.add(() => {
-            new Dialogue(this.game, this, 'bool', null, `Are you sure you want\n${skill.title}?`, (reply)=>{
-                if(reply === 'yes'){
-                    this.game.player.addSkill(skill.name);
-                    this.game.player.skillPoints -= 1;
-                    this.updateNeighborStates(skill);
-                    this.updateSkillAvailability();
-                    this.hideFirstTimeSkillDetails();
-                    this.game.player.savePlayerData();
-                }
-            });
-        }, this);
+        this.currentSkill = skill;
+        this.getButton.events.onInputDown.add(this.confirmFirstSkillChoice, this);
         this.getButton.input.useHandCursor = true;
     }
 
@@ -173,6 +163,7 @@ export default class extends Phaser.State {
         if(this.initialSkillDetail){
             let rot = this.currentRotation === 0 ? this.currentRotation : 8 - this.currentRotation;
             let skill = this.skills[(rot*19)+9];
+            this.currentSkill = skill;
             this.initialSkillDetail.title.text = skill.title;
             this.initialSkillDetail.desc.text = skill.desc;
         }
@@ -184,7 +175,20 @@ export default class extends Phaser.State {
         this.initialSkillDetail.desc.destroy();
         this.getButton.destroy();
         this.playBtn.destroy();
+    }
 
+    confirmFirstSkillChoice(){
+        let skill = this.currentSkill;
+        new Dialogue(this.game, this, 'bool', null, `Are you sure you want\n${skill.title}?`, (reply)=>{
+            if(reply === 'yes'){
+                this.game.player.addSkill(skill.name);
+                this.game.player.skillPoints -= 1;
+                this.updateNeighborStates(skill);
+                this.updateSkillAvailability();
+                this.hideFirstTimeSkillDetails();
+                this.game.player.savePlayerData();
+            }
+        });
     }
 
     addRotationButtons(){
