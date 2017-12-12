@@ -17,10 +17,8 @@ export default class extends Phaser.State {
     }
 
     init () {
-        console.log('SKILLS INIT');
         this.skillSprites = [];
         this.currentRotation = this.game.player.lastSkillWheelRotation;
-        console.log('currentRot:', this.currentRotation);
         this.wheelRotationSettings = [0, 45, 90, 135, 180, 225, 270, 315];
         this.setSkillStates();
     }
@@ -28,7 +26,8 @@ export default class extends Phaser.State {
     preload () {
         this.currentDungeon = this.game.dungeons[this.game.player.currentDungeon];
 
-        this.Pixel24Black = {font: 'Press Start 2P', fontSize: 36, fill: '#000000' };
+        this.Pixel36Black = {font: 'Press Start 2P', fontSize: 28, fill: '#000000' };
+        this.Pixel24Black = {font: 'Press Start 2P', fontSize: 20, fill: '#000000' };
         // let Pixel24White = {font: 'Press Start 2P', fontSize: 36, fill: '#898989' };
         // let Pixel36Blue = {font: 'Press Start 2P', fontSize: 42, fill: '#527ee5' };
         this.Pixel16White = {font: 'Press Start 2P', fontSize: 42, fill: '#FFFFFF' };
@@ -42,19 +41,6 @@ export default class extends Phaser.State {
             this.coverPos = {x: this.game.world.centerX, y: this.game.world.centerY+100};
             this.stoneCover = this.game.add.sprite(this.game.world.centerX, -600, 'stone_cover');
             this.stoneCover.anchor.setTo(0.5);
-
-            // this.hdLabel = this.add.text(434, 665, 'Hit die', this.Pixel36Grey);
-            // this.hdValue = this.add.text(600, 665, `1d${this.game.player.hitDie}`, this.Pixel36Grey);
-            //
-            // this.strLabel = this.add.text(135, 710, 'STR', this.Pixel16White);
-            // this.dexLabel = this.add.text(434, 710, 'DEX', this.Pixel16White);
-            // this.vitLabel = this.add.text(135, 770, 'VIT', this.Pixel16White);
-            // this.wisLabel = this.add.text(434, 770, 'WIS', this.Pixel16White);
-            //
-            // this.strValue = this.add.text(310, 710, this.game.player.battleStats.strength, this.Pixel16White);
-            // this.dexValue = this.add.text(609, 710, this.game.player.battleStats.dexterity, this.Pixel16White);
-            // this.vitValue = this.add.text(310, 770, this.game.player.battleStats.vitality, this.Pixel16White);
-            // this.wisValue = this.add.text(609, 770, this.game.player.battleStats.wisdom, this.Pixel16White);
         }
         let wheelSprite = this.debug ? 'skill_wheel_debug' : 'skill_wheel';
         let wheelBg = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY+100, wheelSprite);
@@ -82,6 +68,9 @@ export default class extends Phaser.State {
             if(this.stoneCover){
                 this.stoneCover.position.y = this.coverPos.y;
                 this.addPlayerStatLabels();
+                if(this.game.player.skills.length === 0){
+                    this.addFirstTimeSkillDetails();
+                }
             }
         }
 
@@ -96,11 +85,11 @@ export default class extends Phaser.State {
         setTimeout(this.dropStoneCover, 1000);
         startTween.onComplete.addOnce(()=>{
             this.skillWheel.angle = this.wheelRotationSettings[sliceNumber%8];
-            console.log('current Rot:', sliceNumber%8);
             this.currentRotation = sliceNumber%8;
             this.game.player.lastSkillWheelRotation = sliceNumber%8;
             this.game.player.savePlayerData();
             this.addPlayerStatLabels();
+            this.addFirstTimeSkillDetails();
         });
     }
 
@@ -125,6 +114,79 @@ export default class extends Phaser.State {
         }
     }
 
+    addFirstTimeSkillDetails(){
+        let bgbmd = this.add.bitmapData(450, 330);
+        bgbmd.ctx.beginPath();
+        bgbmd.ctx.rect(0, 0, 450, 330);
+        bgbmd.ctx.fillStyle = '#232323';
+        bgbmd.ctx.fill();
+        bgbmd.ctx.beginPath();
+        bgbmd.ctx.rect(10, 10, 430, 310);
+        bgbmd.ctx.fillStyle = '#CDCDCD';
+        bgbmd.ctx.fill();
+
+        this.initialSkillDetail = {};
+
+        this.initialSkillDetail.bg = this.add.sprite(this.game.world.centerX, this.game.world.centerY-70, bgbmd);
+        this.initialSkillDetail.bg.anchor.setTo(0.5);
+
+        let skillDescStyle = Object.assign(this.Pixel24Black, {wordWrap: true, wordWrapWidth: 430, align: 'center'});
+        let skillTitleStyle = Object.assign(this.Pixel36Black, {wordWrap: true, wordWrapWidth: 430, align: 'center'});
+        let rot = this.currentRotation === 0 ? this.currentRotation : 8 - this.currentRotation;
+        let skill = this.skills[(rot*19)+9];
+
+        console.log('skill deats:', skill.title, skill.desc, skill);
+        this.initialSkillDetail.title = this.add.text(this.game.world.centerX, this.game.world.centerY-205, skill.title, skillTitleStyle);
+        this.initialSkillDetail.desc = this.add.text(this.game.world.centerX, this.game.world.centerY-135, skill.desc, skillDescStyle);
+        this.initialSkillDetail.title.anchor.x = 0.5;
+        this.initialSkillDetail.desc.anchor.x = 0.5;
+
+        //button
+        this.playBtn = new Phaser.Button(this.game, this.game.world.centerX, this.game.world.centerY+100, 'redButton', this.playClicked, this);
+        this.playBtn.scale.setTo(2);
+        this.playBtn.anchor.setTo(0.5);
+
+        this.game.add.existing(this.playBtn);
+        //button text
+        let playStyle = {font: '32px Press Start 2P', fill: '#111111'};
+        let playType = 'Start Here';
+        this.getButton = this.add.text(this.game.world.centerX, this.game.world.centerY+100, playType, playStyle);
+        this.getButton.anchor.setTo(0.5);
+        this.getButton.inputEnabled = true;
+        console.log('skill:', skill.title);
+        this.getButton.events.onInputDown.add(() => {
+            new Dialogue(this.game, this, 'bool', null, `Are you sure you want\n${skill.title}?`, (reply)=>{
+                if(reply === 'yes'){
+                    this.game.player.addSkill(skill.name);
+                    this.game.player.skillPoints -= 1;
+                    this.updateNeighborStates(skill);
+                    this.updateSkillAvailability();
+                    this.hideFirstTimeSkillDetails();
+                    this.game.player.savePlayerData();
+                }
+            });
+        }, this);
+        this.getButton.input.useHandCursor = true;
+    }
+
+    updateFirstTimeSkillDetails(){
+        if(this.initialSkillDetail){
+            let rot = this.currentRotation === 0 ? this.currentRotation : 8 - this.currentRotation;
+            let skill = this.skills[(rot*19)+9];
+            this.initialSkillDetail.title.text = skill.title;
+            this.initialSkillDetail.desc.text = skill.desc;
+        }
+    }
+
+    hideFirstTimeSkillDetails(){
+        this.initialSkillDetail.bg.destroy();
+        this.initialSkillDetail.title.destroy();
+        this.initialSkillDetail.desc.destroy();
+        this.getButton.destroy();
+        this.playBtn.destroy();
+
+    }
+
     addRotationButtons(){
         let leftButton = new Phaser.Button(this.game, 100, this.game.world.centerY, 'rot_left', this.rotateLeft, this);
         let rightButton = new Phaser.Button(this.game, this.game.world.width - 100, this.game.world.centerY, 'rot_right', this.rotateRight, this);
@@ -139,7 +201,7 @@ export default class extends Phaser.State {
         this.currentRotation += 1;
         if(this.currentRotation == 8){ this.skillWheel.angle = -45; this.currentRotation = 0; }
         this.rotateWheel(this.wheelRotationSettings[this.currentRotation]);
-        console.log('current Rot:', this.currentRotation);
+        this.updateFirstTimeSkillDetails();
         this.game.player.lastSkillWheelRotation = this.currentRotation;
         this.game.player.savePlayerData();
     }
@@ -147,20 +209,23 @@ export default class extends Phaser.State {
         this.currentRotation -= 1;
         if(this.currentRotation == -1){ this.skillWheel.angle = 360; this.currentRotation = 7; }
         this.rotateWheel(this.wheelRotationSettings[this.currentRotation]);
-        console.log('current Rot:', this.currentRotation);
+        this.updateFirstTimeSkillDetails();
         this.game.player.lastSkillWheelRotation = this.currentRotation;
         this.game.player.savePlayerData();
     }
 
     setWheelRotation(rotateTo){
         this.skillWheel.angle = rotateTo;
+        // this.skills.forEach(skill => {
+        //     skill.sprite.rotation = (rotateTo*-1)+45;
+        // });
     }
 
     rotateWheel(rotateTo){
         this.add.tween(this.skillWheel).to( { angle: rotateTo }, 500, Phaser.Easing.Bounce.Out, true);
-        this.skills.forEach(skill => {
-            skill.sprite.rotation = rotateTo*-1;
-        });
+        // this.skills.forEach(skill => {
+        //     skill.sprite.rotation = (rotateTo*-1)+45;
+        // });
     }
 
     addStrengthButtons(){
@@ -296,14 +361,12 @@ export default class extends Phaser.State {
     }
 
     showSkillDetail(skill){
-        console.log('detail:', skill);
         let isSkill = skill.type === 'skill';
         let text = isSkill ? `Get skill: ${skill.name}?\n${skill.desc}` : `Get +1 ${skill.attr}?`;
         let attrIndex = isSkill ? 0 : (['str','dex','vit','wis']).indexOf(skill.attr);
         new Dialogue(this.game, this, 'bool', null, text, (reply)=>{
             if(reply === 'yes'){
                 let cost = isSkill && this.game.player.skills.length > 0 ? 3 : 1;
-                console.log('skill cost:', cost);
                 let costCheck = this.game.player.skillPoints >= cost;
                 let availCheck = skill.state === 1;
                 if(costCheck && availCheck){

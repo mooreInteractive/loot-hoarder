@@ -360,7 +360,7 @@ let dexSkills = [
         y: 635,
         type: 'skill',
         name: 'two-one-handed',
-        title: 'Equip two One-Handed Weapons',
+        title: 'Dual Wielding',
         desc: 'The hero can equip two one-handed weapons. One in each hand.',
         introSkill: true,
         neighbors: [6,7,11,12]
@@ -793,7 +793,7 @@ let vitWisSkills = [
         type: 'skill',
         name: 'heal',
         title: 'Heal',
-        desc: 'The hero gains a heal spell which can be used like a potion. It takes a while to recharge though.',
+        desc: 'The hero gains a heal spell which can be used like a potion. It takes a while to recharge.',
         introSkill: true,
         neighbors: [6,7,11,12]
     },
