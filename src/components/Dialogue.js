@@ -22,11 +22,11 @@ export default class Dialogue{
             let diaBG = this.gameState.add.bitmapData(this.diaWidth, this.diaHeight);
             diaBG.ctx.beginPath();
             diaBG.ctx.rect(0, 0, this.diaWidth, this.diaHeight);
-            diaBG.ctx.fillStyle = '#000000';
+            diaBG.ctx.fillStyle = '#232323';
             diaBG.ctx.fill();
             diaBG.ctx.beginPath();
-            diaBG.ctx.rect(20, 20, this.diaWidth-40, this.diaHeight-40);
-            diaBG.ctx.fillStyle = '#FFFFFF';
+            diaBG.ctx.rect(10, 10, this.diaWidth-20, this.diaHeight-20);
+            diaBG.ctx.fillStyle = '#CDCDCD';
             diaBG.ctx.fill();
 
             this.dialogueBG = this.gameState.add.sprite(this.diaOrigin.x, this.diaOrigin.y, diaBG);

@@ -216,7 +216,7 @@ let strDexSkills = [
         y: 363,//+35
         type: 'skill',
         name: 'unarmed-attack',
-        title: 'Unarmed Attack Bonus',
+        title: 'Unarmed Attack',
         desc: 'The hero can make strong attacks without a weapon equipped.\ndmg = str x dex',
         introSkill: true,
         neighbors: [6,7,11,12]
@@ -648,7 +648,7 @@ let vitSkills = [
         y: 1018,
         type: 'skill',
         name: 'vitality-mastery',
-        title: 'Vitality Mastery',
+        title: 'VIT Mastery',
         desc: 'Twice the hero\'s vitality score is added to max HP.',
         introSkill: true,
         neighbors: [6,7,11,12]

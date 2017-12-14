@@ -1,3 +1,4 @@
+import { rand } from './items/Forge';
 import { tryToPlaceItemInBackpack } from './utils';
 import * as Story from './data/story';
 
@@ -155,7 +156,11 @@ class Player {
     levelUp(){
         this.level += 1;
         this.skillPoints += 1;
+        let healthUp = rand(1, (this.hitDie+1));
+        console.log('health up:', this.baseStats.health, healthUp);
+        this.baseStats.health += healthUp;
         this.nextLevel = this.nextPlayerLevel();
+        this.updateBattleStats();
         this.savePlayerData();
     }
 
@@ -172,7 +177,6 @@ class Player {
         case 1: this.baseStats.dexterity += 1;
             break;
         case 2: this.baseStats.vitality += 1;
-            this.baseStats.health += 10;
             break;
         case 3: this.baseStats.wisdom += 1;
             break;
@@ -211,7 +215,10 @@ class Player {
             max: this.battleStats.strength + 2
         };
 
-        let health = this.battleStats.vitality * 10;
+        let vitMastery = this.skills.includes('vitality-mastery')
+            ? (this.battleStats.vitality*2)
+            : 0;
+        let health = this.baseStats.health + vitMastery;
         let armor = 0;
         let weight = 0;
 

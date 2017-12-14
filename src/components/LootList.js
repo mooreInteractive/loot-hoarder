@@ -53,7 +53,8 @@ export default class LootList{
     }
 
     addPotionLabel(){
-        this.gameState.add.image(600, 125, 'potion');
+        let potionSprite = this.gameState.add.sprite(600, 125, 'misc_items', 0);
+        potionSprite.scale.setTo(0.65);
         let potionTextStyle = {font: 'Press Start 2P', fontSize: '22px', fill: '#FFFFFF'};
         this.potionText = this.gameState.add.text(665, 155, ('x'+this.potions), potionTextStyle);
 

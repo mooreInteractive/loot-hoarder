@@ -14,6 +14,49 @@ export default class extends Phaser.State {
         this.dropStoneCover = this.dropStoneCover.bind(this);
 
         this.debug = false;
+
+        this.classes = [
+            {
+                name: 'Barbarian',
+                attr: ['str'],
+                hitDie: 12
+            },
+            {
+                name: 'Monk',
+                attr: ['str', 'dex'],
+                hitDie: 8
+            },
+            {
+                name: 'Rogue',
+                attr: ['dex'],
+                hitDie: 6
+            },
+            {
+                name: 'Paladin',
+                attr: ['dex', 'vit'],
+                hitDie: 10
+            },
+            {
+                name: 'Cleric',
+                attr: ['vit'],
+                hitDie: 8
+            },
+            {
+                name: 'White Mage',
+                attr: ['vit', 'wis'],
+                hitDie: 4
+            },
+            {
+                name: 'Wizard',
+                attr: ['wis'],
+                hitDie: 4
+            },
+            {
+                name: 'Black Mage',
+                attr: ['wis', 'str'],
+                hitDie: 6
+            }
+        ];
     }
 
     init () {
@@ -41,6 +84,8 @@ export default class extends Phaser.State {
             this.coverPos = {x: this.game.world.centerX, y: this.game.world.centerY+100};
             this.stoneCover = this.game.add.sprite(this.game.world.centerX, -600, 'stone_cover');
             this.stoneCover.anchor.setTo(0.5);
+            // this.stoneCover.inputEnabled = true;
+            // this.stoneCover.input.priorityId = 1;
         }
         let wheelSprite = this.debug ? 'skill_wheel_debug' : 'skill_wheel';
         let wheelBg = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY+100, wheelSprite);
@@ -134,9 +179,10 @@ export default class extends Phaser.State {
         let skillTitleStyle = Object.assign(this.Pixel36Black, {wordWrap: true, wordWrapWidth: 430, align: 'center'});
         let rot = this.currentRotation === 0 ? this.currentRotation : 8 - this.currentRotation;
         let skill = this.skills[(rot*19)+9];
+        let currentClass = this.classes[rot];
 
         console.log('skill deats:', skill.title, skill.desc, skill);
-        this.initialSkillDetail.title = this.add.text(this.game.world.centerX, this.game.world.centerY-205, skill.title, skillTitleStyle);
+        this.initialSkillDetail.title = this.add.text(this.game.world.centerX, this.game.world.centerY-205, currentClass.name, skillTitleStyle);
         this.initialSkillDetail.desc = this.add.text(this.game.world.centerX, this.game.world.centerY-135, skill.desc, skillDescStyle);
         this.initialSkillDetail.title.anchor.x = 0.5;
         this.initialSkillDetail.desc.anchor.x = 0.5;
@@ -148,12 +194,12 @@ export default class extends Phaser.State {
 
         this.game.add.existing(this.playBtn);
         //button text
-        let playStyle = {font: '32px Press Start 2P', fill: '#111111'};
-        let playType = 'Start Here';
+        let playStyle = {font: '24px Press Start 2P', fill: '#111111'};
+        let playType = skill.title;
         this.getButton = this.add.text(this.game.world.centerX, this.game.world.centerY+100, playType, playStyle);
         this.getButton.anchor.setTo(0.5);
         this.getButton.inputEnabled = true;
-        console.log('skill:', skill.title);
+
         this.currentSkill = skill;
         this.getButton.events.onInputDown.add(this.confirmFirstSkillChoice, this);
         this.getButton.input.useHandCursor = true;
@@ -163,9 +209,16 @@ export default class extends Phaser.State {
         if(this.initialSkillDetail){
             let rot = this.currentRotation === 0 ? this.currentRotation : 8 - this.currentRotation;
             let skill = this.skills[(rot*19)+9];
+            let currentClass = this.classes[rot];
+
             this.currentSkill = skill;
-            this.initialSkillDetail.title.text = skill.title;
+            this.initialSkillDetail.title.text = currentClass.name;
             this.initialSkillDetail.desc.text = skill.desc;
+            this.getButton.text = skill.title;
+            this.hdValue.text = `1d${currentClass.hitDie}`;
+
+            console.log('class:', currentClass);
+
         }
     }
 
@@ -179,10 +232,13 @@ export default class extends Phaser.State {
 
     confirmFirstSkillChoice(){
         let skill = this.currentSkill;
-        new Dialogue(this.game, this, 'bool', null, `Are you sure you want\n${skill.title}?`, (reply)=>{
+        let rot = this.currentRotation === 0 ? this.currentRotation : 8 - this.currentRotation;
+        let currentClass = this.classes[rot];
+        new Dialogue(this.game, this, 'bool', null, `Are you sure you want to be a ${currentClass.name}?\n Hit Die: 1d${currentClass.hitDie}\n Skill: ${skill.title}`, (reply)=>{
             if(reply === 'yes'){
                 this.game.player.addSkill(skill.name);
                 this.game.player.skillPoints -= 1;
+                this.game.player.hitDie = currentClass.hitDie;
                 this.updateNeighborStates(skill);
                 this.updateSkillAvailability();
                 this.hideFirstTimeSkillDetails();
@@ -257,6 +313,7 @@ export default class extends Phaser.State {
             } else {
                 //button for real
                 skillBtn = new Phaser.Button(this.game, skillItem.x, skillItem.y, btnSprite, this.showSkillDetail.bind(this, skillItem), this);
+                skillBtn.input.priorityId = 2;
             }
             let firstSkillSet = this.game.player.skills.length === 0 && !skillItem.introSkill;
             if(firstSkillSet || skillItem.state === 0){
@@ -365,30 +422,32 @@ export default class extends Phaser.State {
     }
 
     showSkillDetail(skill){
-        let isSkill = skill.type === 'skill';
-        let text = isSkill ? `Get skill: ${skill.name}?\n${skill.desc}` : `Get +1 ${skill.attr}?`;
-        let attrIndex = isSkill ? 0 : (['str','dex','vit','wis']).indexOf(skill.attr);
-        new Dialogue(this.game, this, 'bool', null, text, (reply)=>{
-            if(reply === 'yes'){
-                let cost = isSkill && this.game.player.skills.length > 0 ? 3 : 1;
-                let costCheck = this.game.player.skillPoints >= cost;
-                let availCheck = skill.state === 1;
-                if(costCheck && availCheck){
-                    if(isSkill){
-                        this.game.player.addSkill(skill.name);
+        if(skill.state != 2){
+            let isSkill = skill.type === 'skill';
+            let text = isSkill ? `Get skill: ${skill.name}?\n${skill.desc}` : `Get +1 ${skill.attr}?`;
+            let attrIndex = isSkill ? 0 : (['str','dex','vit','wis']).indexOf(skill.attr);
+            new Dialogue(this.game, this, 'bool', null, text, (reply)=>{
+                if(reply === 'yes'){
+                    let cost = isSkill && this.game.player.skills.length > 0 ? 3 : 1;
+                    let costCheck = this.game.player.skillPoints >= cost;
+                    let availCheck = skill.state === 1;
+                    if(costCheck && availCheck){
+                        if(isSkill){
+                            this.game.player.addSkill(skill.name);
+                        } else {
+                            this.game.player.skillUps.push(skill.index);
+                            this.game.player.skillUp(attrIndex);
+                        }
+                        this.game.player.skillPoints -= cost;
+                        this.updateNeighborStates(skill);
+                        this.updateSkillAvailability();
+                        this.game.player.savePlayerData();
                     } else {
-                        this.game.player.skillUps.push(skill.index);
-                        this.game.player.skillUp(attrIndex);
+                        console.log('You can\'t afford it, or it\'s unavailable.');
                     }
-                    this.game.player.skillPoints -= cost;
-                    this.updateNeighborStates(skill);
-                    this.updateSkillAvailability();
-                    this.game.player.savePlayerData();
-                } else {
-                    console.log('You can\'t afford it, or it\'s unavailable.');
                 }
-            }
-        });
+            });
+        }
     }
 
     startDrag(sprite){
