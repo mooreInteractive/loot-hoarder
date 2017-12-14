@@ -84,8 +84,9 @@ export default class extends Phaser.State {
             this.coverPos = {x: this.game.world.centerX, y: this.game.world.centerY+100};
             this.stoneCover = this.game.add.sprite(this.game.world.centerX, -600, 'stone_cover');
             this.stoneCover.anchor.setTo(0.5);
-            // this.stoneCover.inputEnabled = true;
-            // this.stoneCover.input.priorityId = 1;
+            this.stoneCover.inputEnabled = true;
+            this.stoneCover.input.pixelPerfectClick = true;
+            this.stoneCover.input.priorityId = 1;
         }
         let wheelSprite = this.debug ? 'skill_wheel_debug' : 'skill_wheel';
         let wheelBg = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY+100, wheelSprite);
