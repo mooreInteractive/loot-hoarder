@@ -39,7 +39,7 @@ export default class extends Phaser.State {
             {
                 name: 'Cleric',
                 attr: ['vit'],
-                hitDie: 8
+                hitDie: 4
             },
             {
                 name: 'White Mage',
@@ -49,7 +49,7 @@ export default class extends Phaser.State {
             {
                 name: 'Wizard',
                 attr: ['wis'],
-                hitDie: 4
+                hitDie: 6
             },
             {
                 name: 'Black Mage',
