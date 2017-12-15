@@ -388,13 +388,14 @@ export default class extends Phaser.State {
 
     updateNeighborStates(skill){
         skill.state = 2;
+        skill.sprite.inputEnabled = false;
         let skillIndex = this.skills.indexOf(skill);
         let sliceIndex = Math.floor(skillIndex/19);
         skill.neighbors.forEach(neighbor => {
             if(typeof neighbor === 'number'){
                 // console.log('neighbors:', sliceIndex*19+neighbor, this.skills[sliceIndex*19+neighbor]);
                 this.skills[sliceIndex*19+neighbor].state = 1;
-                this.skills[sliceIndex*19+neighbor].inputEnabled = true;
+                this.skills[sliceIndex*19+neighbor].sprite.inputEnabled = true;
             } else {
                 let neighborSplit = neighbor.split('-');
                 let neighborType = neighborSplit[0];
@@ -406,7 +407,7 @@ export default class extends Phaser.State {
                     nextSlice = sliceIndex === 0 ? 7 : sliceIndex - 1;
                 }
                 this.skills[nextSlice*19+neighborIndex].state = 1;
-                this.skills[nextSlice*19+neighborIndex].inputEnabled = true;
+                this.skills[nextSlice*19+neighborIndex].sprite.inputEnabled = true;
             }
 
         });
