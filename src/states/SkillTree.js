@@ -313,12 +313,18 @@ export default class extends Phaser.State {
                 }, this);
             } else {
                 //button for real
-                skillBtn = new Phaser.Button(this.game, skillItem.x, skillItem.y, btnSprite, this.showSkillDetail.bind(this, skillItem), this);
+                skillBtn = new Phaser.Button(this.game, skillItem.x, skillItem.y, btnSprite, this.showSkillDetail.bind(this, skillItem), this, 0, 0, 0);
                 skillBtn.input.priorityId = 2;
             }
-            let firstSkillSet = this.game.player.skills.length === 0 && !skillItem.introSkill;
-            if(firstSkillSet || skillItem.state === 0){
-                skillBtn.tint = 0.1 * 0x010101;
+            skillBtn.inputEnabled = false;
+            let firstSkillSet = this.game.player.skills.length === 0 && skillItem.introSkill;
+            if(skillItem.state === 0){
+                skillBtn.setFrames(0, 0, 0);
+            } else if(firstSkillSet || skillItem.state === 1){
+                skillBtn.setFrames(1, 1, 1);
+                skillBtn.inputEnabled = true;
+            } else if(skillItem.state === 2){
+                skillBtn.setFrames(2, 2, 2);
             }
             skillBtn.anchor.setTo(0.5);
             this.skillWheel.add(skillBtn);
@@ -388,6 +394,7 @@ export default class extends Phaser.State {
             if(typeof neighbor === 'number'){
                 // console.log('neighbors:', sliceIndex*19+neighbor, this.skills[sliceIndex*19+neighbor]);
                 this.skills[sliceIndex*19+neighbor].state = 1;
+                this.skills[sliceIndex*19+neighbor].inputEnabled = true;
             } else {
                 let neighborSplit = neighbor.split('-');
                 let neighborType = neighborSplit[0];
@@ -399,6 +406,7 @@ export default class extends Phaser.State {
                     nextSlice = sliceIndex === 0 ? 7 : sliceIndex - 1;
                 }
                 this.skills[nextSlice*19+neighborIndex].state = 1;
+                this.skills[nextSlice*19+neighborIndex].inputEnabled = true;
             }
 
         });
@@ -409,9 +417,12 @@ export default class extends Phaser.State {
             if(skillItem.sprite){
                 //update first time use
                 if(skillItem.state === 0){
-                    skillItem.sprite.tint = 0.1 * 0x010101;
-                } else {
-                    skillItem.sprite.tint = 0xFFFFFF;
+                    skillItem.sprite.setFrames(0, 0, 0);
+                } else if(skillItem.state === 1){
+                    skillItem.sprite.setFrames(1, 1, 1);
+                    skillItem.sprite.inputEnabled = true;
+                } else if(skillItem.state === 2){
+                    skillItem.sprite.setFrames(2, 2, 2);
                 }
             }
         });

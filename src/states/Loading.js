@@ -23,11 +23,11 @@ export default class extends Phaser.State {
         this.game.load.image('stone_cover', './assets/images/skills/stone-cover.png');
         this.game.load.image('rot_left', './assets/images/skills/turn-left.png');
         this.game.load.image('rot_right', './assets/images/skills/turn-right.png');
-        this.game.load.image('attr_str', './assets/images/skills/attr-str.png');
-        this.game.load.image('attr_dex', './assets/images/skills/attr-dex.png');
-        this.game.load.image('attr_vit', './assets/images/skills/attr-vit.png');
-        this.game.load.image('attr_wis', './assets/images/skills/attr-wis.png');
-        this.game.load.image('skill_button', './assets/images/skills/skill-button.png');
+        this.game.load.spritesheet('attr_str', './assets/images/skills/attr-str.png', 50, 50);
+        this.game.load.spritesheet('attr_dex', './assets/images/skills/attr-dex.png', 50, 50);
+        this.game.load.spritesheet('attr_vit', './assets/images/skills/attr-vit.png', 50, 50);
+        this.game.load.spritesheet('attr_wis', './assets/images/skills/attr-wis.png', 50, 50);
+        this.game.load.spritesheet('skill_button', './assets/images/skills/str-skill.png', 100, 100);
 
         //Button Backgrounds
         this.game.load.image('blueButton', './assets/images/blue_button00.png');
