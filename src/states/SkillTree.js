@@ -417,13 +417,11 @@ export default class extends Phaser.State {
         this.skills.forEach((skillItem) => {
             if(skillItem.sprite){
                 //update first time use
-                if(skillItem.state === 0){
-                    skillItem.sprite.setFrames(0, 0, 0);
-                } else if(skillItem.state === 1){
-                    skillItem.sprite.setFrames(1, 1, 1);
+                skillItem.sprite.setFrames(skillItem.state, skillItem.state, skillItem.state);
+                if(skillItem.state === 1){
                     skillItem.sprite.inputEnabled = true;
-                } else if(skillItem.state === 2){
-                    skillItem.sprite.setFrames(2, 2, 2);
+                } else {
+                    skillItem.sprite.inputEnabled = false;
                 }
             }
         });
