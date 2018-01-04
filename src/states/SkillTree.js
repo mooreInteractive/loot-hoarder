@@ -62,7 +62,10 @@ export default class extends Phaser.State {
     init () {
         this.skillSprites = [];
         this.currentRotation = this.game.player.lastSkillWheelRotation;
+        let buttonRotCalc = 8-(this.game.player.lastSkillWheelRotation%8);
+        this.currentButtonRotation = buttonRotCalc == 8 ? 0 : buttonRotCalc;
         this.wheelRotationSettings = [0, 45, 90, 135, 180, 225, 270, 315];
+        this.buttonRotationSettings = [0, 45, 90, 135, 180, -135, -90, -45];
         this.setSkillStates();
     }
 
@@ -107,6 +110,7 @@ export default class extends Phaser.State {
         this.skillWheel.pivot.y = this.game.world.centerY+100;
 
         this.setWheelRotation(this.wheelRotationSettings[this.currentRotation]);
+        this.setButtonsRotation(this.buttonRotationSettings[this.currentButtonRotation]);
 
         if(!this.game.player.story.chapter1.firstSkillTree){
             this.firstTimeAnimation();
@@ -235,17 +239,22 @@ export default class extends Phaser.State {
         let skill = this.currentSkill;
         let rot = this.currentRotation === 0 ? this.currentRotation : 8 - this.currentRotation;
         let currentClass = this.classes[rot];
-        new Dialogue(this.game, this, 'bool', null, `Are you sure you want to be a ${currentClass.name}?\n Hit Die: 1d${currentClass.hitDie}\n Skill: ${skill.title}`, (reply)=>{
-            if(reply === 'yes'){
-                this.game.player.addSkill(skill.name);
-                this.game.player.skillPoints -= 1;
-                this.game.player.hitDie = currentClass.hitDie;
-                this.updateNeighborStates(skill);
-                this.updateSkillAvailability();
-                this.hideFirstTimeSkillDetails();
-                this.game.player.savePlayerData();
-            }
-        });
+        if(this.game.player.skillPoints > 0){
+            new Dialogue(this.game, this, 'bool', null, `Are you sure you want to be a ${currentClass.name}?\n Hit Die: 1d${currentClass.hitDie}\n Skill: ${skill.title}`, (reply)=>{
+                if(reply === 'yes'){
+                    this.game.player.addSkill(skill.name);
+                    this.game.player.skillPoints -= 1;
+                    this.game.player.hitDie = currentClass.hitDie;
+                    this.hdValue.text = `1d${currentClass.hitDie}`;
+                    this.updateNeighborStates(skill);
+                    this.updateSkillAvailability();
+                    this.hideFirstTimeSkillDetails();
+                    this.game.player.savePlayerData();
+                }
+            });
+        } else {
+            new Dialogue(this.game, this, 'ok', null, `You need more skill points.`, ()=>{});
+        }
     }
 
     addRotationButtons(){
@@ -259,17 +268,32 @@ export default class extends Phaser.State {
     }
 
     rotateLeft(){
+        //phaser's angle limits -180 -> 180(179.9) - 3d later - fuuuu
+        let buttonRotationTo;
+        this.currentButtonRotation -= 1;
+        // console.log("left buttons:", this.currentButtonRotation+1, "to", this.currentButtonRotation);
+        if(this.currentButtonRotation == -1){ this.setButtonsRotation(0); this.currentButtonRotation = 7; }
+        if(this.currentButtonRotation == 3){ this.setButtonsRotation(179.9); }
+
+        if(this.currentButtonRotation == 4){
+            buttonRotationTo = -180;
+        } else {
+            buttonRotationTo = this.buttonRotationSettings[this.currentButtonRotation];
+        }
         this.currentRotation += 1;
-        if(this.currentRotation == 8){ this.skillWheel.angle = -45; this.currentRotation = 0; }
-        this.rotateWheel(this.wheelRotationSettings[this.currentRotation]);
+
+        if(this.currentRotation == 8){ this.setWheelRotation(-45); this.currentRotation = 0; }
+        this.rotateWheel(this.wheelRotationSettings[this.currentRotation], buttonRotationTo);
         this.updateFirstTimeSkillDetails();
         this.game.player.lastSkillWheelRotation = this.currentRotation;
         this.game.player.savePlayerData();
     }
     rotateRight(){
+        this.currentButtonRotation += 1;
+        if(this.currentButtonRotation == 8){ this.setButtonsRotation(-45); this.currentButtonRotation = 0; }
         this.currentRotation -= 1;
-        if(this.currentRotation == -1){ this.skillWheel.angle = 360; this.currentRotation = 7; }
-        this.rotateWheel(this.wheelRotationSettings[this.currentRotation]);
+        if(this.currentRotation == -1){ this.setWheelRotation(360); this.currentRotation = 7; }
+        this.rotateWheel(this.wheelRotationSettings[this.currentRotation], this.buttonRotationSettings[this.currentButtonRotation]);
         this.updateFirstTimeSkillDetails();
         this.game.player.lastSkillWheelRotation = this.currentRotation;
         this.game.player.savePlayerData();
@@ -277,16 +301,20 @@ export default class extends Phaser.State {
 
     setWheelRotation(rotateTo){
         this.skillWheel.angle = rotateTo;
-        // this.skills.forEach(skill => {
-        //     skill.sprite.rotation = (rotateTo*-1)+45;
-        // });
     }
 
-    rotateWheel(rotateTo){
-        this.add.tween(this.skillWheel).to( { angle: rotateTo }, 500, Phaser.Easing.Bounce.Out, true);
-        // this.skills.forEach(skill => {
-        //     skill.sprite.rotation = (rotateTo*-1)+45;
-        // });
+    setButtonsRotation(buttonTo){
+        this.skills.forEach(skill => {
+            skill.sprite.angle = buttonTo;
+        });
+    }
+
+    rotateWheel(rotateTo, buttonRotateTo){
+        this.add.tween(this.skillWheel).to( { angle: rotateTo }, 500, Phaser.Easing.Back.InOut, true);
+
+        this.skills.forEach(skill => {
+            this.add.tween(skill.sprite).to( { angle: buttonRotateTo }, 500, Phaser.Easing.Linear.InOut, true);
+        });
     }
 
     addStrengthButtons(){
@@ -392,10 +420,10 @@ export default class extends Phaser.State {
         let skillIndex = this.skills.indexOf(skill);
         let sliceIndex = Math.floor(skillIndex/19);
         skill.neighbors.forEach(neighbor => {
+            let neighborSkill;
             if(typeof neighbor === 'number'){
                 // console.log('neighbors:', sliceIndex*19+neighbor, this.skills[sliceIndex*19+neighbor]);
-                this.skills[sliceIndex*19+neighbor].state = 1;
-                this.skills[sliceIndex*19+neighbor].sprite.inputEnabled = true;
+                neighborSkill = this.skills[sliceIndex*19+neighbor];
             } else {
                 let neighborSplit = neighbor.split('-');
                 let neighborType = neighborSplit[0];
@@ -406,10 +434,12 @@ export default class extends Phaser.State {
                 } else {
                     nextSlice = sliceIndex === 0 ? 7 : sliceIndex - 1;
                 }
-                this.skills[nextSlice*19+neighborIndex].state = 1;
-                this.skills[nextSlice*19+neighborIndex].sprite.inputEnabled = true;
+                neighborSkill = this.skills[nextSlice*19+neighborIndex];
             }
-
+            if(neighborSkill.state === 0){
+                neighborSkill.state = 1;
+                neighborSkill.sprite.inputEnabled = true;
+            }
         });
     }
 
