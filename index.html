@@ -36,14 +36,20 @@
         @font-face {font-family: 'Musketeer';src: url('assets/fonts/PixelMusketeer.otf') format('opentype');}
         body{background: #CCCCCC; padding: 0; margin: 0; text-align: center;}
         #content, #content canvas, iframe{
-        	background: #CCCCCC;
-        	margin: 0 auto;
-        	padding: 0;
+            background: #CCCCCC;
+            margin: 0 auto;
+            padding: 0;
         }
         iframe, object{
             border: none;
             width: 728px;
             height: 90px;
+        }
+
+        #lb {
+            position: fixed;
+            bottom: 0%;
+            left: 0%;
         }
 
         @media only screen and (max-width : 727px){

@@ -347,9 +347,18 @@ export default class extends Phaser.State {
         let strike = Forge.rand(player.battleStats.dmg.min, player.battleStats.dmg.max);
         let miss = Forge.rand(0+player.baseStats.dexterity, 100);
         let crit = Forge.rand(0+player.baseStats.dexterity, 100);
-        let critThreshold = player.equipped.leftHand ? player.equipped.leftHand.crit.threshold : 95;
-        if(player.magicFX.time > 0 && player.magicFX.name == 'CRIT'){ critThreshold -= 15;}
-        let critMulti = player.equipped.leftHand ? player.equipped.leftHand.crit.multiplier : 2;
+        let leftThresh = player.equipped.leftHand ? player.equipped.leftHand.crit.threshold : 95;
+        let rightThresh = player.equipped.rightHand ? player.equipped.rightHand.crit.threshold: 95;
+        let leftMulti = player.equipped.leftHand ? player.equipped.leftHand.crit.multiplier : 2;
+        let rightMulti = player.equipped.rightHand ? player.equipped.rightHand.crit.multiplier: 2;
+        let bestThresh = Math.min(leftMulti, rightMulti);
+        let bestMulti = Math.max(leftThresh, rightThresh);
+        let critThreshold = bestThresh;
+        if(
+            (player.magicFX.time > 0 && player.magicFX.name == 'CRIT')
+            || player.skills.includes('crit-chance-up')
+        ){ critThreshold -= 15;}
+        let critMulti = bestMulti;
         if(player.skills.includes('crit-dmg-up')){critMulti += 1;}
 
         if(miss > 15){

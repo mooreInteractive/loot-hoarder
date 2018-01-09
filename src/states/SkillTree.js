@@ -62,11 +62,15 @@ export default class extends Phaser.State {
     init () {
         this.skillSprites = [];
         this.currentRotation = this.game.player.lastSkillWheelRotation;
-        let buttonRotCalc = 8-(this.game.player.lastSkillWheelRotation%8);
-        this.currentButtonRotation = buttonRotCalc == 8 ? 0 : buttonRotCalc;
+        this.currentButtonRotation = this.calcButtonRotation(this.currentRotation);
         this.wheelRotationSettings = [0, 45, 90, 135, 180, 225, 270, 315];
         this.buttonRotationSettings = [0, 45, 90, 135, 180, -135, -90, -45];
         this.setSkillStates();
+    }
+
+    calcButtonRotation(wheelRotation){
+        let buttonRotCalc = 8-(wheelRotation%8);
+        return buttonRotCalc == 8 ? 0 : buttonRotCalc;
     }
 
     preload () {
@@ -129,14 +133,22 @@ export default class extends Phaser.State {
     firstTimeAnimation(){
         this.game.player.story.chapter1.firstSkillTree = true;
         this.game.player.savePlayerData();
-        let sliceNumber = this.rand(24,40);
+        let sliceNumber = this.rand(16,32);
         let randomStart = 45*sliceNumber;
-        let startTween = this.add.tween(this.skillWheel).to( { angle: randomStart }, 3000, Phaser.Easing.Cubic.Out, true);
-        setTimeout(this.dropStoneCover, 1000);
+        this.currentRotation = sliceNumber%8;
+        this.currentButtonRotation = this.calcButtonRotation(this.currentRotation);
+        this.setButtonsRotation(this.buttonRotationSettings[this.currentButtonRotation] - 90);
+        let startTween = this.add.tween(this.skillWheel).to( { angle: randomStart }, 2500, Phaser.Easing.Cubic.Out, true);
+        setTimeout(this.dropStoneCover, 800);
+        setTimeout(() => {
+            this.skills.forEach(skill => {
+                this.add.tween(skill.sprite).to( { angle: this.buttonRotationSettings[this.currentButtonRotation] }, 800, Phaser.Easing.Bounce.Out, true);
+            });
+        }, 1800);
         startTween.onComplete.addOnce(()=>{
-            this.skillWheel.angle = this.wheelRotationSettings[sliceNumber%8];
-            this.currentRotation = sliceNumber%8;
-            this.game.player.lastSkillWheelRotation = sliceNumber%8;
+
+            this.skillWheel.angle = this.wheelRotationSettings[this.currentRotation];
+            this.game.player.lastSkillWheelRotation = this.currentRotation;
             this.game.player.savePlayerData();
             this.addPlayerStatLabels();
             this.addFirstTimeSkillDetails();

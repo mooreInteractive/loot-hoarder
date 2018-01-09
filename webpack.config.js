@@ -31,8 +31,11 @@ module.exports = {
     definePlugin,
     new BrowserSyncPlugin({
       host: process.env.IP || 'localhost',
-      port: process.env.PORT || 3000,
+      port: process.env.PORT || 3098,
       open: false,
+      ui: {
+        port: 3099
+      },
       server: {
         baseDir: ['./', './build']
       }
