@@ -95,7 +95,7 @@ export default class Avatar{
 
             let equipped = this.game.player.equipped;
             let headSprite = equipped.head ? equipped.head.avatarSprite : 'hair';
-            let torsoSprite = equipped.torso ? equipped.torso.avatarSprite : 'armor_leather';
+            let torsoSprite = equipped.torso ? equipped.torso.avatarSprite : 'romphim';
             let feetSprite = equipped.torso ? equipped.torso.avatarSprite : 'boots_leather';
 
 
@@ -108,9 +108,7 @@ export default class Avatar{
             this.armor.torso.anchor.setTo(0.5);
             this.armor.torso.scale.setTo(settings.scale);
             this.armor.torso.animations.add('walk', [0,1,2,3], animSpeed);
-            if(this.game.player.equipped.body == null){
-                this.armor.torso.visible = false;
-            }
+
             //[28,29,30,31,32,33,34,35,36]
             this.armor.feet = this.dude.create(settings.x, settings.y, feetSprite);
             this.armor.feet.anchor.setTo(0.5);
@@ -200,15 +198,17 @@ export default class Avatar{
         }
 
         if(this.game.player.equipped.body == null){
-            this.armor.torso.visible = false;
+            if(this.armor.torso.key != 'romphim'){
+                this.armor.torso.loadTexture('romphim', 0);
+                this.armor.torso.animations.add('walk');
+                equipmentChanged = true;
+            }
         } else {
             if(this.game.player.equipped.body.avatarSprite != this.armor.torso.key){
                 this.armor.torso.loadTexture(this.game.player.equipped.body.avatarSprite, 0);
                 this.armor.torso.animations.add('walk');
                 equipmentChanged = true;
             }
-            if(this.armor.torso.visible == false){ equipmentChanged = true; }
-            this.armor.torso.visible = true;
         }
 
         if(this.game.player.equipped.leftHand == null){
@@ -356,7 +356,7 @@ export default class Avatar{
 
     fakeUpdate(){
 
-        let headSprites = ['helm_leather','helm_stone','helm_iron','helm_steel','hair'];
+        let headSprites = ['helm_hood','helm_leather','helm_stone','helm_iron','helm_steel','hair'];
         let headSprite = headSprites[Forge.rand(0, headSprites.length)];
         this.armor.head.loadTexture(headSprite, 0);
         this.armor.head.animations.add('walk');
@@ -368,7 +368,7 @@ export default class Avatar{
         this.armor.feet.animations.add('walk');
         this.armor.feet.visible = true;
 
-        let bodySprites = ['armor_leather','armor_stone','armor_iron','armor_steel'];
+        let bodySprites = ['armor_leather','armor_robe','romphim','armor_stone','armor_iron','armor_steel'];
         let random = Forge.rand(0, bodySprites.length);
         let bodySprite = bodySprites[random];
         this.armor.torso.loadTexture(bodySprite, 0);

@@ -109,6 +109,10 @@ export default class extends Phaser.State {
         this.game.load.spritesheet('strong_man', './assets/images/avatar/man_full_hp.png', 96, 144);
         this.game.load.spritesheet('tired_man', './assets/images/avatar/man_half_hp.png', 96, 144);
         this.game.load.spritesheet('hair', './assets/images/avatar/hair.png', 96, 144);
+        this.game.load.spritesheet('romphim', './assets/images/avatar/romphim.png', 96, 144);
+
+        this.game.load.spritesheet('helm_hood', './assets/images/avatar/helm_hood.png', 96, 144);
+        this.game.load.spritesheet('armor_robe', './assets/images/avatar/armor_robe.png', 96, 144);
 
         this.game.load.spritesheet('helm_leather', './assets/images/avatar/helm_leather.png', 96, 144);
         this.game.load.spritesheet('armor_leather', './assets/images/avatar/armor_leather.png', 96, 144);
